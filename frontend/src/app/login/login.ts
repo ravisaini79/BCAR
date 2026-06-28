@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,7 @@ export class LoginComponent {
 
   submitLogin() {
     this.busy = true;
-    this.http.post<any>('/api/auth/login', this.login).subscribe({
+    this.http.post<any>(`${environment.apiUrl}/auth/login`, this.login).subscribe({
       next: response => {
         this.busy = false;
 

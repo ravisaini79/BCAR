@@ -7,16 +7,12 @@ import { MessageService } from 'primeng/api';
 import Aura from '@primeuix/themes/aura';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
+import { apiInterceptor } from './app/core/interceptors/api.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([
-      (req, next) => {
-        const token = localStorage.getItem('bcar_token');
-        return next(token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req);
-      }
-    ])),
+    provideHttpClient(withInterceptors([apiInterceptor])),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {

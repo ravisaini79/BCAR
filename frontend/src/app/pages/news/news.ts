@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, signal, inject } from '@ang
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HeaderComponent } from '../../layout/header/header';
@@ -336,7 +337,7 @@ export class NewsComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.http.get<any[]>('/api/public/notices').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/public/notices`).subscribe({
       next:  rows  => { this.notices = rows; this.loading = false; },
       error: ()    => {
         // Fallback demo data when API unavailable

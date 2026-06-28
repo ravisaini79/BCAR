@@ -2,6 +2,7 @@ import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../layout/header/header';
 import { FooterComponent } from '../layout/footer/footer';
@@ -141,7 +142,7 @@ export class HomeComponent implements OnInit {
   }
 
   fetchNotices() {
-    this.http.get<any[]>('/api/public/notices').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/public/notices`).subscribe({
       next: rows => this.notices = rows,
       error: () => this.notices = []
     });

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -90,6 +90,7 @@ export class DashboardComponent implements OnInit {
   private toastService = inject(ToastService);
   private cardService = inject(MemberCardService);
   private confirmationService = inject(ConfirmationService);
+  private cdr = inject(ChangeDetectorRef);
 
   // States
   user: User | null = null;
@@ -354,9 +355,11 @@ export class DashboardComponent implements OnInit {
   }
 
   private checkLoadingState() {
+    this.cdr.detectChanges();
     // Basic debounce check for loading finish
     setTimeout(() => {
       this.loading = false;
+      this.cdr.detectChanges();
     }, 100);
   }
 

@@ -239,24 +239,32 @@
         <h2>BCAR in <em>Action</em></h2>
         <p style="max-width: 600px; margin: 10px auto 0; color: var(--muted);">Glimpses of meetings, training sessions, and community support assemblies across the state.</p>
       </div>
-      
-      <!-- Category Filter -->
-      <div class="gallery-filters">
-        <button [class.active]="galleryFilter === 'all'" (click)="galleryFilter = 'all'">All Photos</button>
-        <button [class.active]="galleryFilter === 'inclusion'" (click)="galleryFilter = 'inclusion'">Financial Inclusion</button>
-        <button [class.active]="galleryFilter === 'meeting'" (click)="galleryFilter = 'meeting'">Official Assemblies</button>
-        <button [class.active]="galleryFilter === 'training'" (click)="galleryFilter = 'training'">Workshops & Training</button>
+
+      <!-- Loading skeletons -->
+      <div class="gallery-masonry" *ngIf="galleryLoading">
+        <div class="gallery-skeleton" *ngFor="let s of [1,2,3,4,5,6]"></div>
       </div>
 
-      <!-- Masonry Grid -->
-      <div class="gallery-masonry">
+      <!-- Live Gallery Masonry Grid -->
+      <div class="gallery-masonry" *ngIf="!galleryLoading && galleryItems.length > 0">
         <div class="gallery-item" *ngFor="let item of filteredGallery" (click)="selectedImage = item">
-          <img [src]="item.url" [alt]="item.title" loading="lazy">
+          <img [src]="item.image?.secure_url" [alt]="item.title" loading="lazy">
           <div class="gallery-overlay">
             <h4>{{ item.title }}</h4>
-            <span>{{ item.tag }}</span>
+            <span>{{ item.category }}</span>
           </div>
         </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="gallery-empty-state" *ngIf="!galleryLoading && galleryItems.length === 0">
+        <i class="fa-solid fa-image" style="font-size: 40px; color: #cbd5e1; margin-bottom: 12px;"></i>
+        <p>No gallery images available yet.</p>
+      </div>
+
+      <!-- View All Button -->
+      <div style="text-align: center; margin-top: 40px;">
+        <a routerLink="/gallery" class="btn-view-all">View Full Gallery <i class="fa-solid fa-arrow-right"></i></a>
       </div>
     </div>
   </section>
@@ -265,10 +273,58 @@
   <div class="lightbox-overlay" *ngIf="selectedImage" (click)="selectedImage = null">
     <div class="lightbox-content" (click)="$event.stopPropagation()">
       <button class="lightbox-close" (click)="selectedImage = null">×</button>
-      <img [src]="selectedImage.url" [alt]="selectedImage.title">
-      <div class="lightbox-caption">{{ selectedImage.title }} — {{ selectedImage.tag }}</div>
+      <img [src]="selectedImage.image?.secure_url" [alt]="selectedImage.title">
+      <div class="lightbox-caption">{{ selectedImage.title }}</div>
     </div>
   </div>
+
+  <!-- Latest News Section -->
+  <section class="section news-home" id="news" style="background: #f8fafc; border-top: 1px solid #e2e8f0;">
+    <div class="container">
+      <div class="section-head dark" style="margin-bottom: 50px; text-align: center; display: block;">
+        <span class="eyebrow"><i class="fa-solid fa-newspaper"></i> COMMUNICATIONS</span>
+        <h2>Latest News &amp; <em>Announcements</em></h2>
+        <p style="max-width: 600px; margin: 10px auto 0; color: var(--muted);">Official circulars, policy updates, and important announcements from BCAR Rajasthan.</p>
+      </div>
+
+      <!-- Loading skeletons -->
+      <div class="news-home-grid" *ngIf="newsLoading">
+        <div class="news-home-skeleton" *ngFor="let s of [1,2,3]"></div>
+      </div>
+
+      <!-- Live News Cards -->
+      <div class="news-home-grid" *ngIf="!newsLoading && latestNews.length > 0">
+        <div class="news-home-card" *ngFor="let item of latestNews" (click)="router.navigate(['/news', item.slug])">
+          <div class="news-home-img-wrap" *ngIf="item.featuredImage?.secure_url">
+            <img [src]="item.featuredImage.secure_url" [alt]="item.title" loading="lazy">
+          </div>
+          <div class="news-home-img-placeholder" *ngIf="!item.featuredImage?.secure_url">
+            <i class="fa-solid fa-newspaper"></i>
+          </div>
+          <div class="news-home-body">
+            <span class="news-home-tag" [class]="item.category">{{ item.category }}</span>
+            <h3 class="news-home-title">{{ item.title }}</h3>
+            <p class="news-home-desc">{{ item.shortDescription }}</p>
+            <div class="news-home-footer">
+              <time><i class="fa-solid fa-calendar"></i> {{ item.publishDate | date:'dd MMM yyyy' }}</time>
+              <span class="news-read-link">Read More <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="gallery-empty-state" *ngIf="!newsLoading && latestNews.length === 0">
+        <i class="fa-solid fa-inbox" style="font-size: 40px; color: #cbd5e1; margin-bottom: 12px;"></i>
+        <p>No news articles published yet.</p>
+      </div>
+
+      <!-- View All Button -->
+      <div style="text-align: center; margin-top: 40px;">
+        <a routerLink="/news" class="btn-view-all">View All News <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </section>
 
   <!-- Latest News Section -->
   <!-- <section class="section notices" id="notices" style="background-color: #f8fafc; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">

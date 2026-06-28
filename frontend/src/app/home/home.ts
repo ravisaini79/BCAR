@@ -6,6 +6,8 @@ import { environment } from '../../environments/environment';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../layout/header/header';
 import { FooterComponent } from '../layout/footer/footer';
+import { GalleryService } from '../core/services/gallery.service';
+import { NewsService } from '../core/services/news.service';
 
 @Component({
   selector: 'app-home',
@@ -32,48 +34,14 @@ export class HomeComponent implements OnInit {
   currentPage = 1;
   pageSize = 3;
 
-  // Gallery Filters & Lightbox
-  galleryFilter = 'all';
+  // Gallery Lightbox
   selectedImage: any = null;
 
-  galleryItems = [
-    {
-      title: 'Financial Inclusion Desk',
-      category: 'inclusion',
-      tag: 'Digital Banking',
-      url: '/images/gallery_inclusion.png'
-    },
-    {
-      title: 'State Committee Assembly',
-      category: 'meeting',
-      tag: 'Official Meeting',
-      url: '/images/gallery_meeting.png'
-    },
-    {
-      title: 'Digital Finance Workshop',
-      category: 'training',
-      tag: 'BC Training',
-      url: '/images/gallery_training.png'
-    },
-    {
-      title: 'Biometric Attendance Project',
-      category: 'inclusion',
-      tag: 'Technology',
-      url: '/images/gallery_inclusion.png'
-    },
-    {
-      title: 'Jaipur Representative Meet',
-      category: 'meeting',
-      tag: 'Committee',
-      url: '/images/gallery_meeting.png'
-    },
-    {
-      title: 'NABARD Rural Support Program',
-      category: 'training',
-      tag: 'Awareness',
-      url: '/images/gallery_training.png'
-    }
-  ];
+  // Live data from API
+  galleryItems: any[] = [];
+  latestNews: any[] = [];
+  galleryLoading = true;
+  newsLoading = true;
 
   testimonials = [
     {
@@ -137,14 +105,43 @@ export class HomeComponent implements OnInit {
     }
   ];
 
+  private galleryService = inject(GalleryService);
+  private newsService = inject(NewsService);
+
   ngOnInit() {
     this.fetchNotices();
+    this.fetchGallery();
+    this.fetchLatestNews();
   }
 
   fetchNotices() {
     this.http.get<any[]>(`${environment.apiUrl}/public/notices`).subscribe({
       next: rows => this.notices = rows,
       error: () => this.notices = []
+    });
+  }
+
+  fetchGallery() {
+    this.galleryLoading = true;
+    this.galleryService.getItems().subscribe({
+      next: (data) => {
+        this.galleryItems = (data || []).slice(0, 6);
+        this.galleryLoading = false;
+      },
+      error: () => { this.galleryLoading = false; }
+    });
+  }
+
+  fetchLatestNews() {
+    this.newsLoading = true;
+    this.newsService.getArticles().subscribe({
+      next: (data) => {
+        this.latestNews = (data || [])
+          .sort((a: any, b: any) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
+          .slice(0, 3);
+        this.newsLoading = false;
+      },
+      error: () => { this.newsLoading = false; }
     });
   }
 
@@ -172,12 +169,9 @@ export class HomeComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Filtered gallery items
+  // Return all gallery items (filters removed)
   get filteredGallery() {
-    if (this.galleryFilter === 'all') {
-      return this.galleryItems;
-    }
-    return this.galleryItems.filter(item => item.category === this.galleryFilter);
+    return this.galleryItems;
   }
 
   // Filtered and paginated notices

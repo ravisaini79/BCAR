@@ -1,0 +1,67 @@
+<div class="header-fixed-wrapper">
+  <div class="top-strip">
+    <div class="container strip-inner">
+      <span><i class="fas fa-gavel"></i> राजस्थान के बिजनेस कॉरेस्पोंडेंट्स की सामूहिक आवाज़</span>
+      <span>Reg. No. TU/2026/14/132549</span>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-container nav">
+      <!-- Brand -->
+      <button class="brand" (click)="scrollTo('hero')">
+        <img src="/images/bcar-logo.jpeg" alt="BCAR logo">
+        <div class="brand-info">
+          <span class="brand-name">Business Correspondent Association Rajasthan</span>
+          <span class="brand-tagline">Empowering Banking Correspondents Across Rajasthan</span>
+        </div>
+      </button>
+
+      <!-- Hamburger -->
+      <button class="menu" (click)="toggleMobile()" aria-label="Toggle menu">☰</button>
+
+      <!-- Nav -->
+      <nav [class.open]="mobileOpen()">
+
+        <!-- Home -->
+        <button [class.nav-active]="isActiveRoute('/')" (click)="scrollTo('hero')">Home</button>
+
+        <!-- About Us Dropdown -->
+        <div class="dropdown-nav" [class.active]="aboutOpen()" [class.nav-active-group]="isAboutActive()">
+          <button class="dropdown-btn" [class.nav-active]="isAboutActive()" (click)="toggleAbout()">
+            About Us <i class="fas fa-chevron-down" style="font-size:10px;margin-left:4px"></i>
+          </button>
+          @if (aboutOpen()) {
+            <div class="dropdown-menu">
+              <button [class.nav-active-item]="isActiveRoute('/about')" (click)="goto('/about')">
+                <i class="pi pi-info-circle"></i> Organization Introduction
+              </button>
+              <button [class.nav-active-item]="isActiveRoute('/about/mission')" (click)="goto('/about/mission')">
+                <i class="pi pi-flag"></i> Mission &amp; Vision
+              </button>
+              <button [class.nav-active-item]="isActiveRoute('/about/committee')" (click)="goto('/about/committee')">
+                <i class="pi pi-star"></i> President &amp; Committee
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- Top-level nav links -->
+        <button [class.nav-active]="isActiveRoute('/benefits')" (click)="goto('/benefits')">Membership Benefits</button>
+        <button [class.nav-active]="isActiveRoute('/gallery')" (click)="goto('/gallery')">Gallery</button>
+        <button [class.nav-active]="isActiveRoute('/news')" (click)="goto('/news')">Latest News</button>
+        <button [class.nav-active]="isActiveRoute('/contact')" (click)="goto('/contact')">Contact</button>
+
+        <!-- CTA Buttons -->
+        <button class="nav-login" (click)="goto('/login')">Member Login</button>
+        <button class="nav-join"  (click)="goto('/register')">Member Registration</button>
+
+      </nav>
+    </div>
+  </header>
+</div>
+
+<!-- Backdrop to close menus on outside click -->
+@if (mobileOpen() || aboutOpen()) {
+  <div class="nav-backdrop" (click)="closeMobile()"></div>
+}

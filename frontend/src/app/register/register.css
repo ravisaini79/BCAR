@@ -1,0 +1,833 @@
+/* =====================================================
+   BCAR REDESIGN — Single Scrollable Page Registration CSS
+   ===================================================== */
+
+:host {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  background-color: #F5F7FA;
+  min-height: 100vh;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #16A34A;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+  z-index: 1050;
+  animation: slideIn 0.3s ease-out;
+}
+.toast.error { background: #DC2626; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ── Wrapper and Containers ── */
+.register-page-wrapper {
+  padding: 120px 20px 40px; /* Offset to clear the fixed top header strip */
+  min-height: calc(100vh - 120px);
+}
+
+.register-main-container-centered {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Centered Card Layout ── */
+.register-content-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 18px;
+  padding: 45px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+/* Header design */
+.form-card-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.brand-logo-centered {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: contain;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border: 2.5px solid #D4AF37;
+  background: #ffffff;
+  padding: 3px;
+}
+.form-card-header h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0B2D5C;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.5px;
+}
+.form-card-header h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16.5px;
+  font-weight: 600;
+  color: #4B5563;
+  margin: 0 0 6px 0;
+}
+.sub-tagline {
+  font-size: 13px;
+  color: #6B7280;
+  font-style: italic;
+  margin: 0 0 6px 0;
+}
+.office-address-small {
+  font-size: 11px;
+  color: #9CA3AF;
+  margin: 0 0 16px 0;
+}
+.gold-divider {
+  width: 90px;
+  height: 3px;
+  background: #D4AF37;
+  margin: 16px auto 0;
+  border-radius: 2px;
+}
+
+/* ── Form Section Cards ── */
+.form-section-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-left: 5px solid #D4AF37;
+  border-radius: 12px;
+  margin-bottom: 35px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+  /* overflow:hidden removed — was clipping PrimeNG overlay panels */
+  overflow: visible;
+}
+.section-card-header {
+  background: #F8FAFC;
+  padding: 18px 24px;
+  border-bottom: 1px solid #E5E7EB;
+}
+.section-card-header h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0B2D5C;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-card-header h3 i {
+  font-size: 17px;
+  color: #6B7280;
+}
+.section-card-body {
+  padding: 28px 24px;
+}
+.step-guide-text {
+  font-size: 13.5px;
+  color: #6B7280;
+  line-height: 1.6;
+  margin: 0 0 25px 0;
+}
+
+/* ── Input Fields & Outlines ── */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px 24px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+.input-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.input-group label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: #0B2D5C;
+  font-size: 13.5px;
+}
+.required {
+  color: #EF4444;
+  margin-left: 3px;
+}
+
+/* Prefix Icon inside 54px input field */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-icon-prefix {
+  position: absolute;
+  left: 18px;
+  color: #9CA3AF;
+  font-size: 16px;
+  pointer-events: none;
+}
+.input-with-icon input {
+  padding-left: 48px !important;
+}
+
+.input-group input,
+.input-group select {
+  height: 54px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 0 18px;
+  font-size: 14.5px;
+  color: #1F2937;
+  background: #FFFFFF;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+.input-group input::placeholder {
+  color: #9CA3AF;
+}
+
+/* Outlined Focus Blue and Active Gold Accent states */
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #2563EB;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1), 0 0 0 1px rgba(212, 175, 55, 0.2);
+  background: #FFFFFF;
+}
+
+/* ── Searchable Dropdown for Districts ── */
+.searchable-select-container {
+  position: relative;
+  width: 100%;
+}
+.searchable-select-trigger {
+  height: 54px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  cursor: pointer;
+  font-size: 14.5px;
+  color: #1F2937;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.searchable-select-trigger:hover {
+  border-color: #D1D5DB;
+}
+.searchable-select-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 10px;
+  z-index: 100;
+  animation: fadeInDown 0.2s ease-out;
+}
+.search-input-wrapper {
+  position: relative;
+  margin-bottom: 8px;
+}
+.search-input-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9CA3AF;
+  font-size: 13.5px;
+}
+.search-input-wrapper input {
+  height: 40px !important;
+  width: 100%;
+  padding-left: 36px !important;
+  font-size: 13.5px !important;
+  border-radius: 8px !important;
+  box-sizing: border-box;
+}
+.options-list {
+  max-height: 180px;
+  overflow-y: auto;
+}
+.option-item {
+  padding: 9px 12px;
+  font-size: 14px;
+  color: #374151;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.option-item:hover {
+  background: #F3F4F6;
+  color: #0B2D5C;
+  font-weight: 600;
+}
+.no-options {
+  padding: 10px;
+  font-size: 13px;
+  color: #9CA3AF;
+  text-align: center;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Document Upload Cards ── */
+.document-uploads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 15px;
+}
+.doc-upload-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.doc-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0B2D5C;
+  margin-bottom: 2px;
+}
+.upload-zone {
+  border: 2px dashed #D1D5DB;
+  background: #F9FAFB;
+  border-radius: 12px;
+  padding: 26px 20px;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: #2563EB;
+  background: rgba(37, 99, 235, 0.02);
+}
+.file-input-hidden {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 5;
+}
+.upload-zone-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.upload-icon {
+  font-size: 32px;
+  color: #9CA3AF;
+  margin-bottom: 4px;
+}
+.upload-title {
+  font-size: 13px;
+  color: #4B5563;
+  margin: 0;
+}
+.upload-title span {
+  color: #2563EB;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.upload-hint {
+  font-size: 11px;
+  color: #9CA3AF;
+  margin: 0;
+}
+
+/* File Upload Previews */
+.upload-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-radius: 10px;
+  z-index: 6;
+  position: relative;
+  text-align: left;
+}
+.photo-preview-image {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1.5px solid #93C5FD;
+}
+.file-icon {
+  font-size: 28px;
+  color: #2563EB;
+}
+.file-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.file-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1F2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.file-status {
+  font-size: 11px;
+  color: #16A34A;
+  font-weight: 500;
+}
+.remove-file-btn {
+  background: none;
+  border: none;
+  color: #EF4444;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.remove-file-btn:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ── Declaration Panel ── */
+.consent-box-light {
+  background: rgba(11, 45, 92, 0.02);
+  border: 1px solid #E5E7EB;
+  padding: 30px;
+  border-radius: 12px;
+}
+.consent-box-light h4 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0B2D5C;
+  text-align: center;
+  margin: 0 0 20px 0;
+  text-decoration: underline;
+  letter-spacing: 0.5px;
+}
+.declaration-text {
+  font-size: 13.5px;
+  color: #374151;
+  line-height: 1.65;
+  margin-bottom: 25px;
+}
+.declaration-text ol {
+  padding-left: 20px;
+  margin-top: 10px;
+}
+.declaration-text li {
+  margin-bottom: 8px;
+}
+
+.custom-checkbox-light {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+.custom-checkbox-light input {
+  opacity: 0;
+  position: absolute;
+  width: 0; height: 0;
+}
+.checkmark-light {
+  width: 22px;
+  height: 22px;
+  background: #FFFFFF;
+  border: 2px solid #D1D5DB;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  margin-top: 1px;
+}
+.custom-checkbox-light:hover .checkmark-light {
+  border-color: #0B2D5C;
+}
+.custom-checkbox-light input:checked ~ .checkmark-light {
+  background: #0B2D5C;
+  border-color: #0B2D5C;
+}
+.custom-checkbox-light input:checked ~ .checkmark-light::after {
+  content: '✓';
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 13.5px;
+}
+.checkbox-label-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1.45;
+}
+
+/* Cushion spacer before sticky action footer */
+.bottom-spacer {
+  height: 90px;
+}
+
+/* ── 10. Bottom Sticky Action Bar ── */
+.sticky-footer-action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-top: 1.5px solid #E5E7EB;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.06);
+  padding: 16px 24px;
+  z-index: 999;
+}
+.action-bar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Secondary Button: White with blue border */
+.btn-save-draft {
+  background: #FFFFFF;
+  color: #2563EB;
+  border: 1.5px solid #2563EB;
+  border-radius: 12px;
+  height: 50px;
+  padding: 0 28px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-save-draft:hover {
+  background: #EFF6FF;
+  border-color: #1D4ED8;
+  color: #1D4ED8;
+}
+
+/* Primary Button: Dark Navy Blue */
+.btn-submit-membership {
+  background: #0B2D5C;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  height: 50px;
+  padding: 0 36px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(11, 45, 92, 0.25);
+}
+.btn-submit-membership:hover:not(:disabled) {
+  background: #082247;
+  box-shadow: 0 6px 20px rgba(11, 45, 92, 0.35);
+  transform: translateY(-1px);
+}
+.btn-submit-membership:disabled {
+  background: #D1D5DB;
+  color: #9CA3AF;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ── Minimal Page Footer ── */
+.register-footer-minimal {
+  text-align: center;
+  margin-top: 50px;
+  padding-top: 25px;
+  border-top: 1px solid #E5E7EB;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.footer-links a {
+  font-size: 13px;
+  color: #4B5563;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.footer-links a:hover {
+  color: #0B2D5C;
+  text-decoration: underline;
+}
+.footer-links a i {
+  font-size: 12px;
+  color: #6B7280;
+}
+.footer-links .separator {
+  color: #D1D5DB;
+}
+.copyright-text {
+  font-size: 12px;
+  color: #9CA3AF;
+  margin: 0;
+}
+
+/* ── Responsive media queries ── */
+@media (max-width: 768px) {
+  .register-content-card {
+    padding: 30px 20px;
+    border-radius: 12px;
+  }
+  .form-card-header h2 {
+    font-size: 22px;
+  }
+  .form-card-header h3 {
+    font-size: 14.5px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .section-card-body {
+    padding: 20px 16px;
+  }
+  .document-uploads-grid {
+    grid-template-columns: 1fr;
+  }
+  .sticky-footer-action-bar {
+    padding: 12px 16px;
+  }
+  .action-bar-inner {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .btn-save-draft,
+  .btn-submit-membership {
+    width: 100%;
+    justify-content: center;
+    height: 48px;
+    border-radius: 10px;
+  }
+  .bottom-spacer {
+    height: 140px;
+  }
+}
+
+.invalid-control {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+  background: #FFF5F5 !important;
+}
+
+.validation-error {
+  color: #EF4444;
+  font-size: 11.5px;
+  margin-top: 4px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+
+/* =====================================================
+   PrimeNG Component Overrides — BCAR Theme Alignment
+   ===================================================== */
+
+/* Full-width helper */
+.w-full { width: 100% !important; }
+
+/* Field label above every control */
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+/* InputText — align border/radius with existing design */
+.p-inputtext {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px !important;
+  border: 1.5px solid #D1D5DB !important;
+  padding: 0 14px !important;
+  font-size: 14px !important;
+  font-family: var(--font-body) !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.p-inputtext:focus {
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.12) !important;
+  outline: none !important;
+}
+.p-inputtext.p-invalid {
+  border-color: #EF4444 !important;
+  box-shadow: 0 0 0 4px rgba(239,68,68,0.10) !important;
+}
+
+/* p-password full width fix */
+.p-password { width: 100% !important; }
+.p-password-input { width: 100% !important; }
+
+/* p-select dropdown */
+.p-select {
+  width: 100% !important;
+  height: 48px !important;
+  border-radius: 10px !important;
+  border: 1.5px solid #D1D5DB !important;
+  font-size: 14px !important;
+}
+.p-select:hover { border-color: #2563EB !important; }
+
+/* p-datepicker — full width, aligned height & border */
+p-datepicker {
+  display: block;
+  width: 100% !important;
+}
+.p-datepicker {
+  display: flex;
+  width: 100% !important;
+}
+.p-datepicker-input {
+  flex: 1 1 auto;
+  width: 100% !important;
+  height: 48px !important;
+  border-radius: 10px 0 0 10px !important;
+  border: 1.5px solid #D1D5DB !important;
+  border-right: none !important;
+  padding: 0 14px !important;
+  font-size: 14px !important;
+  font-family: var(--font-body) !important;
+  background: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.p-datepicker-input:focus {
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.12) !important;
+  outline: none !important;
+}
+/* Calendar icon button */
+.p-datepicker-dropdown {
+  height: 48px !important;
+  width: 44px !important;
+  border: 1.5px solid #D1D5DB !important;
+  border-left: none !important;
+  border-radius: 0 10px 10px 0 !important;
+  background: #F9FAFB !important;
+  color: #6B7280 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.p-datepicker-dropdown:hover {
+  background: #E5E7EB !important;
+  color: #1D4ED8 !important;
+}
+
+/* Checkbox row layout */
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+}
+.checkbox-label-text {
+  font-size: 13.5px;
+  color: #374151;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+/* Left icon padding helper */
+.pl-icon { padding-left: 42px !important; }
+
+/* Browse link color */
+.browse-link {
+  color: #2563EB;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+.browse-link:hover { text-decoration-color: #2563EB; }
+
+/* Upload zone pointer fix — entire zone is clickable */
+.upload-zone { cursor: pointer; }
+.upload-zone:hover .upload-icon { color: #2563EB; transform: scale(1.05); }
+.upload-zone .upload-icon { transition: color 0.2s, transform 0.2s; }
+
+/* Submit button spinner inline */
+.btn-submit-membership {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-spinner {
+  width: 20px !important;
+  height: 20px !important;
+}
+.btn-spinner .p-progressspinner-circle {
+  stroke: #ffffff !important;
+}
+
+/* PrimeNG Tag inside step guide */
+.step-guide-text .p-tag { vertical-align: middle; font-size: 11px; }
+
+/* Remove outline on p-checkbox focus ring (theme handled) */
+.p-checkbox:focus-within { outline: none; }
+
+/* PrimeNG Toast z-index */
+.p-toast { z-index: 9999 !important; }

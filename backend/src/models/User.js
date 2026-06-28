@@ -1,0 +1,171 @@
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const userSchema = new mongoose.Schema({
+  // Basic Info
+  name: { type: String, required: true, trim: true },
+  fatherHusbandName: String,
+  dob: String,
+  gender: String,
+  maritalStatus: String,
+  wifeHusbandName: String,
+  childrenSon: String,
+  childrenDaughter: String,
+  educationalQualification: String,
+
+  // Contact Info
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  phone: { type: String, required: true, unique: true },
+  
+  // Address Info
+  homeAddressVill: String,
+  po: String,
+  ps: String,
+  district: String,
+  pin: String,
+  gramPanchayat: String,
+  devBlock: String,
+  
+  // Professional Details
+  bcCspIdNo: String,
+  ssa: String,
+  bankName: String,
+  linkBranchName: String,
+  dateOfStartingCsp: String,
+  
+  // Association Details
+  interestedToJoin: { type: String, enum: ['YES', 'NO'], default: 'YES' },
+  admissionFee: String,
+  perMonthMembershipFee: String,
+  
+  // Document Upload File Metadata (Cloudinary)
+  photograph: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  aadhaarCard: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  panCard: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  bankBcCertificate: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  
+  // Additional Cloudinary Fields from Request
+  profilePhoto: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  aadhaarFront: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  aadhaarBack: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  bankPassbook: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  signature: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  otherDocuments: {
+    public_id: String,
+    secure_url: String,
+    url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
+  registrationNumber: { type: String, unique: true, sparse: true },
+  
+  // System Fields
+  password: { type: String, required: true },
+  role: { type: String, enum: ['super_admin', 'admin', 'coordinator', 'member'], default: 'member' },
+  status: { type: String, enum: ['pending', 'active', 'rejected', 'Pending Approval', 'Approved', 'suspended'], default: 'pending' },
+  membershipNo: String,
+  joinedAt: { type: Date, default: Date.now },
+  declarationAccepted: { type: Boolean, default: false },
+  isActive: { type: Boolean, default: false },
+  emailVerified: { type: Boolean, default: false },
+  createdBy: { type: String, default: 'Self Registration' }
+}, { timestamps: true });
+
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+// Compare password method
+userSchema.methods.matchPassword = async function(enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+module.exports = mongoose.model('User', userSchema, 'members');

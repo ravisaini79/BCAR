@@ -1,0 +1,57 @@
+/* Styles live in global styles.css — this file reserved for header-only overrides */
+
+:host {
+  display: block;
+}
+
+/* Backdrop — closes mobile nav / about dropdown on outside click */
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: transparent;
+}
+
+/* ── Active Nav Button (top-level) ─────────────────────────────── */
+nav button.nav-active,
+.dropdown-btn.nav-active {
+  color: #D4AF37 !important;
+  background: rgba(212, 175, 55, 0.12) !important;
+  position: relative;
+}
+
+/* Gold underline indicator for active top-level items */
+nav button.nav-active::after,
+.dropdown-btn.nav-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 2px;
+  background: #D4AF37;
+  border-radius: 2px;
+}
+
+/* ── Active Dropdown Item ───────────────────────────────────────── */
+.dropdown-menu button.nav-active-item {
+  color: #D4AF37 !important;
+  background: rgba(212, 175, 55, 0.1) !important;
+  font-weight: 700 !important;
+}
+
+.dropdown-menu button.nav-active-item i {
+  color: #D4AF37 !important;
+}
+
+/* ── Dropdown menu items with icons ───────────────────────────── */
+.dropdown-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dropdown-menu button i {
+  font-size: 13px;
+  color: #D4AF37;
+}

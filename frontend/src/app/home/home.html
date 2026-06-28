@@ -1,0 +1,388 @@
+<app-header></app-header>
+
+<div class="toast" *ngIf="toast" [class.error]="toastType === 'error'">{{ toast }}</div>
+
+<!-- Hero Section -->
+<main id="hero">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow"><i class="fa-solid fa-building-columns"></i> REGISTERED TRADE UNION • RAJASTHAN</span>
+        <h1>Business Correspondent Association <em>Rajasthan</em></h1>
+        <p>Empowering last-mile banking agents and Bank Mitras. We unite Business Correspondents across Rajasthan to protect dignity, negotiate commissions, and build financial inclusion.</p>
+        <div class="hero-actions">
+          <button class="primary" (click)="router.navigate(['/register'])">Become a Member <span style="margin-left: 8px;">→</span></button>
+          <button class="secondary" (click)="scrollTo('about')"><span class="play">▶</span> Discover Our Work</button>
+        </div>
+        <div class="trust-row">
+          <div><b>33 / 33</b><span>Districts Covered</span></div>
+          <div><b>2025</b><span>Union Founded</span></div>
+          <div><b>24k+</b><span>United Members</span></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="sun"></div>
+        <div class="logo-card">
+          <img src="/images/bcar-logo.jpeg" alt="BCAR Logo">
+        </div>
+        <div class="floating-card registered" style="top: 80px; left: 0px;">
+          <span>✓</span>
+          <div><b>Officially Registered</b><small>Trade Unions Act, 1926</small></div>
+        </div>
+        <div class="floating-card motto" style="bottom: 80px; right: -20px;">
+          <b>"एकता हमारी, शक्ति हमारी"</b>
+          <small>सम्मान हमारा अधिकार</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Announcements News Ticker -->
+  <div class="ticker-band">
+    <div class="ticker-title">Announcements</div>
+    <div class="ticker-wrapper">
+      <div class="ticker-content">
+        <span *ngFor="let item of notices">{{ item.category | uppercase }}: {{ item.title }} - {{ item.body.slice(0, 100) }}...</span>
+        <span *ngIf="!notices.length">Welcome to the Business Correspondent Association Rajasthan portal! Online registration is now active.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Welcome / About us -->
+  <section class="section about" id="about">
+    <div class="container split">
+      <div class="photo-panel" style="background: radial-gradient(circle, rgba(8, 43, 92, 0.4) 0%, rgba(4, 26, 61, 0.9) 100%), url('/images/gallery_inclusion.png') no-repeat center center; background-size: cover;">
+        <div class="photo-placeholder">
+          <span style="font-size: 80px; color: var(--gold); font-family: var(--font-title);">BCAR</span>
+          <div>Connecting Rajasthan<br>to Essential Banking</div>
+        </div>
+        <div class="year-stamp"><b>2025</b><span>Year of Formation</span></div>
+      </div>
+      <div class="content">
+        <span class="eyebrow" style="color: var(--navy);"><i class="fa-solid fa-circle-info"></i> Who We Are</span>
+        <h2>About <em>BCAR</em></h2>
+        <p>Business Correspondent Association Rajasthan (BCAR) is a registered trade union formed to represent, support, and elevate the community of Bank Mitras and Business Correspondents (CSPs) across the state.</p>
+        <p>Our members operate in both urban neighborhoods and remote villages, providing essential banking services on behalf of leading commercial banks. We advocate for their rights, commission security, and welfare to ensure they work with dignity and progress.</p>
+        <div class="signature">
+          <span>BCAR</span>
+          <div><b>State Executive Committee</b><small>Jaipur, Rajasthan</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & Vision -->
+  <section class="section mission" id="mission">
+    <div class="container">
+      <div class="section-head" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px;">
+        <div>
+          <span class="eyebrow light"><i class="fa-solid fa-bullseye"></i> WHAT DRIVES US</span>
+          <h2 style="color: #fff;">Our Pillars of <em>Progress</em></h2>
+        </div>
+        <p style="color: #94a3b8; max-width: 400px; font-size: 14.5px;">A structured strategy to safeguard livelihoods and foster professional growth for every BC operator.</p>
+      </div>
+      <div class="pillar-grid">
+        <article>
+          <span>01</span>
+          <div class="pillar-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+          <h3>Fair Representation</h3>
+          <p>We present members' grievances and commission structure concerns before commercial banks, corporate BCs, and regulatory bodies.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <div class="pillar-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3>Social Security</h3>
+          <p>We advocate for basic social security, including group medical insurance, pension benefits, and safety covers for remote field operations.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <div class="pillar-icon"><i class="fa-solid fa-user-graduate"></i></div>
+          <h3>Professional Skills</h3>
+          <p>We organize regular seminars, financial literacy campaigns, and training modules to update members on new banking tools and security protocols.</p>
+        </article>
+        <article>
+          <span>04</span>
+          <div class="pillar-icon"><i class="fa-solid fa-network-wired"></i></div>
+          <h3>Statewide Network</h3>
+          <p>We establish district-level subcommittees to handle local issues and ensure immediate support is available for members anywhere in Rajasthan.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- President's Message -->
+  <section class="section committee" id="committee" style="background-color: #f1f5f9;">
+    <div class="container">
+      <div class="section-head dark" style="margin-bottom: 50px; text-align: center; display: block;">
+        <span class="eyebrow"><i class="fa-solid fa-signature"></i> LEADERSHIP VOICES</span>
+        <h2>President's <em>Message</em></h2>
+        <p style="max-width: 600px; margin: 10px auto 0; color: var(--muted);">Guidance and commitment from our State President towards financial inclusion and security.</p>
+      </div>
+      <div class="president-card">
+        <div class="president-img-wrap">
+          <img src="/images/president.png" alt="State President">
+          <div class="president-info">
+            <h4>Shri Harikishan Saini</h4>
+            <span>State President, BCAR</span>
+          </div>
+        </div>
+        <div class="president-msg-body">
+          <h3>Dear Business Correspondents & Bank Mitras,</h3>
+          <p>"Business Correspondents are the backbone of the Pradhan Mantri Jan Dhan Yojana (PMJDY) and the financial inclusion movement in Rajasthan. Yet, the challenges we face on the ground—ranging from inadequate commissions to the lack of social security—need urgent representation.</p>
+          <p>BCAR is committed to being your voice. We actively interface with banks, government departments, and corporate BC agencies to negotiate better working conditions. I urge every Bank Mitra in Rajasthan to join our union and strengthen our collective stand."</p>
+          <blockquote>"संगठन में ही शक्ति है, और संगठित होकर ही हम अपने अधिकारों और सम्मान की रक्षा कर सकते हैं।"</blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Membership Benefits -->
+  <section class="section benefits" id="benefits">
+    <div class="container">
+      <div class="section-head dark" style="margin-bottom: 50px; text-align: center; display: block;">
+        <span class="eyebrow"><i class="fa-solid fa-star"></i> MEMBERSHIP BENEFITS</span>
+        <h2>Why Join <em>BCAR?</em></h2>
+        <p style="max-width: 600px; margin: 10px auto 0; color: var(--muted);">Access exclusive benefits, collective union support, professional certification, and safety protections.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card" *ngFor="let benefit of benefits">
+          <div class="benefit-icon"><i [class]="benefit.icon"></i></div>
+          <h3>{{ benefit.title }}</h3>
+          <p>{{ benefit.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Counter -->
+  <section class="stats-band">
+    <div class="container counter-grid">
+      <div class="counter-card">
+        <i class="fa-solid fa-users"></i>
+        <b>24,500+</b>
+        <span>Registered Members</span>
+      </div>
+      <div class="counter-card">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <b>33 / 33</b>
+        <span>District Chapters</span>
+      </div>
+      <div class="counter-card">
+        <i class="fa-solid fa-calendar-check"></i>
+        <b>120+</b>
+        <span>Events Conducted</span>
+      </div>
+      <div class="counter-card">
+        <i class="fa-solid fa-handshake"></i>
+        <b>18+</b>
+        <span>Banking Partners</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="section gallery" id="gallery">
+    <div class="container">
+      <div class="section-head dark" style="margin-bottom: 50px; text-align: center; display: block;">
+        <span class="eyebrow"><i class="fa-solid fa-images"></i> MEDIA GALLERY</span>
+        <h2>BCAR in <em>Action</em></h2>
+        <p style="max-width: 600px; margin: 10px auto 0; color: var(--muted);">Glimpses of meetings, training sessions, and community support assemblies across the state.</p>
+      </div>
+      
+      <!-- Category Filter -->
+      <div class="gallery-filters">
+        <button [class.active]="galleryFilter === 'all'" (click)="galleryFilter = 'all'">All Photos</button>
+        <button [class.active]="galleryFilter === 'inclusion'" (click)="galleryFilter = 'inclusion'">Financial Inclusion</button>
+        <button [class.active]="galleryFilter === 'meeting'" (click)="galleryFilter = 'meeting'">Official Assemblies</button>
+        <button [class.active]="galleryFilter === 'training'" (click)="galleryFilter = 'training'">Workshops & Training</button>
+      </div>
+
+      <!-- Masonry Grid -->
+      <div class="gallery-masonry">
+        <div class="gallery-item" *ngFor="let item of filteredGallery" (click)="selectedImage = item">
+          <img [src]="item.url" [alt]="item.title" loading="lazy">
+          <div class="gallery-overlay">
+            <h4>{{ item.title }}</h4>
+            <span>{{ item.tag }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox Overlay Component -->
+  <div class="lightbox-overlay" *ngIf="selectedImage" (click)="selectedImage = null">
+    <div class="lightbox-content" (click)="$event.stopPropagation()">
+      <button class="lightbox-close" (click)="selectedImage = null">×</button>
+      <img [src]="selectedImage.url" [alt]="selectedImage.title">
+      <div class="lightbox-caption">{{ selectedImage.title }} — {{ selectedImage.tag }}</div>
+    </div>
+  </div>
+
+  <!-- Latest News Section -->
+  <section class="section notices" id="notices" style="background-color: #f8fafc; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+    <div class="container">
+      <div class="section-head dark" style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div>
+          <span class="eyebrow"><i class="fa-solid fa-newspaper"></i> COMMUNICATIONS</span>
+          <h2>Latest News & <em>Announcements</em></h2>
+        </div>
+        
+        <!-- Search bar -->
+        <div class="news-header-actions">
+          <div class="search-input-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="currentPage = 1" placeholder="Search news by keyword...">
+          </div>
+        </div>
+      </div>
+
+      <!-- News Grid -->
+      <div class="notice-grid">
+        <article *ngFor="let item of paginatedNotices">
+          <span class="tag">{{ item.category }}</span>
+          <time>{{ item.publishedAt | date:'dd MMM yyyy' }}</time>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.body }}</p>
+          <button (click)="router.navigate(['/login'])">Read full update in portal →</button>
+        </article>
+        <p *ngIf="!filteredNotices.length" class="empty" style="grid-column: span 3; text-align: center; color: var(--muted); padding: 40px;">No matching announcements found.</p>
+      </div>
+
+      <!-- Pagination controls -->
+      <div class="pagination" *ngIf="totalPages > 1">
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()"><i class="fa-solid fa-chevron-left"></i></button>
+        <span style="font-size: 14px; font-weight: 600; color: var(--navy);">Page {{ currentPage }} of {{ totalPages }}</span>
+        <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section testimonials">
+    <div class="container">
+      <div class="section-head dark" style="margin-bottom: 50px; text-align: center; display: block;">
+        <span class="eyebrow"><i class="fa-solid fa-quote-left"></i> FEEDBACK</span>
+        <h2>What Our <em>Members Say</em></h2>
+        <p style="max-width: 600px; margin: 10px auto 0; color: var(--muted);">Real voices from verified Bank Mitras working across various districts of Rajasthan.</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card" *ngFor="let test of testimonials">
+          <p class="testimonial-text">"{{ test.text }}"</p>
+          <div class="testimonial-user">
+            <div class="testimonial-avatar">{{ test.avatar }}</div>
+            <div class="testimonial-meta">
+              <b>{{ test.name }}</b>
+              <small>{{ test.role }} · {{ test.district }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="container cta-inner">
+      <div>
+        <span class="eyebrow light"><i class="fa-solid fa-users-line"></i> STRENGTH IN UNITY</span>
+        <h2>Your Livelihood Matters. <br><em>Make your voice count.</em></h2>
+        <p>Join thousands of Business Correspondents in Rajasthan. Get access to training, professional IIBF coaching, legal support, and social welfare programs.</p>
+      </div>
+      <button class="cream-btn" (click)="router.navigate(['/register'])">Start Membership Application <span style="margin-left: 10px;">→</span></button>
+    </div>
+  </section>
+
+  <!-- Contact Us Section -->
+  <section class="section contact" id="contact" style="background-color: #f1f5f9;">
+    <div class="container">
+      <div class="section-head dark" style="margin-bottom: 40px; text-align: center; display: block;">
+        <span class="eyebrow"><i class="fa-solid fa-envelope"></i> CONNECT</span>
+        <h2>Get in <em>Touch</em></h2>
+        <p style="max-width: 600px; margin: 10px auto 0; color: var(--muted);">Have queries regarding membership, IIBF coaching, or commission disputes? Reach out today.</p>
+      </div>
+      
+      <div class="contact-section-grid">
+        <!-- Contact Form -->
+        <div class="contact-form-card">
+          <h3>Send Us a Message</h3>
+          <form (ngSubmit)="submitContactForm()">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" name="name" [(ngModel)]="contact.name" placeholder="Enter your name" required>
+              </div>
+              <div class="form-group">
+                <label>Mobile Number *</label>
+                <input type="text" name="phone" [(ngModel)]="contact.phone" placeholder="Enter mobile number" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" name="email" [(ngModel)]="contact.email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+              <label>Message Details *</label>
+              <textarea name="message" [(ngModel)]="contact.message" rows="5" placeholder="How can we help you?" required></textarea>
+            </div>
+            <button type="submit" class="primary full" [disabled]="submittingContact">
+              {{ submittingContact ? 'Sending Message...' : 'Send Message' }}
+            </button>
+          </form>
+        </div>
+
+        <!-- Details & Google Map -->
+        <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 30px;">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="contact-card">
+              <span style="font-size: 24px; color: var(--gold);"><i class="fas fa-map-marker-alt"></i></span>
+              <div>
+                <b>Registered Office</b>
+                <p>24, Kishor Vihar B, Gajsinghpura,<br>Gopalpura Bypass, Ajmer Road,<br>Jaipur, Rajasthan - 302021</p>
+              </div>
+            </div>
+            <div class="contact-card">
+              <span style="font-size: 24px; color: var(--gold);"><i class="fas fa-phone-alt"></i></span>
+              <div>
+                <b>Helpline Phone</b>
+                <p><a href="tel:+919829715474" style="color: inherit; text-decoration: none; font-weight: 600;">+91 98297 15474</a><br>Mon-Sat, 10:00 AM - 6:00 PM</p>
+              </div>
+            </div>
+            <div class="contact-card">
+              <span style="font-size: 24px; color: var(--gold);"><i class="fas fa-envelope"></i></span>
+              <div>
+                <b>Email Support</b>
+                <p><a href="mailto:info@bcarajasthan.org" style="color: inherit; text-decoration: none; font-weight: 600;">info@bcarajasthan.org</a></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Embedded Map -->
+          <div style="border-radius: var(--radius-md); overflow: hidden; height: 220px; border: 2px solid var(--line); box-shadow: var(--shadow-md);">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3558.9194200780287!2d75.7275468!3d26.874287899999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db4eb4a991873%3A0xea21d1b22be88544!2sGajsingh%20Pura%2C%20Jaipur%2C%20Rajasthan%20302021!5e0!3m2!1sen!2sin!4v1687843810245!5m2!1sen!2sin" 
+              width="100%" 
+              height="100%" 
+              style="border:0;" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
+
+<!-- Floating WhatsApp Widget -->
+<a href="https://wa.me/919829715474" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- Back To Top Button -->
+<button class="back-to-top" [class.show]="showBackToTop" (click)="scrollToTop()" aria-label="Back to top">
+  <i class="fas fa-chevron-up"></i>
+</button>

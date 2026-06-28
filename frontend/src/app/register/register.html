@@ -1,0 +1,561 @@
+<app-header></app-header>
+
+<div class="register-page-wrapper">
+  <div class="register-main-container-centered">
+
+    <main class="register-content-card">
+
+      <!-- ── Branding Header ─────────────────────────────────────────── -->
+      <div class="form-card-header">
+        <img src="/images/bcar-logo.jpeg" alt="BCAR Logo" class="brand-logo-centered">
+        <h2>Membership Registration</h2>
+        <h3>Business Correspondent Association Rajasthan</h3>
+        <p class="sub-tagline">Empowering Banking Correspondents Across Rajasthan</p>
+        <p class="office-address-small">Reg. No. TU/2026/14/132549 | Registered under Trade Unions Act, 1926</p>
+        <div class="gold-divider"></div>
+      </div>
+
+      <!-- ── Main Form ──────────────────────────────────────────────── -->
+      <form [formGroup]="registerForm" (ngSubmit)="submitRegistration()" class="register-scroll-form" novalidate autocomplete="off">
+
+        <!-- ========== SECTION 1: PERSONAL DETAILS ========== -->
+        <div class="form-section-card">
+          <div class="section-card-header">
+            <h3><i class="pi pi-user"></i> Personal Details</h3>
+          </div>
+          <div class="section-card-body">
+            <div class="form-grid">
+
+              <div class="input-group">
+                <label class="field-label">Full Name <span class="required">*</span></label>
+                <input pInputText formControlName="name" placeholder="Enter your full name"
+                       [class.p-invalid]="hasError('name')" class="w-full" />
+                @if (hasError('name', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Full name is required.</small>
+                } @else if (hasError('name', 'minlength')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Minimum 2 characters required.</small>
+                }
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Father / Husband Name</label>
+                <input pInputText formControlName="fatherHusbandName" placeholder="Enter father or husband name" class="w-full" />
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Educational Qualification</label>
+                <input pInputText formControlName="educationalQualification" placeholder="E.g., Graduate, Higher Secondary" class="w-full" />
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Date of Birth</label>
+                <p-datepicker formControlName="dob" [showIcon]="true" dateFormat="dd/mm/yy"
+                              placeholder="DD/MM/YYYY" [maxDate]="today" styleClass="w-full" />
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Gender</label>
+                <p-select formControlName="gender" [options]="genderOptions"
+                          optionLabel="label" optionValue="value"
+                          placeholder="Select Gender" styleClass="w-full" />
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Marital Status</label>
+                <p-select formControlName="maritalStatus" [options]="maritalOptions"
+                          optionLabel="label" optionValue="value"
+                          placeholder="Select Status" styleClass="w-full" />
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Name of Spouse</label>
+                <input pInputText formControlName="wifeHusbandName" placeholder="Enter spouse's name if married" class="w-full" />
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Number of Sons</label>
+                <input pInputText type="number" formControlName="childrenSon" min="0" placeholder="0" class="w-full"
+                       [class.p-invalid]="hasError('childrenSon')" />
+                @if (hasError('childrenSon', 'min')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Value must be 0 or greater.</small>
+                }
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Number of Daughters</label>
+                <input pInputText type="number" formControlName="childrenDaughter" min="0" placeholder="0" class="w-full"
+                       [class.p-invalid]="hasError('childrenDaughter')" />
+                @if (hasError('childrenDaughter', 'min')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Value must be 0 or greater.</small>
+                }
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SECTION 2: CONTACT & CREDENTIALS ========== -->
+        <div class="form-section-card">
+          <div class="section-card-header">
+            <h3><i class="pi pi-envelope"></i> Contact Details &amp; Credentials</h3>
+          </div>
+          <div class="section-card-body">
+            <div class="form-grid">
+
+              <div class="input-group">
+                <label class="field-label">Mobile Number <span class="required">*</span></label>
+                <div class="input-with-icon">
+                  <span class="input-icon-prefix"><i class="pi pi-phone"></i></span>
+                  <input pInputText formControlName="phone" placeholder="10-digit mobile number"
+                         maxlength="10" class="w-full pl-icon" [class.p-invalid]="hasError('phone')" />
+                </div>
+                @if (hasError('phone', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Mobile number is required.</small>
+                } @else if (hasError('phone', 'phoneInvalid')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Enter a valid 10-digit number.</small>
+                }
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">E-Mail Address <span class="required">*</span></label>
+                <div class="input-with-icon">
+                  <span class="input-icon-prefix"><i class="pi pi-at"></i></span>
+                  <input pInputText formControlName="email" type="email"
+                         placeholder="name@example.com" class="w-full pl-icon" [class.p-invalid]="hasError('email')" />
+                </div>
+                @if (hasError('email', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Email address is required.</small>
+                } @else if (hasError('email', 'email')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Enter a valid email address.</small>
+                }
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Portal Access Password <span class="required">*</span></label>
+                <p-password formControlName="password" placeholder="Create secure login password"
+                            [feedback]="true" [toggleMask]="true" styleClass="w-full"
+                            [class.p-invalid]="hasError('password')" inputStyleClass="w-full" />
+                @if (hasError('password', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Password is required.</small>
+                } @else if (hasError('password', 'minlength')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Minimum 6 characters required.</small>
+                }
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SECTION 3: ADDRESS ========== -->
+        <div class="form-section-card">
+          <div class="section-card-header">
+            <h3><i class="pi pi-map-marker"></i> Residential Address Details</h3>
+          </div>
+          <div class="section-card-body">
+            <div class="form-grid">
+
+              <div class="input-group full-width">
+                <label class="field-label">Home Address (Street/Vill) <span class="required">*</span></label>
+                <input pInputText formControlName="homeAddressVill" placeholder="House No, Street, Village name"
+                       class="w-full" [class.p-invalid]="hasError('homeAddressVill')" />
+                @if (hasError('homeAddressVill', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Home address is required.</small>
+                }
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Post Office (P.O)</label>
+                <input pInputText formControlName="po" placeholder="Post Office" class="w-full" />
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Police Station (P.S)</label>
+                <input pInputText formControlName="ps" placeholder="Police Station" class="w-full" />
+              </div>
+
+              <!-- Searchable district dropdown -->
+              <div class="input-group">
+                <label class="field-label">Rajasthan District <span class="required">*</span></label>
+                <div class="searchable-select-container"
+                     [class.invalid-control]="hasError('district')">
+                  <div class="searchable-select-trigger"
+                       (click)="srv.districtDropdownOpen.set(!srv.districtDropdownOpen())">
+                    <span>
+                      <i class="pi pi-map-marker" style="margin-right:6px;color:#718096"></i>
+                      {{ registerForm.get('district')?.value || 'Select District *' }}
+                    </span>
+                    <span class="arrow">
+                      <i class="pi" [class.pi-chevron-down]="!srv.districtDropdownOpen()"
+                                    [class.pi-chevron-up]="srv.districtDropdownOpen()"></i>
+                    </span>
+                  </div>
+                  @if (srv.districtDropdownOpen()) {
+                    <div class="searchable-select-dropdown">
+                      <div class="search-input-wrapper">
+                        <i class="pi pi-search search-icon"></i>
+                        <input pInputText type="text" placeholder="Search District…"
+                               [(ngModel)]="districtSearchText" name="districtSearch"
+                               (click)="$event.stopPropagation()" />
+                      </div>
+                      <div class="options-list">
+                        @for (dist of srv.filteredDistricts(); track dist) {
+                          <div class="option-item" (click)="selectDistrict(dist)">{{ dist }}</div>
+                        } @empty {
+                          <div class="no-options">No districts match your search</div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+                @if (hasError('district', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> District selection is required.</small>
+                }
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">PIN Code</label>
+                <input pInputText formControlName="pin" placeholder="6-digit PIN code" maxlength="6"
+                       class="w-full" [class.p-invalid]="hasError('pin')" />
+                @if (hasError('pin', 'pinInvalid')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> PIN code must be exactly 6 digits.</small>
+                }
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Gram Panchayat</label>
+                <input pInputText formControlName="gramPanchayat" placeholder="Gram Panchayat" class="w-full" />
+              </div>
+
+              <div class="input-group">
+                <label class="field-label">Development Block</label>
+                <input pInputText formControlName="devBlock" placeholder="Dev. Block" class="w-full" />
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SECTION 4: PROFESSIONAL DETAILS ========== -->
+        <div class="form-section-card">
+          <div class="section-card-header">
+            <h3><i class="pi pi-briefcase"></i> Professional BC / CSP Details</h3>
+          </div>
+          <div class="section-card-body">
+            <div class="form-grid">
+              <div class="input-group">
+                <label class="field-label">BC / CSP ID Number</label>
+                <input pInputText formControlName="bcCspIdNo" placeholder="Enter CSP ID number" class="w-full" />
+              </div>
+              <div class="input-group">
+                <label class="field-label">Sub Service Agent (SSA)</label>
+                <input pInputText formControlName="ssa" placeholder="SSA code or location" class="w-full" />
+              </div>
+              <div class="input-group">
+                <label class="field-label">Associated Bank Name</label>
+                <input pInputText formControlName="bankName" placeholder="E.g., SBI, BRKGB, PNB" class="w-full" />
+              </div>
+              <div class="input-group">
+                <label class="field-label">Link Branch Name</label>
+                <input pInputText formControlName="linkBranchName" placeholder="Link bank branch" class="w-full" />
+              </div>
+              <div class="input-group full-width">
+                <label class="field-label">Date of Starting as CSP / Bank Mitra</label>
+                <p-datepicker formControlName="dateOfStartingCsp" [showIcon]="true"
+                              dateFormat="dd/mm/yy" placeholder="DD/MM/YYYY" styleClass="w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SECTION 5: MEMBERSHIP FEE ========== -->
+        <div class="form-section-card">
+          <div class="section-card-header">
+            <h3><i class="pi pi-wallet"></i> Association Fee Details</h3>
+          </div>
+          <div class="section-card-body">
+            <div class="form-grid">
+              <div class="input-group full-width">
+                <label class="field-label">Interested in joining as a member?</label>
+                <p-select formControlName="interestedToJoin" [options]="joinOptions"
+                          optionLabel="label" optionValue="value" styleClass="w-full" />
+              </div>
+              @if (registerForm.get('interestedToJoin')?.value === 'YES') {
+                <div class="input-group">
+                  <label class="field-label">Admission Fee (Rs.) <span class="required">*</span></label>
+                  <input pInputText type="number" formControlName="admissionFee" placeholder="Amount in Rs"
+                         class="w-full" [class.p-invalid]="hasError('admissionFee')" />
+                  @if (hasError('admissionFee', 'required')) {
+                    <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Admission fee is required.</small>
+                  }
+                </div>
+                <div class="input-group">
+                  <label class="field-label">Monthly Contribution (Rs.) <span class="required">*</span></label>
+                  <input pInputText type="number" formControlName="perMonthMembershipFee" placeholder="Amount per month"
+                         class="w-full" [class.p-invalid]="hasError('perMonthMembershipFee')" />
+                  @if (hasError('perMonthMembershipFee', 'required')) {
+                    <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Monthly fee is required.</small>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SECTION 6: DOCUMENT UPLOADS ========== -->
+        <div class="form-section-card">
+          <div class="section-card-header">
+            <h3><i class="pi pi-file-arrow-up"></i> Supporting Document Uploads</h3>
+          </div>
+          <div class="section-card-body">
+            <p class="step-guide-text">
+              Upload clear scanned copies of the following documents. Accepted formats: PDF, JPG, PNG (max 5 MB each).
+              <p-tag value="Optional during testing" severity="warn" styleClass="ml-2" />
+            </p>
+
+            <div class="document-uploads-grid">
+
+              <!-- Aadhaar Card -->
+              <div class="doc-upload-item">
+                <label class="doc-label">Aadhaar Card</label>
+                <div class="upload-zone"
+                     [class.drag-over]="srv.dragOverField() === 'aadhaarCard'"
+                     (dragover)="onDragOver($event, 'aadhaarCard')"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onDrop($event, 'aadhaarCard')"
+                     (click)="openFilePicker('upload-aadhaar')">
+                  <input id="upload-aadhaar" type="file" class="file-input-hidden"
+                         accept=".pdf,.jpg,.jpeg,.png"
+                         (change)="onFileSelected($event, 'aadhaarCard')">
+
+                  @if (!registerForm.get('aadhaarCard')?.value) {
+                    <div class="upload-zone-inner">
+                      <i class="pi pi-id-card upload-icon"></i>
+                      <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
+                    </div>
+                  } @else {
+                    <div class="upload-preview" (click)="$event.stopPropagation()">
+                      <i class="pi pi-file-pdf file-icon" *ngIf="!isImagePreview(registerForm.get('aadhaarCard')?.value)"></i>
+                      <img *ngIf="isImagePreview(registerForm.get('aadhaarCard')?.value)"
+                           [src]="registerForm.get('aadhaarCard')?.value" class="photo-preview-image" alt="Aadhaar preview">
+                      <div class="file-details">
+                        <span class="file-name">{{ upload.fileNames().aadhaarCardName }}</span>
+                        <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
+                      </div>
+                      <button type="button" class="remove-file-btn"
+                              pTooltip="Remove file" tooltipPosition="top"
+                              (click)="removeFile('aadhaarCard')">
+                        <i class="pi pi-trash"></i>
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- PAN Card -->
+              <div class="doc-upload-item">
+                <label class="doc-label">PAN Card</label>
+                <div class="upload-zone"
+                     [class.drag-over]="srv.dragOverField() === 'panCard'"
+                     (dragover)="onDragOver($event, 'panCard')"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onDrop($event, 'panCard')"
+                     (click)="openFilePicker('upload-pan')">
+                  <input id="upload-pan" type="file" class="file-input-hidden"
+                         accept=".pdf,.jpg,.jpeg,.png"
+                         (change)="onFileSelected($event, 'panCard')">
+
+                  @if (!registerForm.get('panCard')?.value) {
+                    <div class="upload-zone-inner">
+                      <i class="pi pi-credit-card upload-icon"></i>
+                      <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
+                    </div>
+                  } @else {
+                    <div class="upload-preview" (click)="$event.stopPropagation()">
+                      <i class="pi pi-file-pdf file-icon" *ngIf="!isImagePreview(registerForm.get('panCard')?.value)"></i>
+                      <img *ngIf="isImagePreview(registerForm.get('panCard')?.value)"
+                           [src]="registerForm.get('panCard')?.value" class="photo-preview-image" alt="PAN preview">
+                      <div class="file-details">
+                        <span class="file-name">{{ upload.fileNames().panCardName }}</span>
+                        <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
+                      </div>
+                      <button type="button" class="remove-file-btn"
+                              pTooltip="Remove file" tooltipPosition="top"
+                              (click)="removeFile('panCard')">
+                        <i class="pi pi-trash"></i>
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Passport Photograph -->
+              <div class="doc-upload-item">
+                <label class="doc-label">Passport Photograph</label>
+                <div class="upload-zone"
+                     [class.drag-over]="srv.dragOverField() === 'photograph'"
+                     (dragover)="onDragOver($event, 'photograph')"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onDrop($event, 'photograph')"
+                     (click)="openFilePicker('upload-photo')">
+                  <input id="upload-photo" type="file" class="file-input-hidden"
+                         accept=".jpg,.jpeg,.png"
+                         (change)="onFileSelected($event, 'photograph')">
+
+                  @if (!registerForm.get('photograph')?.value) {
+                    <div class="upload-zone-inner">
+                      <i class="pi pi-camera upload-icon"></i>
+                      <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
+                      <p class="upload-hint">JPG, PNG · Max 5 MB</p>
+                    </div>
+                  } @else {
+                    <div class="upload-preview" (click)="$event.stopPropagation()">
+                      <img [src]="registerForm.get('photograph')?.value"
+                           class="photo-preview-image" alt="Photograph preview">
+                      <div class="file-details">
+                        <span class="file-name">{{ upload.fileNames().photographName }}</span>
+                        <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
+                      </div>
+                      <button type="button" class="remove-file-btn"
+                              pTooltip="Remove photo" tooltipPosition="top"
+                              (click)="removeFile('photograph')">
+                        <i class="pi pi-trash"></i>
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Bank BC Certificate -->
+              <div class="doc-upload-item">
+                <label class="doc-label">Bank BC Certificate</label>
+                <div class="upload-zone"
+                     [class.drag-over]="srv.dragOverField() === 'bankBcCertificate'"
+                     (dragover)="onDragOver($event, 'bankBcCertificate')"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onDrop($event, 'bankBcCertificate')"
+                     (click)="openFilePicker('upload-bc')">
+                  <input id="upload-bc" type="file" class="file-input-hidden"
+                         accept=".pdf,.jpg,.jpeg,.png"
+                         (change)="onFileSelected($event, 'bankBcCertificate')">
+
+                  @if (!registerForm.get('bankBcCertificate')?.value) {
+                    <div class="upload-zone-inner">
+                      <i class="pi pi-verified upload-icon"></i>
+                      <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
+                    </div>
+                  } @else {
+                    <div class="upload-preview" (click)="$event.stopPropagation()">
+                      <i class="pi pi-file-pdf file-icon" *ngIf="!isImagePreview(registerForm.get('bankBcCertificate')?.value)"></i>
+                      <img *ngIf="isImagePreview(registerForm.get('bankBcCertificate')?.value)"
+                           [src]="registerForm.get('bankBcCertificate')?.value" class="photo-preview-image" alt="Certificate preview">
+                      <div class="file-details">
+                        <span class="file-name">{{ upload.fileNames().bankBcCertificateName }}</span>
+                        <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
+                      </div>
+                      <button type="button" class="remove-file-btn"
+                              pTooltip="Remove file" tooltipPosition="top"
+                              (click)="removeFile('bankBcCertificate')">
+                        <i class="pi pi-trash"></i>
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+
+            </div><!-- /document-uploads-grid -->
+          </div>
+        </div>
+
+        <!-- ========== SECTION 7: DECLARATION ========== -->
+        <div class="form-section-card">
+          <div class="section-card-header">
+            <h3><i class="pi pi-file-edit"></i> Official Declaration</h3>
+          </div>
+          <div class="section-card-body">
+            <div class="consent-box-light">
+              <h4>MEMBERSHIP DECLARATION &amp; SOLEMN AFFIRMATION</h4>
+              <div class="declaration-text">
+                <p>
+                  I, <strong>{{ registerForm.get('name')?.value || '____________' }}</strong>,
+                  resident of <strong>{{ registerForm.get('homeAddressVill')?.value || '____________' }}</strong>,
+                  do hereby solemnly declare and affirm that:
+                </p>
+                <ol>
+                  <li>I have read, understood, and accept all the Rules, Regulations, and Bye-laws of the
+                      <strong>Business Correspondent Association Rajasthan (BCAR)</strong>.</li>
+                  <li>The information furnished in this form is true, correct, and complete to the best of my
+                      knowledge and belief.</li>
+                  <li>If any information or document is found false or incorrect, my membership is liable to be
+                      cancelled and I shall be liable for disciplinary or legal action.</li>
+                </ol>
+              </div>
+
+              <div class="checkbox-row">
+                <p-checkbox formControlName="declarationAccepted" [binary]="true"
+                            inputId="declarationCheck"
+                            [class.p-invalid]="hasError('declarationAccepted')" />
+                <label for="declarationCheck" class="checkbox-label-text">
+                  I accept the declaration and request membership enrollment.
+                  <span class="required">*</span>
+                </label>
+              </div>
+              @if (hasError('declarationAccepted')) {
+                <small class="validation-error">
+                  <i class="pi pi-exclamation-circle"></i> You must accept the declaration to proceed.
+                </small>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Spacer -->
+        <div class="bottom-spacer"></div>
+
+        <!-- ── Sticky Action Bar ──────────────────────────────────────── -->
+        <div class="sticky-footer-action-bar">
+          <div class="action-bar-inner">
+
+            <!-- Save Draft -->
+            <button type="button" class="btn-save-draft" (click)="saveDraft()"
+                    pTooltip="Save your progress" tooltipPosition="top">
+              <i class="pi pi-save"></i> Save Draft
+            </button>
+
+            <!-- Submit — with inline spinner -->
+            <button type="submit" class="btn-submit-membership" [disabled]="srv.submitting()">
+              @if (srv.submitting()) {
+                <p-progressSpinner strokeWidth="4" styleClass="btn-spinner" />
+                <span>Submitting…</span>
+              } @else {
+                <i class="pi pi-send"></i>
+                <span>Submit Membership</span>
+              }
+            </button>
+
+          </div>
+        </div>
+
+      </form>
+    </main>
+
+  </div><!-- /register-main-container-centered -->
+
+  <!-- ── Page Footer ──────────────────────────────────────────────── -->
+  <footer class="register-footer-minimal">
+    <div class="footer-links">
+      <a href="tel:+919414008299"><i class="pi pi-phone"></i> Help Desk</a>
+      <a href="mailto:info@bcarajasthan.org"><i class="pi pi-envelope"></i> Email</a>
+      <a href="https://wa.me/919414008299" target="_blank"><i class="pi pi-whatsapp"></i> WhatsApp</a>
+      <span class="separator">|</span>
+      <a (click)="router.navigate(['/'])">Privacy Policy</a>
+      <a (click)="router.navigate(['/'])">Terms &amp; Conditions</a>
+    </div>
+    <p class="copyright-text">© 2026 Business Correspondent Association Rajasthan. All Rights Reserved.</p>
+  </footer>
+
+</div><!-- /register-page-wrapper -->
+
+<app-footer></app-footer>

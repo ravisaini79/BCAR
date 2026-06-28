@@ -1,0 +1,721 @@
+<p-toast position="top-right" />
+<p-confirmDialog />
+
+<div class="admin-shell" [class.collapsed]="sidebarCollapsed" *ngIf="user">
+
+  <!-- ═══════════════════════════ SIDEBAR ════════════════════════════ -->
+  <aside class="admin-sidebar">
+
+    <!-- Brand -->
+    <div class="sb-brand">
+      <img src="/images/bcar-logo.jpeg" alt="BCAR" class="sb-logo" />
+      <div class="sb-brand-text">
+        <span class="sb-brand-name">BCAR</span>
+        <span class="sb-brand-sub">Admin Portal</span>
+      </div>
+    </div>
+
+    <!-- User Card -->
+    <div class="sb-user">
+      <p-avatar [label]="userInitial" shape="circle" size="normal" />
+      <div class="sb-user-info">
+        <span class="sb-user-name">{{ user.name }}</span>
+        <span class="sb-user-role">{{ user.role | titlecase }}</span>
+      </div>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="sb-nav">
+
+      <!-- Dashboard -->
+      <button class="sb-item" [class.active]="activeView === 'overview'" (click)="navigate('overview')">
+        <i class="pi pi-home sb-icon"></i>
+        <span class="sb-label">Dashboard</span>
+      </button>
+
+      <!-- Members Section -->
+      <ng-container *ngIf="isAdmin">
+        <div class="sb-section-label">Members</div>
+
+        <button class="sb-item" [class.active]="activeView === 'members'" (click)="navigate('members')">
+          <i class="pi pi-users sb-icon"></i>
+          <span class="sb-label">All Members</span>
+          <span class="sb-badge">{{ members.length }}</span>
+        </button>
+
+        <button class="sb-item" [class.active]="activeView === 'pending'" (click)="navigate('pending')">
+          <i class="pi pi-clock sb-icon"></i>
+          <span class="sb-label">Pending Approval</span>
+          <span class="sb-badge warn" *ngIf="pendingCount > 0">{{ pendingCount }}</span>
+        </button>
+
+        <button class="sb-item" [class.active]="activeView === 'approved'" (click)="navigate('approved')">
+          <i class="pi pi-check-circle sb-icon"></i>
+          <span class="sb-label">Approved Members</span>
+        </button>
+
+        <button class="sb-item" [class.active]="activeView === 'rejected'" (click)="navigate('rejected')">
+          <i class="pi pi-times-circle sb-icon"></i>
+          <span class="sb-label">Rejected Members</span>
+        </button>
+      </ng-container>
+
+      <div class="sb-divider"></div>
+
+      <!-- Notices -->
+      <button class="sb-item" [class.active]="activeView === 'notices'" (click)="navigate('notices')">
+        <i class="pi pi-bell sb-icon"></i>
+        <span class="sb-label">Notices</span>
+        <span class="sb-badge success" *ngIf="notices.length > 0">{{ notices.length }}</span>
+      </button>
+
+      <!-- Grievances -->
+      <button class="sb-item" [class.active]="activeView === 'grievances'" (click)="navigate('grievances')">
+        <i class="pi pi-comments sb-icon"></i>
+        <span class="sb-label">Grievances</span>
+        <span class="sb-badge danger" *ngIf="openGrievancesCount > 0">{{ openGrievancesCount }}</span>
+      </button>
+
+    </nav>
+
+    <!-- Bottom: Logout -->
+    <div class="sb-bottom">
+      <button class="sb-item" (click)="logout()">
+        <i class="pi pi-sign-out sb-icon"></i>
+        <span class="sb-label">Logout</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════════════════ MAIN AREA ═══════════════════════════ -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <div class="topbar-left">
+        <button class="topbar-toggle" (click)="sidebarCollapsed = !sidebarCollapsed">
+          <i class="pi pi-bars"></i>
+        </button>
+        <div class="topbar-breadcrumb">
+          <span>BCAR Portal</span>
+          <i class="pi pi-angle-right"></i>
+          <span class="active">{{ viewTitle }}</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="topbar-btn" (click)="refreshAll()" pTooltip="Refresh data" tooltipPosition="bottom">
+          <i class="pi pi-refresh"></i>
+        </button>
+        <div class="topbar-user">
+          <p-avatar [label]="userInitial" shape="circle" />
+          <div class="topbar-user-info">
+            <span>{{ user.name }}</span>
+            <small>{{ user.role | titlecase }}</small>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════ CONTENT AREA ══════════════════════════ -->
+    <div class="admin-content">
+
+      <!-- ══════════════════════ OVERVIEW ══════════════════════════════ -->
+      <div *ngIf="activeView === 'overview'">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Welcome, {{ user.name }}! 👋</h1>
+            <p class="page-subtitle">Here's what's happening in your BCAR portal today.</p>
+          </div>
+          <button class="btn-outline" (click)="refreshAll()">
+            <i class="pi pi-refresh"></i> Refresh
+          </button>
+        </div>
+
+        <!-- Stat Cards Grid -->
+        <div class="stat-cards-grid" *ngIf="isAdmin">
+
+          <div class="stat-card" (click)="navigate('members')">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #0B2D5C, #1e40af)">
+              <i class="pi pi-users"></i>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.totalMembers }}</div>
+              <div class="stat-label">Total Members</div>
+              <div class="stat-trend">All registered</div>
+            </div>
+          </div>
+
+          <div class="stat-card" (click)="navigate('approved')">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #059669, #10b981)">
+              <i class="pi pi-check-circle"></i>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.activeMembers }}</div>
+              <div class="stat-label">Approved Members</div>
+              <div class="stat-trend" style="color:#059669">Active &amp; verified</div>
+            </div>
+          </div>
+
+          <div class="stat-card" (click)="navigate('pending')">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #d97706, #f59e0b)">
+              <i class="pi pi-clock"></i>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.pendingMembers }}</div>
+              <div class="stat-label">Pending Approval</div>
+              <div class="stat-trend" style="color:#d97706">Requires action</div>
+            </div>
+          </div>
+
+          <div class="stat-card" (click)="navigate('rejected')">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #dc2626, #ef4444)">
+              <i class="pi pi-times-circle"></i>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.rejectedMembers || 0 }}</div>
+              <div class="stat-label">Rejected</div>
+              <div class="stat-trend" style="color:#dc2626">Not approved</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #7c3aed, #a78bfa)">
+              <i class="pi pi-user-plus"></i>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.todayRegistrations || 0 }}</div>
+              <div class="stat-label">Today's Registrations</div>
+              <div class="stat-trend">New today</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #0891b2, #22d3ee)">
+              <i class="pi pi-chart-line"></i>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ stats.monthlyRegistrations || 0 }}</div>
+              <div class="stat-label">This Month</div>
+              <div class="stat-trend">Monthly count</div>
+            </div>
+          </div>
+
+          <div class="stat-card" (click)="navigate('notices')">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #b8942a, #D4AF37)">
+              <i class="pi pi-bell"></i>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ notices.length }}</div>
+              <div class="stat-label">Notices</div>
+              <div class="stat-trend">Published</div>
+            </div>
+          </div>
+
+          <div class="stat-card" (click)="navigate('grievances')">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #be185d, #ec4899)">
+              <i class="pi pi-comments"></i>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ openGrievancesCount }}</div>
+              <div class="stat-label">Open Grievances</div>
+              <div class="stat-trend" style="color:#be185d">Needs attention</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="charts-grid" *ngIf="isAdmin && members.length > 0">
+          <div class="chart-card">
+            <h3 class="chart-title"><i class="pi pi-chart-bar"></i> Monthly Registrations ({{ currentYear }})</h3>
+            <p-chart type="bar" [data]="registrationChartData" [options]="barChartOptions" height="280px" />
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title"><i class="pi pi-chart-pie"></i> Approval Status</h3>
+            <p-chart type="doughnut" [data]="statusChartData" [options]="doughnutOptions" height="280px" />
+          </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="charts-grid charts-grid-2" *ngIf="isAdmin && members.length > 0">
+          <div class="chart-card">
+            <h3 class="chart-title"><i class="pi pi-map-marker"></i> District-wise Members (Top 10)</h3>
+            <p-chart type="bar" [data]="districtChartData" [options]="barChartOptions" height="260px" />
+          </div>
+          <div class="chart-card">
+            <h3 class="chart-title"><i class="pi pi-user"></i> Gender Distribution</h3>
+            <p-chart type="pie" [data]="genderChartData" [options]="doughnutOptions" height="260px" />
+          </div>
+        </div>
+
+        <!-- Recent Members -->
+        <div class="members-card" *ngIf="isAdmin">
+          <div class="card-header">
+            <h3 class="chart-title" style="margin:0"><i class="pi pi-users"></i> Recent Registrations</h3>
+            <button class="btn-link" (click)="navigate('members')">View All →</button>
+          </div>
+          <p-table [value]="recentMembers" [rows]="5" styleClass="p-datatable-sm p-datatable-striped">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Member</th>
+                <th>Registration No.</th>
+                <th>Mobile</th>
+                <th>District</th>
+                <th>Status</th>
+                <th>Joined</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-m>
+              <tr>
+                <td>
+                  <div class="member-cell">
+                    <p-avatar [label]="m.name.charAt(0).toUpperCase()" shape="circle" size="normal" />
+                    <div><b>{{ m.name }}</b><small>{{ m.email }}</small></div>
+                  </div>
+                </td>
+                <td><span class="reg-no">{{ m.registrationNumber || '—' }}</span></td>
+                <td>{{ m.phone }}</td>
+                <td>{{ m.district || '—' }}</td>
+                <td><p-tag [value]="formatStatus(m.status)" [severity]="getStatusSeverity(m.status)" /></td>
+                <td>{{ m.createdAt | date:'dd MMM yyyy' }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr><td colspan="6">
+                <div class="empty-table">
+                  <i class="pi pi-users"></i>
+                  <h4>No members yet</h4>
+                  <p>Members will appear here after registration.</p>
+                </div>
+              </td></tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+        <!-- Member view for non-admins -->
+        <div class="members-card" *ngIf="isMember">
+          <h3 class="chart-title"><i class="pi pi-user"></i> My Account</h3>
+          <div class="detail-grid" style="max-width:500px">
+            <div class="detail-item"><span>Name</span><b>{{ user.name }}</b></div>
+            <div class="detail-item"><span>Role</span><b>{{ user.role | titlecase }}</b></div>
+            <div class="detail-item"><span>Email</span><b>{{ user.email }}</b></div>
+            <div class="detail-item"><span>Status</span>
+              <div><p-tag [value]="formatStatus(user.status)" [severity]="getStatusSeverity(user.status)" /></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /overview -->
+
+
+      <!-- ═══════════════════════ MEMBERS TABLE ═════════════════════════ -->
+      <div *ngIf="activeView === 'members' || activeView === 'pending' || activeView === 'approved' || activeView === 'rejected'">
+
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">{{ viewTitle }}</h1>
+            <p class="page-subtitle">{{ displayedMembers.length }} member{{ displayedMembers.length !== 1 ? 's' : '' }} found</p>
+          </div>
+          <div class="page-actions" *ngIf="activeView === 'pending'">
+            <button class="btn-success" (click)="bulkApprove()" [disabled]="selectedMembers.length === 0">
+              <i class="pi pi-check"></i> Approve Selected ({{ selectedMembers.length }})
+            </button>
+            <button class="btn-danger" (click)="bulkReject()" [disabled]="selectedMembers.length === 0">
+              <i class="pi pi-times"></i> Reject Selected
+            </button>
+          </div>
+        </div>
+
+        <div class="members-card">
+          <!-- Toolbar -->
+          <div class="table-toolbar">
+            <div class="search-box">
+              <i class="pi pi-search"></i>
+              <input type="text" [(ngModel)]="memberFilter"
+                     placeholder="Search by name, phone, district, reg no..." />
+              <button *ngIf="memberFilter" (click)="memberFilter = ''">
+                <i class="pi pi-times"></i>
+              </button>
+            </div>
+            <button class="toolbar-btn" (click)="exportCSV()" pTooltip="Export to Excel/CSV" tooltipPosition="top">
+              <i class="pi pi-file-excel"></i> Export
+            </button>
+            <button class="toolbar-btn" (click)="refreshAll()" pTooltip="Refresh" tooltipPosition="top">
+              <i class="pi pi-refresh"></i>
+            </button>
+          </div>
+
+          <!-- Table -->
+          <p-table
+            [value]="displayedMembers"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50, 100]"
+            [(selection)]="selectedMembers"
+            dataKey="_id"
+            [loading]="loading"
+            styleClass="p-datatable-sm"
+            [scrollable]="true"
+            scrollHeight="580px">
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width:3rem" *ngIf="activeView === 'pending'">
+                  <p-tableHeaderCheckbox />
+                </th>
+                <th>#</th>
+                <th pSortableColumn="name">Member <p-sortIcon field="name" /></th>
+                <th pSortableColumn="registrationNumber">Reg No <p-sortIcon field="registrationNumber" /></th>
+                <th>Membership No.</th>
+                <th pSortableColumn="phone">Mobile</th>
+                <th pSortableColumn="district">District <p-sortIcon field="district" /></th>
+                <th pSortableColumn="bankName">Bank <p-sortIcon field="bankName" /></th>
+                <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
+                <th pSortableColumn="createdAt">Joined <p-sortIcon field="createdAt" /></th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-m let-i="rowIndex">
+              <tr>
+                <td *ngIf="activeView === 'pending'">
+                  <p-tableCheckbox [value]="m" />
+                </td>
+                <td><span class="row-num">{{ i + 1 }}</span></td>
+                <td>
+                  <div class="member-cell">
+                    <p-avatar [label]="m.name.charAt(0).toUpperCase()" shape="circle" />
+                    <div>
+                      <b>{{ m.name }}</b>
+                      <small>{{ m.email }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="reg-no">{{ m.registrationNumber || '—' }}</span></td>
+                <td><span class="mem-no" *ngIf="m.membershipNo">{{ m.membershipNo }}</span><span *ngIf="!m.membershipNo" style="color:#94a3b8">—</span></td>
+                <td>{{ m.phone }}</td>
+                <td>{{ m.district || '—' }}</td>
+                <td>{{ m.bankName || '—' }}</td>
+                <td><p-tag [value]="formatStatus(m.status)" [severity]="getStatusSeverity(m.status)" /></td>
+                <td>{{ m.createdAt | date:'dd MMM yyyy' }}</td>
+                <td>
+                  <div class="row-actions">
+                    <button class="action-btn view" (click)="viewMember(m)" pTooltip="View Profile" tooltipPosition="top">
+                      <i class="pi pi-eye"></i>
+                    </button>
+                    <button class="action-btn approve"
+                            *ngIf="m.status === 'pending' || m.status === 'Pending Approval'"
+                            (click)="confirmApprove(m)" pTooltip="Approve" tooltipPosition="top">
+                      <i class="pi pi-check"></i>
+                    </button>
+                    <button class="action-btn reject"
+                            *ngIf="m.status !== 'rejected'"
+                            (click)="confirmReject(m)" pTooltip="Reject" tooltipPosition="top">
+                      <i class="pi pi-ban"></i>
+                    </button>
+                    <button class="action-btn card"
+                            *ngIf="m.membershipNo"
+                            (click)="generateCard(m)" pTooltip="Generate Card" tooltipPosition="top">
+                      <i class="pi pi-id-card"></i>
+                    </button>
+                    <button class="action-btn delete" (click)="confirmDelete(m)" pTooltip="Delete" tooltipPosition="top">
+                      <i class="pi pi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td [attr.colspan]="activeView === 'pending' ? 12 : 11">
+                  <div class="empty-table">
+                    <i class="pi pi-users"></i>
+                    <h4>No members found</h4>
+                    <p *ngIf="memberFilter">Try clearing your search filter.</p>
+                    <p *ngIf="!memberFilter && activeView === 'pending'">No members are pending approval.</p>
+                    <p *ngIf="!memberFilter && activeView !== 'pending'">No members in this category yet.</p>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+
+          </p-table>
+        </div>
+      </div>
+      <!-- /members -->
+
+
+      <!-- ════════════════════════ NOTICES ══════════════════════════════ -->
+      <div *ngIf="activeView === 'notices'">
+
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Notices &amp; Announcements</h1>
+            <p class="page-subtitle">{{ notices.length }} notice{{ notices.length !== 1 ? 's' : '' }} published</p>
+          </div>
+          <button class="btn-primary" *ngIf="isAdmin" (click)="showNoticeDialog = true">
+            <i class="pi pi-plus"></i> New Notice
+          </button>
+        </div>
+
+        <div class="notices-grid" *ngIf="notices.length > 0">
+          <div class="notice-card" *ngFor="let n of notices">
+            <div class="notice-header">
+              <p-tag [value]="n.category || 'General'" severity="info" />
+              <time>{{ n.publishedAt | date:'dd MMM yyyy, HH:mm' }}</time>
+            </div>
+            <h4 class="notice-title">{{ n.title }}</h4>
+            <p class="notice-body">{{ n.body }}</p>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="notices.length === 0 && !loading">
+          <i class="pi pi-bell-slash"></i>
+          <h4>No notices published yet</h4>
+          <p *ngIf="isAdmin">Click <strong>New Notice</strong> to publish the first notice.</p>
+          <p *ngIf="isMember">No announcements available at this time.</p>
+        </div>
+
+      </div>
+      <!-- /notices -->
+
+
+      <!-- ═══════════════════════ GRIEVANCES ════════════════════════════ -->
+      <div *ngIf="activeView === 'grievances'">
+
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Grievances</h1>
+            <p class="page-subtitle">{{ grievances.length }} grievance{{ grievances.length !== 1 ? 's' : '' }} total</p>
+          </div>
+          <button class="btn-primary" *ngIf="isMember" (click)="showGrievanceDialog = true">
+            <i class="pi pi-plus"></i> File Grievance
+          </button>
+        </div>
+
+        <!-- Status Filter Pills -->
+        <div class="filter-row">
+          <button class="filter-pill"
+                  *ngFor="let s of grievanceStatuses"
+                  [class.active]="grievanceFilter === s.value"
+                  (click)="grievanceFilter = s.value">
+            {{ s.label }}
+            <span class="pill-count">{{ grievanceCountByStatus(s.value) }}</span>
+          </button>
+        </div>
+
+        <div class="grievances-list" *ngIf="filteredGrievances.length > 0">
+          <div class="grievance-card" *ngFor="let g of filteredGrievances">
+            <div class="g-header">
+              <div class="g-meta">
+                <span class="g-id">#{{ g._id?.slice(-6).toUpperCase() }}</span>
+                <span class="g-submitter" *ngIf="isAdmin">{{ g.memberName || 'Unknown' }}</span>
+                <time>{{ g.createdAt | date:'dd MMM yyyy' }}</time>
+              </div>
+              <p-tag [value]="formatGrievanceStatus(g.status)" [severity]="getGrievanceSeverity(g.status)" />
+            </div>
+            <h4 class="g-subject">{{ g.subject }}</h4>
+            <p class="g-description">{{ g.description }}</p>
+            <div class="g-actions" *ngIf="isAdmin">
+              <label style="font-size:12px;font-weight:600;color:#64748b">Update Status:</label>
+              <p-select
+                [options]="grievanceStatusOptions"
+                [ngModel]="g.status"
+                (ngModelChange)="onGrievanceStatusChange(g, $event)"
+                optionLabel="label"
+                optionValue="value"
+                [style]="{'width':'180px'}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="filteredGrievances.length === 0 && !loading">
+          <i class="pi pi-comments"></i>
+          <h4>No grievances found</h4>
+          <p *ngIf="grievanceFilter !== 'all'">No grievances with status "{{ grievanceFilter }}".</p>
+          <p *ngIf="grievanceFilter === 'all' && isMember">You have not filed any grievances yet.</p>
+          <p *ngIf="grievanceFilter === 'all' && isAdmin">No grievances have been filed yet.</p>
+        </div>
+
+      </div>
+      <!-- /grievances -->
+
+    </div>
+    <!-- /admin-content -->
+
+  </div>
+  <!-- /admin-main -->
+
+</div>
+<!-- /admin-shell -->
+
+
+<!-- ═══════════════════════ VIEW MEMBER DIALOG ══════════════════════════ -->
+<p-dialog
+  header="Member Profile"
+  [visible]="showViewDialog"
+  (visibleChange)="showViewDialog = $event"
+  [modal]="true"
+  [style]="{width: '860px', maxWidth: '95vw'}"
+  [closable]="true">
+
+  <div class="member-profile" *ngIf="selectedMember">
+    <div class="profile-header">
+      <p-avatar [label]="selectedMember.name.charAt(0).toUpperCase()" shape="circle" size="xlarge" />
+      <div>
+        <h2>{{ selectedMember.name }}</h2>
+        <p>{{ selectedMember.email }} &bull; {{ selectedMember.phone }}</p>
+        <div class="profile-header-badges">
+          <p-tag [value]="formatStatus(selectedMember.status)" [severity]="getStatusSeverity(selectedMember.status)" />
+          <span class="mem-no-display" *ngIf="selectedMember.membershipNo">{{ selectedMember.membershipNo }}</span>
+        </div>
+      </div>
+    </div>
+
+    <p-divider />
+
+    <div class="detail-sections">
+      <!-- Personal -->
+      <div class="detail-section">
+        <h4 class="section-title"><i class="pi pi-user"></i> Personal Details</h4>
+        <div class="detail-grid">
+          <div class="detail-item"><span>Registration No.</span><b>{{ selectedMember.registrationNumber || '—' }}</b></div>
+          <div class="detail-item"><span>Membership No.</span><b>{{ selectedMember.membershipNo || 'Not generated' }}</b></div>
+          <div class="detail-item"><span>Father / Husband Name</span><b>{{ selectedMember.fatherHusbandName || '—' }}</b></div>
+          <div class="detail-item"><span>Date of Birth</span><b>{{ selectedMember.dob || '—' }}</b></div>
+          <div class="detail-item"><span>Gender</span><b>{{ selectedMember.gender || '—' }}</b></div>
+          <div class="detail-item"><span>Marital Status</span><b>{{ selectedMember.maritalStatus || '—' }}</b></div>
+          <div class="detail-item"><span>Education</span><b>{{ selectedMember.educationalQualification || '—' }}</b></div>
+          <div class="detail-item"><span>Joined At</span><b>{{ selectedMember.createdAt | date:'dd MMM yyyy' }}</b></div>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="detail-section">
+        <h4 class="section-title"><i class="pi pi-map-marker"></i> Address</h4>
+        <div class="detail-grid">
+          <div class="detail-item"><span>Village / House No.</span><b>{{ selectedMember.homeAddressVill || '—' }}</b></div>
+          <div class="detail-item"><span>P.O.</span><b>{{ selectedMember.po || '—' }}</b></div>
+          <div class="detail-item"><span>P.S.</span><b>{{ selectedMember.ps || '—' }}</b></div>
+          <div class="detail-item"><span>District</span><b>{{ selectedMember.district || '—' }}</b></div>
+          <div class="detail-item"><span>PIN Code</span><b>{{ selectedMember.pin || '—' }}</b></div>
+          <div class="detail-item"><span>Gram Panchayat</span><b>{{ selectedMember.gramPanchayat || '—' }}</b></div>
+          <div class="detail-item"><span>Dev Block</span><b>{{ selectedMember.devBlock || '—' }}</b></div>
+        </div>
+      </div>
+
+      <!-- Professional -->
+      <div class="detail-section">
+        <h4 class="section-title"><i class="pi pi-briefcase"></i> Professional Details</h4>
+        <div class="detail-grid">
+          <div class="detail-item"><span>BC / CSP ID No.</span><b>{{ selectedMember.bcCspIdNo || '—' }}</b></div>
+          <div class="detail-item"><span>SSA</span><b>{{ selectedMember.ssa || '—' }}</b></div>
+          <div class="detail-item"><span>Bank Name</span><b>{{ selectedMember.bankName || '—' }}</b></div>
+          <div class="detail-item"><span>Link Branch</span><b>{{ selectedMember.linkBranchName || '—' }}</b></div>
+          <div class="detail-item"><span>CSP Start Date</span><b>{{ selectedMember.dateOfStartingCsp || '—' }}</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn-success"
+              *ngIf="selectedMember.status === 'pending' || selectedMember.status === 'Pending Approval'"
+              (click)="confirmApprove(selectedMember); showViewDialog = false">
+        <i class="pi pi-check"></i> Approve
+      </button>
+      <button class="btn-danger"
+              *ngIf="selectedMember.status !== 'rejected'"
+              (click)="confirmReject(selectedMember); showViewDialog = false">
+        <i class="pi pi-times"></i> Reject
+      </button>
+      <button class="btn-outline"
+              *ngIf="selectedMember.membershipNo"
+              (click)="generateCard(selectedMember)">
+        <i class="pi pi-id-card"></i> Generate Card
+      </button>
+      <button class="btn-secondary" (click)="showViewDialog = false">
+        <i class="pi pi-times"></i> Close
+      </button>
+    </div>
+  </div>
+</p-dialog>
+
+
+<!-- ════════════════════════ NOTICE DIALOG ════════════════════════════ -->
+<p-dialog
+  header="Publish Notice"
+  [visible]="showNoticeDialog"
+  (visibleChange)="showNoticeDialog = $event"
+  [modal]="true"
+  [style]="{width: '600px', maxWidth: '95vw'}">
+
+  <div class="dialog-form">
+    <div class="form-field">
+      <label>Category</label>
+      <p-select [options]="categoryOptions" [(ngModel)]="noticeDraft.category"
+                [style]="{'width':'100%'}" placeholder="Select category" />
+    </div>
+    <div class="form-field">
+      <label>Title *</label>
+      <input pInputText type="text" [(ngModel)]="noticeDraft.title"
+             placeholder="Enter notice title..." class="w-full" />
+    </div>
+    <div class="form-field">
+      <label>Message *</label>
+      <textarea pTextarea [(ngModel)]="noticeDraft.body" [rows]="6"
+                placeholder="Enter notice content..." class="w-full"
+                style="resize:vertical"></textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button class="btn-secondary" (click)="showNoticeDialog = false; resetNoticeDraft()">
+      <i class="pi pi-times"></i> Cancel
+    </button>
+    <button class="btn-primary" (click)="submitNotice()"
+            [disabled]="busy || !noticeDraft.title || !noticeDraft.body">
+      <i class="pi pi-send"></i> {{ busy ? 'Publishing...' : 'Publish Notice' }}
+    </button>
+  </ng-template>
+</p-dialog>
+
+
+<!-- ═══════════════════════ GRIEVANCE DIALOG ══════════════════════════ -->
+<p-dialog
+  header="File a Grievance"
+  [visible]="showGrievanceDialog"
+  (visibleChange)="showGrievanceDialog = $event"
+  [modal]="true"
+  [style]="{width: '580px', maxWidth: '95vw'}">
+
+  <div class="dialog-form">
+    <div class="form-field">
+      <label>Category</label>
+      <p-select [options]="grievanceCategoryOptions" [(ngModel)]="grievanceDraft.category"
+                [style]="{'width':'100%'}" />
+    </div>
+    <div class="form-field">
+      <label>Subject *</label>
+      <input pInputText type="text" [(ngModel)]="grievanceDraft.subject"
+             placeholder="Brief subject of your grievance..." class="w-full" />
+    </div>
+    <div class="form-field">
+      <label>Description *</label>
+      <textarea pTextarea [(ngModel)]="grievanceDraft.description" [rows]="5"
+                placeholder="Describe your grievance in detail..."
+                class="w-full" style="resize:vertical"></textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button class="btn-secondary" (click)="showGrievanceDialog = false; resetGrievanceDraft()">
+      <i class="pi pi-times"></i> Cancel
+    </button>
+    <button class="btn-primary" (click)="submitGrievance()"
+            [disabled]="busy || !grievanceDraft.subject || !grievanceDraft.description">
+      <i class="pi pi-send"></i> {{ busy ? 'Submitting...' : 'Submit Grievance' }}
+    </button>
+  </ng-template>
+</p-dialog>

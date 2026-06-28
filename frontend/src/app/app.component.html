@@ -1,0 +1,228 @@
+<div class="toast" *ngIf="toast" [class.error]="toastType === 'error'">{{ toast }}</div>
+
+<ng-container *ngIf="view !== 'dashboard'">
+  <div class="top-strip">
+    <div class="container strip-inner">
+      <span>राजस्थान के बिजनेस कॉरेस्पोंडेंट्स की सामूहिक आवाज़</span>
+      <span>Reg. No. TU/2026/14/132549</span>
+    </div>
+  </div>
+  <header>
+    <div class="container nav">
+      <button class="brand" (click)="go('home')">
+        <img src="/images/bcar-logo.jpeg" alt="BCAR logo">
+        <span><b>BCAR</b><small>Business Correspondent<br>Association Rajasthan</small></span>
+      </button>
+      <button class="menu" (click)="mobileOpen = !mobileOpen" aria-label="Open menu">☰</button>
+      <nav [class.open]="mobileOpen">
+        <button (click)="go('home')">Home</button>
+        <button (click)="scroll('about')">About us</button>
+        <button (click)="scroll('mission')">Our mission</button>
+        <button (click)="scroll('notices')">Notices</button>
+        <button (click)="scroll('contact')">Contact</button>
+        <button class="nav-login" (click)="go('login')">Member login</button>
+        <button class="nav-join" (click)="go('register')">Join BCAR</button>
+      </nav>
+    </div>
+  </header>
+</ng-container>
+
+<main *ngIf="view === 'home'">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Registered trade union • Rajasthan</span>
+        <h1>Together, we build a <em>stronger future</em> for every Bank Mitra.</h1>
+        <p>BCAR unites Business Correspondents across Rajasthan to protect dignity, improve working conditions and ensure a fair voice in the banking ecosystem.</p>
+        <div class="hero-actions">
+          <button class="primary" (click)="go('register')">Become a member <span>→</span></button>
+          <button class="secondary" (click)="scroll('about')"><span class="play">▶</span> Discover our work</button>
+        </div>
+        <div class="trust-row">
+          <div><b>33</b><span>Districts covered</span></div>
+          <div><b>2025</b><span>Established</span></div>
+          <div><b>1</b><span>United voice</span></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="sun"></div>
+        <div class="logo-card">
+          <img src="/images/bcar-logo.jpeg" alt="Business Correspondent Association Rajasthan">
+        </div>
+        <div class="floating-card registered"><span>✓</span><div><b>Officially registered</b><small>Trade Unions Act, 1926</small></div></div>
+        <div class="floating-card motto"><b>“एकता हमारी, शक्ति हमारी”</b><small>सम्मान हमारा अधिकार</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="quick-band">
+    <div class="container quick-grid">
+      <div><span class="quick-icon">⚖</span><div><b>Rights & representation</b><small>Collective support for BC workers</small></div></div>
+      <div><span class="quick-icon">♙</span><div><b>Statewide network</b><small>District-level coordination</small></div></div>
+      <div><span class="quick-icon">↗</span><div><b>Growth & dignity</b><small>Training, awareness and welfare</small></div></div>
+      <div><span class="quick-icon">☏</span><div><b>Member support</b><small>Raise and track grievances</small></div></div>
+    </div>
+  </section>
+
+  <section class="section about" id="about">
+    <div class="container split">
+      <div class="photo-panel">
+        <div class="photo-placeholder">
+          <span>BC</span>
+          <div>Connecting Rajasthan<br>to essential banking</div>
+        </div>
+        <div class="year-stamp"><b>2025</b><span>Year of formation</span></div>
+      </div>
+      <div class="content">
+        <span class="eyebrow">Who we are</span>
+        <h2>One association.<br><em>Thousands of possibilities.</em></h2>
+        <p>Business Correspondent Association Rajasthan is a registered trade union created to organize and represent Bank Mitras and Business Correspondents working at the last mile of financial inclusion.</p>
+        <p>From remote villages to growing cities, our members help citizens access banking. BCAR exists to ensure that this essential work receives the security, respect and opportunity it deserves.</p>
+        <div class="signature"><span>BCAR</span><div><b>State Executive Committee</b><small>Jaipur, Rajasthan</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section mission" id="mission">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow light">What drives us</span><h2>Our pillars of <em>collective progress</em></h2></div>
+        <p>A focused agenda built around the real needs of Business Correspondents.</p>
+      </div>
+      <div class="pillar-grid">
+        <article><span>01</span><div class="pillar-icon">⚖</div><h3>Fair representation</h3><p>Present member concerns before banks, service providers and government institutions through a united platform.</p></article>
+        <article><span>02</span><div class="pillar-icon">◇</div><h3>Security & welfare</h3><p>Advocate for transparent commissions, social security, insurance and safer working conditions.</p></article>
+        <article><span>03</span><div class="pillar-icon">↗</div><h3>Skills & growth</h3><p>Build professional capability through awareness, digital literacy and practical development programs.</p></article>
+        <article><span>04</span><div class="pillar-icon">◎</div><h3>Unity across Rajasthan</h3><p>Create a responsive district network where every member can participate and be heard.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section notices" id="notices">
+    <div class="container">
+      <div class="section-head dark">
+        <div><span class="eyebrow">Latest updates</span><h2>Notices & <em>announcements</em></h2></div>
+        <button class="text-btn" (click)="go('login')">Member portal →</button>
+      </div>
+      <div class="notice-grid">
+        <article *ngFor="let item of notices.slice(0,3)">
+          <span class="tag">{{ item.category }}</span>
+          <time>{{ item.publishedAt | date:'dd MMM yyyy' }}</time>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.body }}</p>
+          <button (click)="go('login')">Read in portal →</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container cta-inner">
+      <div><span class="eyebrow light">Strength in unity</span><h2>Your work matters.<br><em>Your voice should too.</em></h2><p>Join BCAR and help shape a fair, secure future for Business Correspondents across Rajasthan.</p></div>
+      <button class="cream-btn" (click)="go('register')">Start membership application <span>→</span></button>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact">
+    <div class="container contact-grid">
+      <div><span class="eyebrow">Get in touch</span><h2>We are here for<br><em>every Bank Mitra.</em></h2></div>
+      <div class="contact-card"><span>⌖</span><div><b>Registered office</b><p>24, Kishor Vihar B, Gajsinghpura,<br>Jaipur, Rajasthan</p></div></div>
+      <div class="contact-card"><span>☏</span><div><b>Member helpline</b><p><a href="tel:+919829715474">+91 98297 15474</a><br>Monday–Saturday, 10 AM–6 PM</p></div></div>
+    </div>
+  </section>
+</main>
+
+<main class="auth-page" *ngIf="view === 'login' || view === 'register'">
+  <div class="auth-side">
+    <button class="back" (click)="go('home')">← Back to website</button>
+    <div class="auth-message">
+      <img src="/images/bcar-logo.jpeg" alt="BCAR">
+      <span class="eyebrow light">Member platform</span>
+      <h2>संगठन से शक्ति,<br><em>शक्ति से सम्मान</em></h2>
+      <p>A secure digital home for Rajasthan's Business Correspondent community.</p>
+    </div>
+    <small>Registration No. TU/2026/14/132549</small>
+  </div>
+  <div class="auth-form-wrap">
+    <form class="auth-form" *ngIf="view === 'login'" (ngSubmit)="submitLogin()">
+      <div class="mobile-brand"><img src="/images/bcar-logo.jpeg" alt="BCAR"><b>BCAR</b></div>
+      <span class="eyebrow">Welcome back</span><h1>Member login</h1><p>Access your membership, notices and support services.</p>
+      <label>Email address<input type="email" name="email" [(ngModel)]="login.email" placeholder="you@example.com" required></label>
+      <label>Password<input type="password" name="password" [(ngModel)]="login.password" placeholder="Enter your password" required></label>
+      <button class="primary full" [disabled]="busy">{{ busy ? 'Signing in…' : 'Sign in to portal' }} <span>→</span></button>
+      <div class="demo-box"><b>Demo access</b><span>Admin: admin&#64;bcarajasthan.org / Admin&#64;123</span><span>Member: member&#64;bcarajasthan.org / Demo&#64;123</span></div>
+      <p class="switch">Not a member yet? <button type="button" (click)="go('register')">Apply for membership</button></p>
+    </form>
+
+    <app-register *ngIf="view === 'register'"></app-register>
+  </div>
+</main>
+
+<main class="dashboard" *ngIf="view === 'dashboard' && user">
+  <aside>
+    <div class="dash-brand"><img src="/images/bcar-logo.jpeg" alt="BCAR"><div><b>BCAR</b><small>Member Portal</small></div></div>
+    <div class="profile-mini"><span>{{ initials(user.name) }}</span><div><b>{{ user.name }}</b><small>{{ user.role | titlecase }}</small></div></div>
+    <nav>
+      <button [class.active]="dashboardTab === 'overview'" (click)="dashboardTab='overview'"><span>⌂</span> Overview</button>
+      <button [class.active]="dashboardTab === 'members'" (click)="dashboardTab='members'" *ngIf="isManager()"><span>♙</span> Members <i *ngIf="data.stats.pendingApplications">{{data.stats.pendingApplications}}</i></button>
+      <button [class.active]="dashboardTab === 'notices'" (click)="dashboardTab='notices'"><span>▤</span> Notices</button>
+      <button [class.active]="dashboardTab === 'grievances'" (click)="dashboardTab='grievances'"><span>☏</span> Grievances</button>
+      <button [class.active]="dashboardTab === 'documents'" (click)="dashboardTab='documents'"><span>▱</span> Documents</button>
+      <button [class.active]="dashboardTab === 'profile'" (click)="dashboardTab='profile'"><span>○</span> My profile</button>
+    </nav>
+    <button class="logout" (click)="logout()">↪ Sign out</button>
+  </aside>
+  <section class="dash-main">
+    <header class="dash-header">
+      <div><span class="eyebrow">BCAR digital office</span><h1>{{ dashboardTab | titlecase }}</h1></div>
+      <div class="dash-head-actions"><button class="icon-button" (click)="refreshDashboard()">↻</button><span class="avatar">{{ initials(user.name) }}</span></div>
+    </header>
+
+    <div class="dash-content" *ngIf="dashboardTab === 'overview'">
+      <div class="welcome-card"><div><span>{{ user.role | titlecase }} account</span><h2>Namaste, {{ user.name.split(' ')[0] }}.</h2><p>{{ user.role === 'member' ? 'Your BCAR membership and support services are all in one place.' : 'Here is the latest picture of the BCAR member network.' }}</p></div><div class="welcome-mark">BCAR</div></div>
+      <div class="stat-grid">
+        <article><span class="stat-icon blue">♙</span><div><small>Active members</small><b>{{ data.stats.totalMembers || 0 }}</b><em>Verified accounts</em></div></article>
+        <article *ngIf="isManager()"><span class="stat-icon orange">⌛</span><div><small>Pending applications</small><b>{{ data.stats.pendingApplications || 0 }}</b><em>Require review</em></div></article>
+        <article><span class="stat-icon green">⌖</span><div><small>District reach</small><b>{{ data.stats.districts || 0 }}</b><em>Growing statewide</em></div></article>
+        <article><span class="stat-icon red">☏</span><div><small>Open grievances</small><b>{{ data.stats.openGrievances || 0 }}</b><em>Under support</em></div></article>
+      </div>
+      <div class="dash-grid">
+        <section class="panel"><div class="panel-head"><h3>Latest notices</h3><button (click)="dashboardTab='notices'">View all</button></div><div class="feed-item" *ngFor="let item of data.notices.slice(0,4)"><span>{{ item.category?.charAt(0) }}</span><div><b>{{item.title}}</b><small>{{item.publishedAt | date:'dd MMM yyyy'}} · {{item.category}}</small></div></div></section>
+        <section class="panel quick-panel"><div class="panel-head"><h3>Quick actions</h3></div><button (click)="dashboardTab='grievances'"><span>＋</span><div><b>Raise a grievance</b><small>Request union support</small></div></button><button (click)="dashboardTab='documents'"><span>↓</span><div><b>Official documents</b><small>Certificate and bylaws</small></div></button><button *ngIf="isManager()" (click)="dashboardTab='members'"><span>✓</span><div><b>Review applications</b><small>Verify new members</small></div></button></section>
+      </div>
+    </div>
+
+    <div class="dash-content" *ngIf="dashboardTab === 'members' && isManager()">
+      <div class="panel table-panel">
+        <div class="panel-head"><div><h3>Member directory</h3><p>Review applications and manage active members.</p></div><input class="search" placeholder="Search members…"></div>
+        <div class="table-wrap"><table><thead><tr><th>Member</th><th>BC details</th><th>District</th><th>Status</th><th>Action</th></tr></thead><tbody><tr *ngFor="let member of data.members"><td><div class="member-cell"><span>{{initials(member.name)}}</span><div><b>{{member.name}}</b><small>{{member.phone}} · {{member.email}}</small></div></div></td><td><b>{{member.bankName || '—'}}</b><small>{{member.bcCode || member.membershipNo || '—'}}</small></td><td>{{member.district || '—'}}</td><td><span class="status" [class]="member.status">{{member.status}}</span></td><td><div class="actions" *ngIf="member.status === 'pending'"><button class="approve" (click)="approve(member,'active')">Approve</button><button class="reject" (click)="approve(member,'rejected')">Reject</button></div><span *ngIf="member.status !== 'pending'">{{member.membershipNo || '—'}}</span></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="dash-content two-column" *ngIf="dashboardTab === 'notices'">
+      <section class="panel"><div class="panel-head"><h3>Association notices</h3></div><article class="full-notice" *ngFor="let item of data.notices"><div><span class="tag">{{item.category}}</span><time>{{item.publishedAt | date:'dd MMM yyyy'}}</time></div><h3>{{item.title}}</h3><p>{{item.body}}</p></article></section>
+      <form class="panel side-form" *ngIf="isManager()" (ngSubmit)="publishNotice()"><h3>Publish notice</h3><label>Category<select name="category" [(ngModel)]="notice.category"><option>General</option><option>Official</option><option>Meeting</option><option>Membership</option><option>Urgent</option></select></label><label>Title<input name="title" [(ngModel)]="notice.title" required></label><label>Message<textarea name="body" [(ngModel)]="notice.body" rows="6" required></textarea></label><button class="primary full">Publish notice</button></form>
+    </div>
+
+    <div class="dash-content two-column" *ngIf="dashboardTab === 'grievances'">
+      <section class="panel"><div class="panel-head"><h3>{{isManager() ? 'Member grievances' : 'My grievances'}}</h3></div><div class="empty" *ngIf="!data.grievances.length"><span>✓</span><b>No grievances yet</b><p>New requests will appear here.</p></div><article class="grievance-item" *ngFor="let item of data.grievances"><div><span class="status" [class]="item.status">{{item.status}}</span><time>{{item.createdAt | date:'dd MMM yyyy'}}</time></div><h3>{{item.subject}}</h3><p>{{item.description}}</p><small *ngIf="isManager()">Submitted by {{item.memberName}}</small><select *ngIf="isManager()" [ngModel]="item.status" (ngModelChange)="updateGrievance(item._id,$event)"><option value="open">Open</option><option value="in-review">In review</option><option value="resolved">Resolved</option></select></article></section>
+      <form class="panel side-form" *ngIf="!isManager()" (ngSubmit)="submitGrievance()"><h3>Request union support</h3><p>Describe your issue clearly. Your information is visible only to authorized BCAR representatives.</p><label>Subject<input name="subject" [(ngModel)]="grievance.subject" required></label><label>Details<textarea name="description" [(ngModel)]="grievance.description" rows="7" required></textarea></label><button class="primary full">Submit grievance</button></form>
+    </div>
+
+    <div class="dash-content" *ngIf="dashboardTab === 'documents'">
+      <div class="document-grid">
+        <a class="document-card" href="/documents/BCAR-Registration-Certificate.pdf" target="_blank"><span>PDF</span><div><b>Trade Union Registration Certificate</b><small>Government of Rajasthan · 18 June 2026</small><em>Open document →</em></div></a>
+        <a class="document-card" href="/documents/BCAR-Official-Document.pdf" target="_blank"><span>PDF</span><div><b>BCAR Official Document / Bylaws</b><small>9-page association record</small><em>Open document →</em></div></a>
+      </div>
+    </div>
+
+    <div class="dash-content" *ngIf="dashboardTab === 'profile'">
+      <div class="panel profile-panel"><div class="large-avatar">{{initials(user.name)}}</div><div><span class="status active">Verified member</span><h2>{{user.name}}</h2><p>{{user.email}} · {{user.phone}}</p></div><dl><div><dt>Membership number</dt><dd>{{user.membershipNo || 'Awaiting assignment'}}</dd></div><div><dt>Role</dt><dd>{{user.role | titlecase}}</dd></div><div><dt>District</dt><dd>{{user.district || '—'}}</dd></div><div><dt>Bank</dt><dd>{{user.bankName || '—'}}</dd></div><div><dt>BC code</dt><dd>{{user.bcCode || '—'}}</dd></div></dl></div>
+    </div>
+  </section>
+</main>
+
+<footer *ngIf="view === 'home'">
+  <div class="container footer-grid"><div class="footer-brand"><img src="/images/bcar-logo.jpeg" alt="BCAR"><div><b>BCAR</b><span>Business Correspondent<br>Association Rajasthan</span></div></div><p>एकता हमारी, शक्ति हमारी<br>अधिकार हमारा, सम्मान हमारा</p><div><small>Registered under</small><b>Trade Unions Act, 1926</b><span>TU/2026/14/132549</span></div></div>
+  <div class="container copyright">© 2026 Business Correspondent Association Rajasthan. All rights reserved.</div>
+</footer>

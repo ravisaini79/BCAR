@@ -136,7 +136,7 @@ import { NewsService } from '../../core/services/news.service';
   styles: [`
     .details-section {
       background: #F8FAFC;
-      padding: 120px 24px 80px;
+      padding: 100px 24px 80px;
     }
     .details-container {
       max-width: 900px;

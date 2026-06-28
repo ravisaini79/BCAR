@@ -96,7 +96,7 @@ import { ProgressSpinner } from 'primeng/progressspinner';
     .page-hero {
       margin-top: 80px;
       background: radial-gradient(circle at top right, rgba(15, 118, 110, 0.15) 0%, transparent 60%), linear-gradient(135deg, #051c3c 0%, #0c356a 100%);
-      padding: 100px 24px 80px; text-align: center;
+      padding: 48px 24px 40px; text-align: center;
     }
     .page-hero-inner { max-width: 700px; margin: 0 auto; }
     .page-badge {

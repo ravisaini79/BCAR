@@ -1004,25 +1004,28 @@
 }
 
 @media (max-width: 767px) {
-  .admin-sidebar {
+  .admin-sidebar,
+  .admin-shell.collapsed .admin-sidebar,
+  .admin-shell:not(.collapsed) .admin-sidebar {
     position: fixed !important;
     top: 0 !important;
     bottom: 0 !important;
     left: 0 !important;
     z-index: 1001 !important;
     width: 260px !important;
-    transform: translateX(-100%) !important;
+    display: flex !important;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 
-  .admin-shell:not(.collapsed) .admin-sidebar {
-    transform: translateX(0) !important;
-  }
-
-  /* When collapsed (default on mobile), keep sidebar off screen */
+  /* Closed state: shift left off-screen */
+  .admin-sidebar,
   .admin-shell.collapsed .admin-sidebar {
     transform: translateX(-100%) !important;
-    width: 260px !important;
+  }
+
+  /* Open state: slide in on-screen */
+  .admin-shell:not(.collapsed) .admin-sidebar {
+    transform: translateX(0) !important;
   }
 
   .admin-main {

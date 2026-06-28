@@ -207,7 +207,9 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    this.refreshAll();
+    setTimeout(() => {
+      this.refreshAll();
+    });
   }
 
   // Getters

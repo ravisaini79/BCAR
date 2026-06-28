@@ -36,4 +36,22 @@ const authorize = (...roles) => {
   };
 };
 
-module.exports = { protect, authorize };
+const optionalProtect = async (req, res, next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'bcar-development-secret-change-me');
+      req.user = await User.findById(decoded.id).select('-password');
+    } catch (error) {
+      console.warn('[OPTIONAL AUTH] Invalid token supplied, continuing as anonymous');
+    }
+  }
+  next();
+};
+
+module.exports = { protect, authorize, optionalProtect };

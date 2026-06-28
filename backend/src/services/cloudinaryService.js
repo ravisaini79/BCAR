@@ -26,7 +26,7 @@ if (isConfigured) {
  * @param {string} filename - Original filename
  * @returns {Promise<object>} - Cloudinary metadata block
  */
-const uploadFromBuffer = (buffer, folder, filename) => {
+const uploadFromBuffer = (buffer, folder, filename, options = {}) => {
   return new Promise((resolve, reject) => {
     if (!isConfigured) {
       // Mock Cloudinary metadata for offline developer testing
@@ -48,7 +48,8 @@ const uploadFromBuffer = (buffer, folder, filename) => {
       {
         folder: folder,
         public_id: filename.substring(0, filename.lastIndexOf('.')),
-        resource_type: 'auto'
+        resource_type: 'auto',
+        ...options
       },
       (error, result) => {
         if (error) {

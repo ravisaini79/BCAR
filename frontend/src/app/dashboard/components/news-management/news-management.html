@@ -1,0 +1,200 @@
+<div class="news-mgmt-panel">
+
+  <!-- Panel Header -->
+  <div class="panel-header">
+    <div class="panel-title">
+      <h2>News Management</h2>
+      <p>Compose, publish, and manage latest news articles for the public site</p>
+    </div>
+    <button class="action-btn-primary" (click)="openCreateDialog()">
+      <i class="pi pi-plus"></i> Add News Article
+    </button>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="search-container">
+    <span class="p-input-icon-left" style="flex-grow: 1; position: relative;">
+      <i class="pi pi-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
+      <input pInputText type="text" [(ngModel)]="searchQuery" (input)="filterItems()" placeholder="Search news by title or content..." style="padding-left: 32px; width: 100%;" />
+    </span>
+    
+    <p-select [options]="filterCategories" [(ngModel)]="selectedCategory" (onChange)="filterItems()" placeholder="Filter by Category" [style]="{'width':'220px'}"></p-select>
+  </div>
+
+  <!-- News Table -->
+  <div class="news-table-card" *ngIf="!loading() && filteredItems().length > 0">
+    <p-table [value]="filteredItems()" [paginator]="true" [rows]="6" responsiveLayout="scroll" styleClass="p-datatable-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Article Details</th>
+          <th>Category</th>
+          <th>Publish Date</th>
+          <th>Status</th>
+          <th>Features</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>
+            <div class="news-cell-info">
+              <img [src]="item.featuredImage?.secure_url" [alt]="item.title" class="news-thumb" />
+              <div class="news-title-text">
+                {{ item.title }}
+                <small class="slug-preview">Slug: <span class="slug-val">{{ item.slug }}</span></small>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span style="text-transform: capitalize;">{{ item.category }}</span>
+          </td>
+          <td>
+            {{ item.publishDate | date: 'dd MMM yyyy' }}
+          </td>
+          <td>
+            <p-tag [value]="item.status" [severity]="item.status === 'Published' ? 'success' : 'warn'"></p-tag>
+          </td>
+          <td>
+            <div style="display: flex; gap: 4px;">
+              <p-tag value="Pinned" severity="info" *ngIf="item.pinned"></p-tag>
+              <p-tag value="Featured" severity="secondary" *ngIf="item.featured"></p-tag>
+            </div>
+          </td>
+          <td>
+            <div class="card-actions">
+              <button class="btn-icon" pTooltip="Edit Article" tooltipPosition="top" (click)="openEditDialog(item)">
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button class="btn-icon delete" pTooltip="Delete Article" tooltipPosition="top" (click)="confirmDelete(item)">
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Loading State -->
+  <div class="gallery-empty-state" *ngIf="loading()">
+    <i class="pi pi-spin pi-spinner"></i>
+    <h3>Loading Articles...</h3>
+    <p>Please wait while we fetch the latest news.</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="gallery-empty-state" *ngIf="!loading() && filteredItems().length === 0">
+    <i class="pi pi-megaphone"></i>
+    <h3>No Articles Found</h3>
+    <p>Get started by adding your first news article using the button above.</p>
+  </div>
+
+  <!-- News CRUD Dialog -->
+  <p-dialog 
+    [header]="isEditMode() ? 'Edit News Article' : 'Create News Article'" 
+    [(visible)]="dialogVisible" 
+    [modal]="true" 
+    [style]="{width: '780px'}"
+    [draggable]="false"
+    [resizable]="false"
+    [contentStyle]="{'max-height': '85vh', 'overflow-y': 'auto'}">
+    
+    <form [formGroup]="newsForm" (ngSubmit)="onSubmit()" class="form-grid">
+      
+      <!-- Title -->
+      <div class="form-group col-span-2">
+        <label for="title">Title *</label>
+        <input pInputText id="title" formControlName="title" (input)="onTitleChange()" placeholder="Enter article title" />
+        <small class="p-error" *ngIf="newsForm.get('title')?.touched && newsForm.get('title')?.invalid">
+          Title is required.
+        </small>
+        <!-- Slug Preview -->
+        <span class="slug-preview" *ngIf="slugPreview">
+          Generated Slug: <span class="slug-val">{{ slugPreview }}</span>
+        </span>
+      </div>
+
+      <!-- Short Description -->
+      <div class="form-group col-span-2">
+        <label for="shortDescription">Short Description *</label>
+        <textarea pInputTextarea id="shortDescription" formControlName="shortDescription" rows="2" placeholder="Brief summary (displayed on list pages)"></textarea>
+        <small class="p-error" *ngIf="newsForm.get('shortDescription')?.touched && newsForm.get('shortDescription')?.invalid">
+          Short description is required.
+        </small>
+      </div>
+
+      <!-- Full Description (Rich Text Editor) -->
+      <div class="form-group col-span-2">
+        <label>Full Content *</label>
+        <p-editor formControlName="fullDescription" [style]="{ height: '220px' }"></p-editor>
+        <small class="p-error" *ngIf="newsForm.get('fullDescription')?.touched && newsForm.get('fullDescription')?.invalid">
+          Full content description is required.
+        </small>
+      </div>
+
+      <!-- Featured Image Upload -->
+      <div class="form-group col-span-2">
+        <label>Featured Image * (JPG, JPEG, PNG, WEBP; max 500 KB)</label>
+        
+        <div class="file-upload-container" (click)="fileInput.click()" *ngIf="!imagePreviewUrl">
+          <i class="pi pi-image"></i>
+          <p>Click to upload featured image</p>
+          <small style="color: #94a3b8; display: block; margin-top: 4px;">Recommended size: 1200 x 630 px (Landscape)</small>
+        </div>
+
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" />
+
+        <div class="img-preview-box" *ngIf="imagePreviewUrl">
+          <img [src]="imagePreviewUrl" alt="Preview" />
+          <button type="button" class="remove-preview-btn" (click)="removeImage()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <p-select id="category" [options]="formCategories" formControlName="category" placeholder="Select category"></p-select>
+        <small class="p-error" *ngIf="newsForm.get('category')?.touched && newsForm.get('category')?.invalid">
+          Category is required.
+        </small>
+      </div>
+
+      <!-- Publish Date -->
+      <div class="form-group">
+        <label for="publishDate">Publish Date</label>
+        <input pInputText type="date" id="publishDate" formControlName="publishDate" />
+      </div>
+
+      <!-- Status (Draft / Published) -->
+      <div class="form-group">
+        <label for="status">Publish Status</label>
+        <p-select id="status" [options]="statusOptions" formControlName="status"></p-select>
+      </div>
+
+      <!-- Featured / Pinned switches -->
+      <div class="switch-grid col-span-2" style="margin-top: 10px;">
+        <div class="form-group switch-group">
+          <input type="checkbox" id="pinned" formControlName="pinned" />
+          <label for="pinned">Pin Article to Top</label>
+        </div>
+
+        <div class="form-group switch-group">
+          <input type="checkbox" id="featured" formControlName="featured" />
+          <label for="featured">Featured Article</label>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="dialog-footer col-span-2">
+        <button type="button" class="btn-cancel" (click)="dialogVisible.set(false)">Cancel</button>
+        <button type="submit" class="btn-submit" [disabled]="newsForm.invalid || busy || (!imagePreviewUrl && !isEditMode())">
+          <i class="pi pi-spin pi-spinner" *ngIf="busy"></i>
+          {{ isEditMode() ? 'Save Changes' : 'Publish Article' }}
+        </button>
+      </div>
+
+    </form>
+  </p-dialog>
+</div>

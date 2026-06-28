@@ -1,12 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, signal, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { HeaderComponent } from '../../layout/header/header';
 import { FooterComponent } from '../../layout/footer/footer';
+import { NewsService } from '../../core/services/news.service';
 
 @Component({
   selector: 'app-news',
@@ -38,11 +36,11 @@ import { FooterComponent } from '../../layout/footer/footer';
             <input
               type="text"
               [(ngModel)]="searchQuery"
-              (ngModelChange)="currentPage = 1"
-              placeholder="Search by keyword, category..."
+              (ngModelChange)="currentPage = 1; filterItems()"
+              placeholder="Search news by title or content..."
             >
             @if (searchQuery) {
-              <button class="clear-btn" (click)="searchQuery = ''; currentPage = 1">
+              <button class="clear-btn" (click)="searchQuery = ''; currentPage = 1; filterItems()">
                 <i class="pi pi-times"></i>
               </button>
             }
@@ -53,7 +51,7 @@ import { FooterComponent } from '../../layout/footer/footer';
             @for (cat of categories; track cat.value) {
               <button
                 [class.active]="activeCategory === cat.value"
-                (click)="activeCategory = cat.value; currentPage = 1">
+                (click)="activeCategory = cat.value; currentPage = 1; filterItems()">
                 {{ cat.label }}
               </button>
             }
@@ -61,39 +59,44 @@ import { FooterComponent } from '../../layout/footer/footer';
         </div>
 
         <!-- Loading State -->
-        @if (loading) {
+        @if (loading()) {
           <div class="loading-wrap">
             <div class="spinner"></div>
-            <p>Loading announcements...</p>
+            <p>Loading news articles...</p>
           </div>
         }
 
         <!-- News Grid -->
-        @if (!loading) {
-          @if (paginatedNotices.length > 0) {
+        @if (!loading()) {
+          @if (paginatedArticles().length > 0) {
             <div class="notice-grid">
-              @for (item of paginatedNotices; track item.id ?? item.title) {
+              @for (item of paginatedArticles(); track item._id) {
                 <article class="notice-card">
+                  <!-- Featured Image -->
+                  <div class="news-image-wrapper" *ngIf="item.featuredImage?.secure_url" (click)="router.navigate(['/news', item.slug])" style="cursor: pointer;">
+                    <img [src]="item.featuredImage.secure_url" [alt]="item.title" class="news-featured-img">
+                  </div>
+                  
                   <div class="notice-top">
                     <span class="notice-tag" [class]="'cat-' + (item.category | lowercase)">
-                      {{ item.category }}
+                      {{ item.category === 'policy' ? 'Policy Update' : item.category === 'circular' ? 'Circular' : item.category === 'event' ? 'Event' : 'Alert' }}
                     </span>
                     <time class="notice-date">
                       <i class="pi pi-calendar"></i>
-                      {{ item.publishedAt | date:'dd MMM yyyy' }}
+                      {{ item.publishDate | date:'dd MMM yyyy' }}
                     </time>
                   </div>
                   <h3>{{ item.title }}</h3>
-                  <p>{{ item.body }}</p>
-                  <button class="read-btn" (click)="router.navigate(['/login'])">
-                    Read full update in portal <i class="pi pi-arrow-right"></i>
+                  <p>{{ item.shortDescription }}</p>
+                  <button class="read-btn" (click)="router.navigate(['/news', item.slug])">
+                    Read More <i class="pi pi-arrow-right"></i>
                   </button>
                 </article>
               }
             </div>
 
             <!-- Pagination -->
-            @if (totalPages > 1) {
+            @if (totalPages() > 1) {
               <div class="pagination">
                 <button class="pg-btn" [disabled]="currentPage === 1" (click)="prevPage()">
                   <i class="pi pi-chevron-left"></i>
@@ -106,13 +109,13 @@ import { FooterComponent } from '../../layout/footer/footer';
                     {{ page }}
                   </button>
                 }
-                <button class="pg-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">
+                <button class="pg-btn" [disabled]="currentPage === totalPages()" (click)="nextPage()">
                   <i class="pi pi-chevron-right"></i>
                 </button>
               </div>
               <p class="pagination-info">
-                Showing {{ (currentPage - 1) * pageSize + 1 }}–{{ Math.min(currentPage * pageSize, filteredNotices.length) }}
-                of {{ filteredNotices.length }} announcements
+                Showing {{ (currentPage - 1) * pageSize + 1 }}–{{ Math.min(currentPage * pageSize, filteredArticles().length) }}
+                of {{ filteredArticles().length }} articles
               </p>
             }
 
@@ -120,10 +123,10 @@ import { FooterComponent } from '../../layout/footer/footer';
             <!-- Empty State -->
             <div class="empty-state">
               <i class="pi pi-inbox"></i>
-              <h3>No Announcements Found</h3>
+              <h3>No Articles Found</h3>
               <p>{{ searchQuery || activeCategory !== 'all' ? 'Try a different search term or category.' : 'Check back soon for new updates from BCAR.' }}</p>
               @if (searchQuery || activeCategory !== 'all') {
-                <button class="clear-filters-btn" (click)="searchQuery = ''; activeCategory = 'all'; currentPage = 1">
+                <button class="clear-filters-btn" (click)="searchQuery = ''; activeCategory = 'all'; currentPage = 1; filterItems()">
                   Clear Filters
                 </button>
               }
@@ -234,8 +237,27 @@ import { FooterComponent } from '../../layout/footer/footer';
       border-left: 4px solid #D4AF37;
       display: flex; flex-direction: column; gap: 12px;
       transition: transform 0.2s, box-shadow 0.2s;
+      overflow: hidden;
     }
     .notice-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+
+    .news-image-wrapper {
+      margin: -28px -24px 12px -24px;
+      height: 180px;
+      overflow: hidden;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      background: #cbd5e1;
+    }
+    .news-featured-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+    .notice-card:hover .news-featured-img {
+      transform: scale(1.05);
+    }
 
     .notice-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
     .notice-tag {
@@ -248,35 +270,35 @@ import { FooterComponent } from '../../layout/footer/footer';
     .notice-tag.cat-event     { background: rgba(15,118,110,0.12); color: #0f766e; }
     .notice-tag.cat-alert     { background: rgba(239,68,68,0.1);   color: #dc2626; }
 
-    .notice-date { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #94a3b8; font-weight: 500; }
-
+    .notice-date { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #64748B; }
     .notice-card h3 {
-      font-family: Poppins, sans-serif; font-size: 16px; font-weight: 700;
+      font-family: Poppins, sans-serif; font-size: 18px; font-weight: 700;
       color: #0B2D5C; margin: 0; line-height: 1.4;
     }
-    .notice-card p { font-size: 13.5px; color: #64748B; line-height: 1.7; margin: 0; flex: 1; }
+    .notice-card p {
+      font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 8px;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
 
     .read-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: none; border: 0; padding: 0;
-      color: #D4AF37; font-size: 13px; font-weight: 700;
-      cursor: pointer; transition: gap 0.2s;
-      margin-top: auto;
-      font-family: inherit;
+      align-self: flex-start; display: inline-flex; align-items: center; gap: 6px;
+      background: 0; border: 0; color: #0B2D5C; font-weight: 700; font-size: 13.5px;
+      padding: 0; cursor: pointer; transition: color 0.2s;
+      margin-top: auto; font-family: inherit;
     }
-    .read-btn:hover { gap: 10px; }
+    .read-btn:hover { color: #D4AF37; }
 
     /* ── Pagination ── */
-    .pagination { display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
     .pg-btn {
       width: 38px; height: 38px; border-radius: 8px;
       border: 1.5px solid #dde3ec; background: #ffffff;
-      color: #0B2D5C; font-size: 13px;
-      display: flex; align-items: center; justify-content: center;
+      color: #475569; display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: all 0.2s;
     }
-    .pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .pg-btn:not(:disabled):hover { border-color: #0B2D5C; background: rgba(11,45,92,0.05); }
+    .pg-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .pg-btn:not(:disabled):hover { border-color: #0B2D5C; color: #0B2D5C; }
+
     .pg-num {
       width: 38px; height: 38px; border-radius: 8px;
       border: 1.5px solid #dde3ec; background: #ffffff;
@@ -317,16 +339,17 @@ import { FooterComponent } from '../../layout/footer/footer';
   `]
 })
 export class NewsComponent implements OnInit {
-  private http = inject(HttpClient);
+  private newsService = inject(NewsService);
   router = inject(Router);
   Math = Math;
 
-  notices: any[] = [];
-  loading = true;
+  articles = signal<any[]>([]);
+  filteredArticles = signal<any[]>([]);
+  loading = signal<boolean>(true);
   searchQuery = '';
   activeCategory = 'all';
   currentPage = 1;
-  pageSize = 9;
+  pageSize = 6;
 
   categories = [
     { value: 'all',      label: 'All' },
@@ -337,58 +360,58 @@ export class NewsComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.http.get<any[]>(`${environment.apiUrl}/public/notices`).subscribe({
-      next:  rows  => { this.notices = rows; this.loading = false; },
-      error: ()    => {
-        // Fallback demo data when API unavailable
-        this.notices = this.demoNotices;
-        this.loading = false;
+    this.loadNews();
+  }
+
+  loadNews() {
+    this.loading.set(true);
+    this.newsService.getArticles().subscribe({
+      next: (data) => {
+        this.articles.set(data);
+        this.filterItems();
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
       }
     });
   }
 
-  get filteredNotices(): any[] {
-    let list = this.notices;
+  filterItems() {
+    let list = this.articles();
+    
+    // Category Filter
     if (this.activeCategory !== 'all') {
       list = list.filter(n => (n.category ?? '').toLowerCase() === this.activeCategory);
     }
+    
+    // Search Query Filter
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
       list = list.filter(n =>
         (n.title ?? '').toLowerCase().includes(q) ||
-        (n.body  ?? '').toLowerCase().includes(q) ||
+        (n.shortDescription ?? '').toLowerCase().includes(q) ||
         (n.category ?? '').toLowerCase().includes(q)
       );
     }
-    return list;
+    
+    this.filteredArticles.set(list);
+    this.currentPage = 1;
   }
 
-  get paginatedNotices(): any[] {
+  paginatedArticles() {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredNotices.slice(start, start + this.pageSize);
+    return this.filteredArticles().slice(start, start + this.pageSize);
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.filteredNotices.length / this.pageSize);
+  totalPages(): number {
+    return Math.ceil(this.filteredArticles().length / this.pageSize);
   }
 
   pageNumbers(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
   }
 
   prevPage() { if (this.currentPage > 1) this.currentPage--; }
-  nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }
-
-  demoNotices = [
-    { id: 1, title: 'New Commission Structure Announced by SBI for BC Agents',          category: 'Circular',   publishedAt: '2026-06-20', body: 'State Bank of India has revised its commission matrix for Banking Correspondents effective from July 2026. All registered members are advised to review the updated schedule.' },
-    { id: 2, title: 'RBI Guideline Update: AEPS Transaction Limits Revised',             category: 'Policy',     publishedAt: '2026-06-15', body: 'The Reserve Bank of India has issued fresh guidelines revising AEPS daily transaction limits. BCAR members must comply with the updated limits from 1st July 2026.' },
-    { id: 3, title: 'BCAR Annual General Meeting – Jaipur, July 2026',                   category: 'Event',      publishedAt: '2026-06-10', body: 'The Annual General Meeting of BCAR will be held at Birla Auditorium, Jaipur on 20th July 2026. All district representatives are requested to confirm attendance.' },
-    { id: 4, title: 'Alert: Fraudulent BC Agent IDs Being Circulated',                   category: 'Alert',      publishedAt: '2026-06-05', body: 'BCAR has received reports of fraudulent identity cards being circulated. Please verify your ID card authenticity via the member portal. Report any suspected fraud immediately.' },
-    { id: 5, title: 'IIBF BC Examination Registration Open – July 2026 Batch',           category: 'Circular',   publishedAt: '2026-05-28', body: 'Registration for the July 2026 batch of IIBF Business Correspondent Certificate Examination is now open. BCAR is offering subsidized coaching for registered members.' },
-    { id: 6, title: 'Group Insurance Scheme for BC Agents – Enrollment Deadline',        category: 'Circular',   publishedAt: '2026-05-20', body: 'BCAR has negotiated a group life and medical insurance scheme for all active members. Enrollment deadline is 30th June 2026. Nominal premium applicable.' },
-    { id: 7, title: 'Digital Payments Workshop – All Districts',                         category: 'Event',      publishedAt: '2026-05-12', body: 'A series of digital payment workshops will be conducted across all 33 districts during June 2026. Topics include UPI, AEPS security, and fraud prevention.' },
-    { id: 8, title: 'Rajasthan Govt: Financial Inclusion Policy 2026 Released',          category: 'Policy',     publishedAt: '2026-05-05', body: 'The Government of Rajasthan has released its Financial Inclusion Policy 2026, outlining increased targets for banking penetration. BCAR has contributed key recommendations.' },
-    { id: 9, title: 'Member ID Card Renewal: Process and Timeline',                      category: 'Circular',   publishedAt: '2026-04-28', body: 'BCAR member ID cards issued in 2024 are up for renewal. Members are requested to log in to the portal and initiate the renewal process before May 31, 2026.' },
-    { id:10, title: 'Alert: System Downtime on Member Portal – 28th June (Maintenance)', category: 'Alert',      publishedAt: '2026-04-20', body: 'The BCAR member portal will undergo scheduled maintenance on 28th June 2026 from 2:00 AM to 6:00 AM IST. Services will be unavailable during this period.' },
-  ];
+  nextPage() { if (this.currentPage < this.totalPages()) this.currentPage++; }
 }

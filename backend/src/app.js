@@ -8,6 +8,8 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
 const publicRoutes = require('./routes/publicRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const galleryRoutes = require('./routes/galleryRoutes');
+const newsRoutes = require('./routes/newsRoutes');
 
 const app = express();
 
@@ -36,6 +38,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/member', authRoutes); // Map both auth and member namespaces
 app.use('/api/public', publicRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/gallery', galleryRoutes);
+app.use('/api/news', newsRoutes);
 
 // Base route
 app.get('/', (req, res) => {

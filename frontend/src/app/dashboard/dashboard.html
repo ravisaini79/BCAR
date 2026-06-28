@@ -76,6 +76,21 @@
         <span class="sb-badge danger" *ngIf="openGrievancesCount > 0">{{ openGrievancesCount }}</span>
       </button>
 
+      <!-- Gallery & News (Admin only) -->
+      <ng-container *ngIf="isAdmin">
+        <div class="sb-section-label">Content Management</div>
+
+        <button class="sb-item" [class.active]="activeView === 'gallery'" (click)="navigate('gallery')">
+          <i class="pi pi-images sb-icon"></i>
+          <span class="sb-label">Gallery Management</span>
+        </button>
+
+        <button class="sb-item" [class.active]="activeView === 'news'" (click)="navigate('news')">
+          <i class="pi pi-megaphone sb-icon"></i>
+          <span class="sb-label">Latest News</span>
+        </button>
+      </ng-container>
+
     </nav>
 
     <!-- Bottom: Logout -->
@@ -541,6 +556,12 @@
 
       </div>
       <!-- /grievances -->
+
+      <!-- Gallery Management -->
+      <app-gallery-management *ngIf="activeView === 'gallery'" />
+
+      <!-- News Management -->
+      <app-news-management *ngIf="activeView === 'news'" />
 
     </div>
     <!-- /admin-content -->

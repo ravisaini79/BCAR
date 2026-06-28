@@ -25,6 +25,17 @@ const getBufferFromBase64 = (base64Data) => {
   return { buffer, mimeType };
 };
 
+const validateDocument = (file, allowedExts, maxSizeKB, label) => {
+  if (!file) return;
+  const ext = file.filename.split('.').pop().toLowerCase();
+  if (!allowedExts.includes(ext)) {
+    throw new Error(`${label} format must be one of: ${allowedExts.join(', ')}`);
+  }
+  if (file.buffer.length > maxSizeKB * 1024) {
+    throw new Error(`${label} size exceeds the limit of ${maxSizeKB} KB (Current: ${Math.round(file.buffer.length / 1024)} KB)`);
+  }
+};
+
 // Helper to generate next registration number
 const generateRegNumber = async () => {
   const lastUser = await User.findOne({ 
@@ -125,51 +136,65 @@ const registerUser = async (req, res, next) => {
     }
 
     // Step 3: Setup asynchronous Cloudinary upload tasks
+    const photoFile = getFileBuffer('photograph', photograph || profilePhoto);
+    const aadhaarFile = getFileBuffer('aadhaarCard', aadhaarCard || aadhaarFront);
+    const panFile = getFileBuffer('panCard', panCard);
+    const bankFile = getFileBuffer('bankBcCertificate', bankBcCertificate || bankPassbook);
+    const aadhaarBackFile = getFileBuffer('aadhaarBack', aadhaarBack);
+    const signatureFile = getFileBuffer('signature', signature);
+    const otherFile = getFileBuffer('otherDocuments', otherDocuments);
+
+    // Validate Photograph (Formats: JPG, JPEG, PNG; Size: Max 300 KB)
+    if (photoFile) {
+      validateDocument(photoFile, ['jpg', 'jpeg', 'png'], 300, 'Passport Photograph');
+    }
+
+    // Validate Documents (Formats: PDF, JPG, JPEG, PNG; Size: Max 2 MB)
+    const docExts = ['pdf', 'jpg', 'jpeg', 'png'];
+    if (aadhaarFile) validateDocument(aadhaarFile, docExts, 2048, 'Aadhaar Card');
+    if (panFile) validateDocument(panFile, docExts, 2048, 'PAN Card');
+    if (bankFile) validateDocument(bankFile, docExts, 2048, 'Bank BC Certificate');
+    if (aadhaarBackFile) validateDocument(aadhaarBackFile, docExts, 2048, 'Aadhaar Card Back');
+    if (signatureFile) validateDocument(signatureFile, docExts, 2048, 'Signature');
+    if (otherFile) validateDocument(otherFile, docExts, 2048, 'Other Documents');
+
     const uploadTasks = [];
     const uploadKeys = [];
 
-    // Map photograph / profile photo
-    const photoFile = getFileBuffer('photograph', photograph || profilePhoto);
+    // Photograph goes to bcar/profile, automatically cropped to a square 600x600px face-focused crop
     if (photoFile) {
-      uploadTasks.push(uploadFromBuffer(photoFile.buffer, 'bcar/members/profile', photoFile.filename));
-      uploadKeys.push('photograph'); // Current frontend key
+      uploadTasks.push(uploadFromBuffer(
+        photoFile.buffer,
+        'bcar/profile',
+        photoFile.filename,
+        { transformation: [{ width: 600, height: 600, crop: 'fill', gravity: 'face', quality: 'auto', fetch_format: 'auto' }] }
+      ));
+      uploadKeys.push('photograph');
     }
 
-    // Map aadhaarCard / aadhaarFront
-    const aadhaarFile = getFileBuffer('aadhaarCard', aadhaarCard || aadhaarFront);
+    // Other documents go to bcar/documents
     if (aadhaarFile) {
-      uploadTasks.push(uploadFromBuffer(aadhaarFile.buffer, 'bcar/members/aadhaar', aadhaarFile.filename));
-      uploadKeys.push('aadhaarCard'); // Current frontend key
+      uploadTasks.push(uploadFromBuffer(aadhaarFile.buffer, 'bcar/documents', aadhaarFile.filename));
+      uploadKeys.push('aadhaarCard');
     }
-
-    // Map panCard
-    const panFile = getFileBuffer('panCard', panCard);
     if (panFile) {
-      uploadTasks.push(uploadFromBuffer(panFile.buffer, 'bcar/members/pan', panFile.filename));
+      uploadTasks.push(uploadFromBuffer(panFile.buffer, 'bcar/documents', panFile.filename));
       uploadKeys.push('panCard');
     }
-
-    // Map bankBcCertificate / bankPassbook
-    const bankFile = getFileBuffer('bankBcCertificate', bankBcCertificate || bankPassbook);
     if (bankFile) {
-      uploadTasks.push(uploadFromBuffer(bankFile.buffer, 'bcar/members/documents', bankFile.filename));
-      uploadKeys.push('bankBcCertificate'); // Current frontend key
+      uploadTasks.push(uploadFromBuffer(bankFile.buffer, 'bcar/documents', bankFile.filename));
+      uploadKeys.push('bankBcCertificate');
     }
-
-    // Additional requested fields
-    const aadhaarBackFile = getFileBuffer('aadhaarBack', aadhaarBack);
     if (aadhaarBackFile) {
-      uploadTasks.push(uploadFromBuffer(aadhaarBackFile.buffer, 'bcar/members/aadhaar', aadhaarBackFile.filename));
+      uploadTasks.push(uploadFromBuffer(aadhaarBackFile.buffer, 'bcar/documents', aadhaarBackFile.filename));
       uploadKeys.push('aadhaarBack');
     }
-    const signatureFile = getFileBuffer('signature', signature);
     if (signatureFile) {
-      uploadTasks.push(uploadFromBuffer(signatureFile.buffer, 'bcar/members/signature', signatureFile.filename));
+      uploadTasks.push(uploadFromBuffer(signatureFile.buffer, 'bcar/documents', signatureFile.filename));
       uploadKeys.push('signature');
     }
-    const otherFile = getFileBuffer('otherDocuments', otherDocuments);
     if (otherFile) {
-      uploadTasks.push(uploadFromBuffer(otherFile.buffer, 'bcar/members/documents', otherFile.filename));
+      uploadTasks.push(uploadFromBuffer(otherFile.buffer, 'bcar/documents', otherFile.filename));
       uploadKeys.push('otherDocuments');
     }
 

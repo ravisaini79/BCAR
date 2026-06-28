@@ -1,8 +1,9 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../layout/header/header';
 import { FooterComponent } from '../../layout/footer/footer';
+import { GalleryService } from '../../core/services/gallery.service';
 
 @Component({
   selector: 'app-gallery',
@@ -48,23 +49,30 @@ import { FooterComponent } from '../../layout/footer/footer';
 
         <!-- Masonry Grid -->
         <div class="gallery-masonry">
-          @for (item of filtered(); track item.title) {
+          @for (item of filtered(); track item._id) {
             <div class="gallery-item" (click)="selectedImage.set(item)">
-              <img [src]="item.url" [alt]="item.title" loading="lazy">
+              <img [src]="item.image?.secure_url" [alt]="item.title" loading="lazy">
               <div class="gallery-overlay">
                 <i class="pi pi-search-plus zoom-icon"></i>
                 <h4>{{ item.title }}</h4>
-                <span class="gallery-tag">{{ item.tag }}</span>
+                <span class="gallery-tag">{{ getTag(item.category) }}</span>
               </div>
             </div>
           }
           @empty {
-            <div class="gallery-empty">
+            <div class="gallery-empty" *ngIf="!loading()">
               <i class="pi pi-image"></i>
               <p>No photos in this category yet.</p>
             </div>
           }
         </div>
+        
+        <!-- Loading Indicator -->
+        <div class="gallery-empty" *ngIf="loading()" style="padding: 40px 0;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 32px;"></i>
+          <p>Loading gallery images...</p>
+        </div>
+
       </div>
     </div>
 
@@ -75,9 +83,9 @@ import { FooterComponent } from '../../layout/footer/footer';
           <button class="lightbox-close" (click)="selectedImage.set(null)">
             <i class="pi pi-times"></i>
           </button>
-          <img [src]="selectedImage()!.url" [alt]="selectedImage()!.title">
+          <img [src]="selectedImage()!.image?.secure_url" [alt]="selectedImage()!.title">
           <div class="lightbox-caption">
-            <span class="caption-tag">{{ selectedImage()!.tag }}</span>
+            <span class="caption-tag">{{ getTag(selectedImage()!.category) }}</span>
             <h3>{{ selectedImage()!.title }}</h3>
           </div>
         </div>
@@ -253,29 +261,41 @@ import { FooterComponent } from '../../layout/footer/footer';
     }
   `]
 })
-export class GalleryComponent {
+export class GalleryComponent implements OnInit {
+  private galleryService = inject(GalleryService);
+
   activeFilter = signal<string>('all');
   selectedImage = signal<any>(null);
+  galleryItems = signal<any[]>([]);
+  loading = signal<boolean>(true);
 
-  galleryItems = [
-    { title: 'Financial Inclusion Desk',      category: 'inclusion', tag: 'Digital Banking',   url: '/images/gallery_inclusion.png' },
-    { title: 'State Committee Assembly',       category: 'meeting',   tag: 'Official Meeting', url: '/images/gallery_meeting.png'   },
-    { title: 'Digital Finance Workshop',       category: 'training',  tag: 'BC Training',      url: '/images/gallery_training.png'  },
-    { title: 'Biometric Attendance Project',   category: 'inclusion', tag: 'Technology',       url: '/images/gallery_inclusion.png' },
-    { title: 'Jaipur Representative Meet',     category: 'meeting',   tag: 'Committee',        url: '/images/gallery_meeting.png'   },
-    { title: 'NABARD Rural Support Program',   category: 'training',  tag: 'Awareness',        url: '/images/gallery_training.png'  },
-    { title: 'BC Agent Registration Drive',    category: 'inclusion', tag: 'Membership',       url: '/images/gallery_inclusion.png' },
-    { title: 'District Level Assembly',        category: 'meeting',   tag: 'Leadership',       url: '/images/gallery_meeting.png'   },
-    { title: 'IIBF Certification Workshop',    category: 'training',  tag: 'Certification',    url: '/images/gallery_training.png'  },
-  ];
+  ngOnInit(): void {
+    this.galleryService.getItems().subscribe({
+      next: (data) => {
+        this.galleryItems.set(data);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      }
+    });
+  }
 
   setFilter(filter: string): void {
     this.activeFilter.set(filter);
   }
 
+  getTag(category: string): string {
+    if (category === 'inclusion') return 'Financial Inclusion';
+    if (category === 'meeting') return 'Official Assembly';
+    if (category === 'training') return 'Workshop & Training';
+    return 'BCAR Media';
+  }
+
   filtered(): any[] {
     const f = this.activeFilter();
-    if (f === 'all') return this.galleryItems;
-    return this.galleryItems.filter(i => i.category === f);
+    const items = this.galleryItems();
+    if (f === 'all') return items;
+    return items.filter(i => i.category === f);
   }
 }

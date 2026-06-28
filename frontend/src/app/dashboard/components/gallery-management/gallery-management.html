@@ -1,0 +1,176 @@
+<div class="gallery-mgmt-panel">
+
+  <!-- Panel Header -->
+  <div class="panel-header">
+    <div class="panel-title">
+      <h2>Gallery Management</h2>
+      <p>Upload and manage images appearing on the public media gallery</p>
+    </div>
+    <button class="action-btn-primary" (click)="openCreateDialog()">
+      <i class="pi pi-plus"></i> Add Image
+    </button>
+  </div>
+
+  <!-- Filters & Search Toolbar -->
+  <div class="form-grid col-span-2" style="margin-bottom: 24px;">
+    <div class="form-group" style="flex-direction: row; gap: 12px; align-items: center;">
+      <span class="p-input-icon-left" style="flex-grow: 1;">
+        <i class="pi pi-search" style="margin-left: 10px;"></i>
+        <input pInputText type="text" [(ngModel)]="searchQuery" (input)="filterItems()" placeholder="Search by title..." style="padding-left: 32px;" />
+      </span>
+      
+      <p-select [options]="filterCategories" [(ngModel)]="selectedCategory" (onChange)="filterItems()" placeholder="Filter by Category" [style]="{'width':'200px'}"></p-select>
+    </div>
+  </div>
+
+  <!-- Gallery Grid -->
+  <div class="gallery-grid" *ngIf="!loading() && filteredItems().length > 0">
+    <div class="gallery-card" *ngFor="let item of paginatedItems()">
+      <!-- Card Image -->
+      <div class="card-img-wrapper">
+        <img [src]="item.image?.secure_url" [alt]="item.title" />
+        <span class="card-tag">{{ item.category }}</span>
+        
+        <div class="card-badges">
+          <p-tag [value]="item.status" [severity]="item.status === 'Published' ? 'success' : 'warn'"></p-tag>
+          <p-tag value="Featured" severity="secondary" *ngIf="item.featured"></p-tag>
+        </div>
+      </div>
+
+      <!-- Card Details -->
+      <div class="card-content">
+        <div>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description || 'No description provided.' }}</p>
+        </div>
+
+        <div class="card-footer">
+          <span class="order-badge">
+            <i class="pi pi-sort-alt"></i> Order: {{ item.displayOrder }}
+          </span>
+          
+          <div class="card-actions">
+            <button class="btn-icon" pTooltip="Edit Image" tooltipPosition="top" (click)="openEditDialog(item)">
+              <i class="pi pi-pencil"></i>
+            </button>
+            <button class="btn-icon delete" pTooltip="Delete Image" tooltipPosition="top" (click)="confirmDelete(item)">
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="gallery-empty-state" *ngIf="loading()">
+    <i class="pi pi-spin pi-spinner"></i>
+    <h3>Loading Gallery...</h3>
+    <p>Please wait while we fetch the images.</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="gallery-empty-state" *ngIf="!loading() && filteredItems().length === 0">
+    <i class="pi pi-image"></i>
+    <h3>No Images Found</h3>
+    <p>Get started by adding your first gallery image using the button above.</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-container" *ngIf="totalPages > 1">
+    <button class="btn-icon" [disabled]="currentPage === 1" (click)="prevPage()">
+      <i class="pi pi-chevron-left"></i>
+    </button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button class="btn-icon" [disabled]="currentPage === totalPages" (click)="nextPage()">
+      <i class="pi pi-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Image CRUD Dialog -->
+  <p-dialog 
+    [header]="isEditMode() ? 'Edit Gallery Image' : 'Add New Gallery Image'" 
+    [(visible)]="dialogVisible" 
+    [modal]="true" 
+    [style]="{width: '550px'}"
+    [draggable]="false"
+    [resizable]="false">
+    
+    <form [formGroup]="galleryForm" (ngSubmit)="onSubmit()" class="form-grid">
+      
+      <!-- Title -->
+      <div class="form-group col-span-2">
+        <label for="title">Title *</label>
+        <input pInputText id="title" formControlName="title" placeholder="Enter image title" />
+        <small class="p-error" *ngIf="galleryForm.get('title')?.touched && galleryForm.get('title')?.invalid">
+          Title is required.
+        </small>
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <p-select id="category" [options]="formCategories" formControlName="category" placeholder="Select category"></p-select>
+        <small class="p-error" *ngIf="galleryForm.get('category')?.touched && galleryForm.get('category')?.invalid">
+          Category is required.
+        </small>
+      </div>
+
+      <!-- Display Order -->
+      <div class="form-group">
+        <label for="displayOrder">Display Order</label>
+        <input pInputText type="number" id="displayOrder" formControlName="displayOrder" placeholder="0" min="0" />
+      </div>
+
+      <!-- Description -->
+      <div class="form-group col-span-2">
+        <label for="description">Description</label>
+        <textarea pInputTextarea id="description" formControlName="description" rows="3" placeholder="Enter a brief description of the photo"></textarea>
+      </div>
+
+      <!-- Image Upload -->
+      <div class="form-group col-span-2">
+        <label>Image File * (JPG, JPEG, PNG, WEBP; max 500 KB)</label>
+        
+        <!-- Dropzone / Selector -->
+        <div class="file-upload-container" (click)="fileInput.click()" *ngIf="!imagePreviewUrl">
+          <i class="pi pi-upload"></i>
+          <p>Click to browse and upload image</p>
+          <small style="color: #94a3b8; display: block; margin-top: 4px;">Recommended ratio: 16:9 (e.g. 1920x1080)</small>
+        </div>
+
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" />
+
+        <!-- Image Preview -->
+        <div class="img-preview-box" *ngIf="imagePreviewUrl">
+          <img [src]="imagePreviewUrl" alt="Preview" />
+          <button type="button" class="remove-preview-btn" (click)="removeImage()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Status (Draft / Published) -->
+      <div class="form-group">
+        <label for="status">Publish Status</label>
+        <p-select id="status" [options]="statusOptions" formControlName="status"></p-select>
+      </div>
+
+      <!-- Featured Toggle -->
+      <div class="form-group switch-group" style="margin-top: 26px;">
+        <input type="checkbox" id="featured" formControlName="featured" />
+        <label for="featured">Mark as Featured Photo</label>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="dialog-footer col-span-2">
+        <button type="button" class="btn-cancel" (click)="dialogVisible.set(false)">Cancel</button>
+        <button type="submit" class="btn-submit" [disabled]="galleryForm.invalid || busy || (!imagePreviewUrl && !isEditMode())">
+          <i class="pi pi-spin pi-spinner" *ngIf="busy"></i>
+          {{ isEditMode() ? 'Save Changes' : 'Upload Image' }}
+        </button>
+      </div>
+
+    </form>
+  </p-dialog>
+</div>

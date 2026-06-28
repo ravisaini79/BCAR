@@ -22,6 +22,8 @@ import { ConfirmationService } from 'primeng/api';
 import { DashboardService } from './services/dashboard.service';
 import { ToastService } from './services/toast.service';
 import { MemberCardService } from './services/member-card.service';
+import { GalleryManagementComponent } from './components/gallery-management/gallery-management';
+import { NewsManagementComponent } from './components/news-management/news-management';
 
 type User = {
   _id: string;
@@ -73,7 +75,9 @@ type User = {
     Select,
     InputText,
     Textarea,
-    TooltipModule
+    TooltipModule,
+    GalleryManagementComponent,
+    NewsManagementComponent
   ],
   providers: [ConfirmationService],
   templateUrl: './dashboard.html',
@@ -90,7 +94,7 @@ export class DashboardComponent implements OnInit {
   // States
   user: User | null = null;
   sidebarCollapsed = false;
-  activeView: 'overview' | 'members' | 'pending' | 'approved' | 'rejected' | 'notices' | 'grievances' = 'overview';
+  activeView: 'overview' | 'members' | 'pending' | 'approved' | 'rejected' | 'notices' | 'grievances' | 'gallery' | 'news' = 'overview';
   loading = false;
   busy = false;
 

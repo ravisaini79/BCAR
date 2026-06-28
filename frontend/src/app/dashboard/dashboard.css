@@ -1003,11 +1003,70 @@
   .charts-grid-2 { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 600px) {
-  .admin-content { padding: 16px; }
-  .stat-cards-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .page-title { font-size: 20px; }
-  .notices-grid { grid-template-columns: 1fr; }
-  .detail-grid { grid-template-columns: 1fr; }
-  .admin-topbar { padding: 0 16px; }
+@media (max-width: 767px) {
+  .admin-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 1001 !important;
+    width: 260px !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .admin-shell:not(.collapsed) .admin-sidebar {
+    transform: translateX(0) !important;
+  }
+
+  /* When collapsed (default on mobile), keep sidebar off screen */
+  .admin-shell.collapsed .admin-sidebar {
+    transform: translateX(-100%) !important;
+    width: 260px !important;
+  }
+
+  .admin-main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .admin-shell.collapsed .admin-main {
+    margin-left: 0 !important;
+  }
+
+  /* Stacking overview stat cards */
+  .stat-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .admin-content {
+    padding: 16px 12px !important;
+  }
+  
+  .page-title {
+    font-size: 20px;
+  }
+  
+  .notices-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-topbar {
+    padding: 0 16px;
+  }
+
+  /* Mobile Sidebar Backdrop */
+  .sidebar-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(4, 18, 38, 0.6) !important;
+    backdrop-filter: blur(2px) !important;
+    z-index: 1000 !important;
+  }
 }
+

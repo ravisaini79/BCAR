@@ -208,6 +208,10 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
+    if (window.innerWidth < 768) {
+      this.sidebarCollapsed = true;
+    }
+
     setTimeout(() => {
       this.refreshAll();
     });
@@ -282,6 +286,9 @@ export class DashboardComponent implements OnInit {
   navigate(view: typeof this.activeView) {
     this.activeView = view;
     this.selectedMembers = [];
+    if (window.innerWidth < 768) {
+      this.sidebarCollapsed = true;
+    }
   }
 
   logout() {

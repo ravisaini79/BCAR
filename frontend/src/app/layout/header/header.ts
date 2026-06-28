@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, HostListener, OnDestroy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { filter } from 'rxjs/operators';
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnDestroy {
   private router = inject(Router);
 
   mobileOpen = signal(false);
@@ -26,9 +26,29 @@ export class HeaderComponent {
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: any) => {
         this.currentUrl.set(e.urlAfterRedirects);
-        this.mobileOpen.set(false);
-        this.aboutOpen.set(false);
+        this.closeMobile();
       });
+
+    // Prevent body scrolling when mobile menu is open, restore when closed
+    effect(() => {
+      if (this.mobileOpen()) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  @HostListener('window:keydown.escape')
+  handleEscape() {
+    if (this.mobileOpen()) {
+      this.closeMobile();
+    }
+  }
+
+  ngOnDestroy() {
+    // Ensure body scroll is restored on destroy
+    document.body.style.overflow = '';
   }
 
   isHome(): boolean { return this.currentUrl() === '/'; }

@@ -1329,20 +1329,22 @@ h3, .notice-grid h3, .benefit-card h3 {
     top: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: 300px !important;
-    max-width: 80vw !important;
+    width: 280px !important;
+    height: 100vh !important;
     background: var(--navy2) !important;
-    padding: 90px 24px 40px 24px !important;
+    padding: 24px 24px 40px 24px !important;
     box-shadow: -5px 0 25px rgba(0,0,0,0.3) !important;
-    z-index: 100 !important;
+    z-index: 10001 !important;
+    visibility: hidden !important;
     transform: translateX(100%) !important;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s ease !important;
     border-left: 2px solid var(--gold);
     overflow-y: auto;
     gap: 12px;
   }
 
   header nav.open {
+    visibility: visible !important;
     transform: translateX(0) !important;
   }
 
@@ -1391,10 +1393,34 @@ h3, .notice-grid h3, .benefit-card h3 {
     min-height: 48px;
   }
 
+  /* Close X button inside drawer for mobile */
+  .drawer-close {
+    display: flex !important;
+    align-self: flex-end;
+    background: none;
+    border: 0;
+    color: #cbd5e1;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .drawer-close:hover {
+    color: #ffffff;
+  }
+
   /* Backdrop blur and styling */
   .nav-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
     background: rgba(4, 18, 38, 0.65) !important;
     backdrop-filter: blur(4px);
+    z-index: 10000 !important;
     transition: opacity 0.3s;
   }
 }

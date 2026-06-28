@@ -72,7 +72,7 @@
   </section>
 
   <!-- Mission & Vision -->
-  <section class="section mission" id="mission">
+  <!-- <section class="section mission" id="mission">
     <div class="container">
       <div class="section-head" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px;">
         <div>
@@ -108,7 +108,7 @@
         </article>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- President's Message -->
   <section class="section committee" id="committee" style="background-color: #f1f5f9;">
@@ -220,7 +220,7 @@
   </div>
 
   <!-- Latest News Section -->
-  <section class="section notices" id="notices" style="background-color: #f8fafc; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <!-- <section class="section notices" id="notices" style="background-color: #f8fafc; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
     <div class="container">
       <div class="section-head dark" style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
         <div>
@@ -228,7 +228,7 @@
           <h2>Latest News & <em>Announcements</em></h2>
         </div>
         
-        <!-- Search bar -->
+       
         <div class="news-header-actions">
           <div class="search-input-wrap">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -237,7 +237,7 @@
         </div>
       </div>
 
-      <!-- News Grid -->
+   
       <div class="notice-grid">
         <article *ngFor="let item of paginatedNotices">
           <span class="tag">{{ item.category }}</span>
@@ -249,14 +249,14 @@
         <p *ngIf="!filteredNotices.length" class="empty" style="grid-column: span 3; text-align: center; color: var(--muted); padding: 40px;">No matching announcements found.</p>
       </div>
 
-      <!-- Pagination controls -->
+   
       <div class="pagination" *ngIf="totalPages > 1">
         <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()"><i class="fa-solid fa-chevron-left"></i></button>
         <span style="font-size: 14px; font-weight: 600; color: var(--navy);">Page {{ currentPage }} of {{ totalPages }}</span>
         <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Testimonials -->
   <section class="section testimonials">
@@ -282,7 +282,7 @@
   </section>
 
   <!-- CTA Section -->
-  <section class="cta">
+  <!-- <section class="cta">
     <div class="container cta-inner">
       <div>
         <span class="eyebrow light"><i class="fa-solid fa-users-line"></i> STRENGTH IN UNITY</span>
@@ -291,7 +291,7 @@
       </div>
       <button class="cream-btn" (click)="router.navigate(['/register'])">Start Membership Application <span style="margin-left: 10px;">→</span></button>
     </div>
-  </section>
+  </section> -->
 
   <!-- Contact Us Section -->
   <section class="section contact" id="contact" style="background-color: #f1f5f9;">

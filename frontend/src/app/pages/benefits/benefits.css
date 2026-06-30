@@ -211,4 +211,5 @@
 @media (max-width: 640px) {
   .page-section { padding: 48px 16px; }
   .cta-banner { flex-direction: column; padding: 32px 24px; }
+  .rules-section, .fund-section { padding: 24px 16px; }
 }

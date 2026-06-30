@@ -1,1 +1,27 @@
 :host { display: block; }
+
+.footer-grid-redesign {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: 40px;
+  padding-bottom: 40px;
+}
+
+@media (max-width: 991px) {
+  .footer-grid-redesign {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-grid-redesign {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .copyright {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+}

@@ -142,6 +142,13 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   registrationNumber: { type: String, unique: true, sparse: true },
+  receiptNumber: { type: String, unique: true, sparse: true },
+  registrationFee: { type: Number, default: 600 },
+  paymentStatus: { type: String, enum: ['Pending', 'Paid', 'Failed'], default: 'Paid' },
+  paymentMode: { type: String, default: 'Online / UPI' },
+  transactionId: { type: String },
+  emailSent: { type: Boolean, default: false },
+  receiptGenerated: { type: Boolean, default: false },
   
   // System Fields
   password: { type: String, required: true },

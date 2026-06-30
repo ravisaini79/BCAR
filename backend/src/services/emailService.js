@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { memberWelcomeTemplate, adminAlertTemplate } = require('../templates/emailTemplates');
 
 // Setup Nodemailer Transporter
 let transporter;
@@ -37,7 +38,8 @@ const sendMail = async (options) => {
     from: process.env.SMTP_FROM || '"BCAR Admin" <info@bcarajasthan.org>',
     to: options.to,
     subject: options.subject,
-    html: options.html
+    html: options.html,
+    attachments: options.attachments || []
   };
   
   try {
@@ -263,9 +265,40 @@ const sendContactQueryEmail = async (name, email, phone, message) => {
   });
 };
 
+const sendRegistrationWelcomeWithReceiptEmail = async (member, pdfBuffer) => {
+  const html = memberWelcomeTemplate(member);
+  const pdfName = `BCAR_Receipt_${member.registrationNumber || 'Registration'}.pdf`;
+  
+  return sendMail({
+    to: member.email,
+    subject: 'BCAR Membership Registration Successfully Submitted',
+    html,
+    attachments: [
+      {
+        filename: pdfName,
+        content: pdfBuffer,
+        contentType: 'application/pdf'
+      }
+    ]
+  });
+};
+
+const sendAdminAlertRegistrationEmail = async (member) => {
+  const html = adminAlertTemplate(member);
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@bcarajasthan.org';
+  
+  return sendMail({
+    to: adminEmail,
+    subject: 'New BCAR Membership Registration',
+    html
+  });
+};
+
 module.exports = {
   sendWelcomeEmail,
   sendAdminAlertEmail,
   sendApprovalEmail,
-  sendContactQueryEmail
+  sendContactQueryEmail,
+  sendRegistrationWelcomeWithReceiptEmail,
+  sendAdminAlertRegistrationEmail
 };

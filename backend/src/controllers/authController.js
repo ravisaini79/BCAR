@@ -3,6 +3,8 @@ const generateToken = require('../utils/generateToken');
 const { sendWelcomeEmail, sendAdminAlertEmail } = require('../services/emailService');
 const { uploadFromBuffer, deleteFromCloudinary } = require('../services/cloudinaryService');
 const { logRegistration, logEmail, logError } = require('../utils/logger');
+const registrationService = require('../services/registrationService');
+const receiptService = require('../services/receiptService');
 const fs = require('fs');
 const path = require('path');
 
@@ -211,25 +213,6 @@ const registerUser = async (req, res, next) => {
     // Keep track of successfully uploaded files for fallback cleanup
     results.forEach((resItem) => uploadedFiles.push(resItem));
 
-    // Step 4: Generate unique registration number
-    let registrationNumber = '';
-    let isUnique = false;
-    let attempts = 0;
-    while (!isUnique && attempts < 10) {
-      registrationNumber = await generateRegNumber();
-      const existingReg = await User.findOne({ registrationNumber });
-      if (!existingReg) {
-        isUnique = true;
-      } else {
-        attempts++;
-      }
-    }
-
-    if (!isUnique) {
-      res.status(500);
-      throw new Error('Database Error: Failed to generate a unique registration number');
-    }
-
     // Compile member record data
     const memberData = {
       name, fatherHusbandName, dob, gender, maritalStatus, wifeHusbandName, 
@@ -238,9 +221,8 @@ const registerUser = async (req, res, next) => {
       educationalQualification, email, phone, 
       homeAddressVill, po, ps, district, pin, gramPanchayat, devBlock, 
       bcCspIdNo, ssa, bankName, linkBranchName, dateOfStartingCsp, 
-      interestedToJoin, admissionFee, perMonthMembershipFee, password,
+      interestedToJoin, password,
       declarationAccepted: (declarationAccepted === true || declarationAccepted === 'true'),
-      registrationNumber,
       
       // System defaults
       role: 'member',
@@ -261,12 +243,10 @@ const registerUser = async (req, res, next) => {
       if (key === 'bankBcCertificate') memberData['bankPassbook'] = cloudinaryMeta;
     });
 
-    // Step 5: Save complete registration in MongoDB
-    let user;
+    let regResult;
     try {
-      user = await User.create(memberData);
+      regResult = await registrationService.registerNewMember(memberData);
     } catch (dbError) {
-      // Step 6: If registration fails in DB, clean up uploaded files on Cloudinary
       logError(`Database save failed for ${email}. Triggering Cloudinary cleanup: ${dbError.message}`);
       for (const file of uploadedFiles) {
         try {
@@ -278,24 +258,15 @@ const registerUser = async (req, res, next) => {
       throw dbError; // rethrow to errorHandler middleware
     }
 
-    logRegistration(`Success: Registered user ${name} (${email}) with Registration No: ${registrationNumber}`);
+    const { user, receiptGenerated, emailSent } = regResult;
+    logRegistration(`Success: Registered user ${name} (${email}) with Registration No: ${user.registrationNumber}`);
 
-    // Step 7: Send Welcome & Alert Emails
-    try {
-      await sendWelcomeEmail(email, name, registrationNumber);
-      logEmail(`Welcome email dispatched to member: ${email}`);
-
-      const adminEmail = process.env.ADMIN_EMAIL || 'admin@bcarajasthan.org';
-      await sendAdminAlertEmail(adminEmail, user);
-      logEmail(`Admin alert email dispatched to admin: ${adminEmail}`);
-    } catch (mailErr) {
-      logError(`Nodemailer SMTP Error for ${email}: ${mailErr.message}`);
-    }
-
-    // Step 8: Return proper JSON responses containing Cloudinary secure URLs
     res.status(201).json({
       success: true,
       registrationNumber: user.registrationNumber,
+      receiptNumber: user.receiptNumber,
+      emailSent,
+      receiptGenerated,
       message: 'Registration successful. Waiting for admin approval.',
       status: user.status,
       
@@ -305,7 +276,7 @@ const registerUser = async (req, res, next) => {
       panCard: user.panCard ? user.panCard.secure_url : '',
       bankBcCertificate: user.bankBcCertificate ? user.bankBcCertificate.secure_url : '',
       
-      // Compliance with exact capitalize/spaces keys
+      // Legacy compliance keys
       Success: true,
       'Registration Number': user.registrationNumber,
       Message: 'Registration successful. Waiting for admin approval.',
@@ -450,9 +421,34 @@ const getUserProfile = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Download generated receipt PDF
+ * @route   GET /api/auth/receipt/:regNum
+ * @access  Public
+ */
+const downloadReceipt = async (req, res, next) => {
+  try {
+    const { regNum } = req.params;
+    const member = await User.findOne({ registrationNumber: regNum });
+    if (!member) {
+      res.status(404);
+      throw new Error('Registration number not found');
+    }
+
+    const pdfBuffer = await receiptService.generateReceiptBuffer(member);
+    
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=BCAR_Receipt_${regNum}.pdf`);
+    res.send(pdfBuffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   updateMemberDocuments,
   loginUser,
-  getUserProfile
+  getUserProfile,
+  downloadReceipt
 };

@@ -37,6 +37,9 @@ export interface RegistrationData {
 export interface RegisterResponse {
   success: boolean;
   registrationNumber: string;
+  receiptNumber?: string;
+  emailSent?: boolean;
+  receiptGenerated?: boolean;
   message: string;
   status: string;
   photograph?: string;

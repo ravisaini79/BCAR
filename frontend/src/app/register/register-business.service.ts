@@ -173,7 +173,10 @@ export class RegisterBusinessService {
     this.api.registerMember(formData).subscribe({
       next: res => {
         this.submitting.set(false);
-        this.toast.success(res.message || 'Registration submitted successfully!', 'Application Submitted');
+        this.toast.success(
+          'Your registration has been submitted successfully. A confirmation email along with your ₹600 registration receipt has been sent to your registered email address.',
+          'Registration Successful'
+        );
 
         form.reset({ interestedToJoin: 'YES', declarationAccepted: false });
         this.upload.resetAll(form);
@@ -181,7 +184,14 @@ export class RegisterBusinessService {
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
         // Redirect to success page
-        setTimeout(() => this.router.navigate(['/register-success']), 800);
+        setTimeout(() => this.router.navigate(['/register-success'], {
+          state: {
+            registrationNumber: res.registrationNumber,
+            receiptNumber: res.receiptNumber,
+            emailSent: res.emailSent,
+            receiptGenerated: res.receiptGenerated
+          }
+        }), 800);
       },
       error: err => {
         this.submitting.set(false);

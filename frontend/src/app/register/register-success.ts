@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../layout/header/header';
 import { FooterComponent } from '../layout/footer/footer';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-register-success',
@@ -24,14 +25,53 @@ import { FooterComponent } from '../layout/footer/footer';
           </svg>
         </div>
 
-        <div class="success-badge">Registration Submitted</div>
+        <div class="success-badge">Registration Successful</div>
 
         <h1>Application Received Successfully!</h1>
 
         <p class="success-subtitle">
           Your BCAR membership application has been submitted and is now under review by our team.
-          You will receive a confirmation on your registered email and mobile number.
+          A confirmation email along with your ₹600 registration receipt has been sent to your registered email.
         </p>
+
+        <!-- Dynamic Registration Details -->
+        <div class="details-card">
+          <h3>Application Details</h3>
+          <div class="detail-row">
+            <span class="detail-lbl">Registration Number</span>
+            <span class="detail-val" style="color: #0B2D5C">{{ registrationNumber || 'BCAR-2026-XXXXXX' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-lbl">Receipt Number</span>
+            <span class="detail-val">{{ receiptNumber || 'BCAR-RCP-2026-XXXXXX' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-lbl">Membership Fee Paid</span>
+            <span class="detail-val">₹600.00</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-lbl">Verification Status</span>
+            <span class="detail-val status-pending">Pending Approval</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-lbl">Email Confirmation</span>
+            <span class="detail-val">
+              <span class="status-badge" [class.success]="emailSent" [class.warning]="!emailSent">
+                <i class="pi" [class.pi-check]="emailSent" [class.pi-spin]="!emailSent" [class.pi-sync]="!emailSent"></i>
+                {{ emailSent ? 'Sent' : 'Pending/Retrying' }}
+              </span>
+            </span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-lbl">PDF Receipt Status</span>
+            <span class="detail-val">
+              <span class="status-badge" [class.success]="receiptGenerated" [class.warning]="!receiptGenerated">
+                <i class="pi" [class.pi-check]="receiptGenerated" [class.pi-spin]="!receiptGenerated" [class.pi-sync]="!receiptGenerated"></i>
+                {{ receiptGenerated ? 'Generated' : 'Failed/Pending' }}
+              </span>
+            </span>
+          </div>
+        </div>
 
         <!-- Info box -->
         <div class="info-box">
@@ -53,46 +93,18 @@ import { FooterComponent } from '../layout/footer/footer';
             <i class="pi pi-phone"></i>
             <div>
               <strong>Need Help?</strong>
-              <span>Call us at +91 94140 08299 or WhatsApp for support</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- What happens next -->
-        <div class="steps-section">
-          <h3>What Happens Next?</h3>
-          <div class="steps">
-            <div class="step">
-              <div class="step-num">1</div>
-              <div class="step-text">
-                <strong>Document Verification</strong>
-                <p>Our team verifies your submitted documents and details</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">2</div>
-              <div class="step-text">
-                <strong>Approval Notification</strong>
-                <p>You will be notified via email and SMS upon approval</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">3</div>
-              <div class="step-text">
-                <strong>BCAR ID Card</strong>
-                <p>Receive your official membership ID card from the association</p>
-              </div>
+              <span>Call us at +91 98297 15474 or email info&#64;bcarajasthan.org</span>
             </div>
           </div>
         </div>
 
         <!-- Actions -->
         <div class="action-buttons">
+          <button class="btn-download" (click)="downloadReceipt()" [disabled]="!registrationNumber">
+            <i class="pi pi-download"></i> Download Receipt
+          </button>
           <button class="btn-home" (click)="router.navigate(['/'])">
             <i class="pi pi-home"></i> Go to Home
-          </button>
-          <button class="btn-login" (click)="router.navigate(['/login'])">
-            <i class="pi pi-sign-in"></i> Member Login
           </button>
         </div>
 
@@ -114,13 +126,13 @@ import { FooterComponent } from '../layout/footer/footer';
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 80px 20px 60px;
+      padding: 100px 20px 60px;
     }
 
     .success-card {
       background: #ffffff;
       border-radius: 24px;
-      padding: 60px 48px;
+      padding: 50px 40px;
       max-width: 680px;
       width: 100%;
       text-align: center;
@@ -137,9 +149,9 @@ import { FooterComponent } from '../layout/footer/footer';
     /* Animated check circle */
     .check-circle {
       position: relative;
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 28px;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 24px;
     }
     .check-ring {
       position: absolute;
@@ -180,7 +192,7 @@ import { FooterComponent } from '../layout/footer/footer';
       display: inline-block;
       background: #dcfce7;
       color: #15803d;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       padding: 4px 16px;
       border-radius: 50px;
@@ -191,19 +203,61 @@ import { FooterComponent } from '../layout/footer/footer';
 
     h1 {
       font-family: Poppins, sans-serif;
-      font-size: clamp(22px, 4vw, 32px);
+      font-size: clamp(22px, 4vw, 30px);
       font-weight: 800;
       color: #0B2D5C;
-      margin: 0 0 14px;
+      margin: 0 0 12px;
       line-height: 1.2;
     }
 
     .success-subtitle {
-      font-size: 15px;
+      font-size: 14.5px;
       color: #64748B;
-      line-height: 1.7;
-      margin: 0 0 36px;
+      line-height: 1.6;
+      margin: 0 0 28px;
     }
+
+    /* Details card style */
+    .details-card {
+      background: #F8FAFF;
+      border: 1px solid #EEF2F6;
+      border-radius: 16px;
+      padding: 24px;
+      margin: 28px 0;
+      text-align: left;
+    }
+    .details-card h3 {
+      font-family: Poppins, sans-serif;
+      font-size: 15px;
+      color: #0B2D5C;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 1.5px solid #E2E8F0;
+      padding-bottom: 8px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .detail-row:last-child { margin-bottom: 0; }
+    .detail-lbl { color: #64748B; font-weight: 500; }
+    .detail-val { color: #1E293B; font-weight: 700; }
+    .detail-val.status-pending { color: #D4AF37; }
+    
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .status-badge.success { background: #dcfce7; color: #16a34a; }
+    .status-badge.warning { background: #fee2e2; color: #ef4444; }
 
     /* Info box */
     .info-box {
@@ -211,7 +265,7 @@ import { FooterComponent } from '../layout/footer/footer';
       border: 1px solid #E2E8F0;
       border-radius: 14px;
       padding: 24px;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
       text-align: left;
     }
     .info-row {
@@ -227,41 +281,6 @@ import { FooterComponent } from '../layout/footer/footer';
     .info-row strong { font-size: 13.5px; font-weight: 700; color: #1E293B; }
     .info-row span   { font-size: 13px; color: #64748B; }
 
-    /* Steps */
-    .steps-section { margin-bottom: 36px; }
-    .steps-section h3 {
-      font-family: Poppins, sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: #0B2D5C;
-      margin: 0 0 20px;
-    }
-    .steps { display: flex; flex-direction: column; gap: 16px; text-align: left; }
-    .step {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      background: #F8FAFF;
-      padding: 16px 20px;
-      border-radius: 12px;
-      border-left: 4px solid #D4AF37;
-    }
-    .step-num {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #0B2D5C, #1e40af);
-      color: #ffffff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-    .step-text strong { display: block; font-size: 13.5px; font-weight: 700; color: #1E293B; margin-bottom: 4px; }
-    .step-text p { font-size: 13px; color: #64748B; margin: 0; line-height: 1.5; }
-
     /* Action buttons */
     .action-buttons {
       display: flex;
@@ -270,7 +289,7 @@ import { FooterComponent } from '../layout/footer/footer';
       margin-bottom: 28px;
       flex-wrap: wrap;
     }
-    .btn-home, .btn-login {
+    .btn-download, .btn-home {
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -282,18 +301,20 @@ import { FooterComponent } from '../layout/footer/footer';
       border: none;
       transition: all 0.2s;
     }
+    .btn-download {
+      background: linear-gradient(135deg, #D4AF37, #b89223);
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(212,175,55,0.3);
+    }
+    .btn-download:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,175,55,0.35); }
+    .btn-download:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
+    
     .btn-home {
       background: linear-gradient(135deg, #0B2D5C, #1e40af);
       color: #ffffff;
       box-shadow: 0 4px 16px rgba(11,45,92,0.3);
     }
     .btn-home:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(11,45,92,0.35); }
-    .btn-login {
-      background: #ffffff;
-      color: #0B2D5C;
-      border: 2px solid #D4AF37;
-    }
-    .btn-login:hover { background: #FFF8E8; transform: translateY(-2px); }
 
     .reg-note {
       font-size: 11.5px;
@@ -303,14 +324,43 @@ import { FooterComponent } from '../layout/footer/footer';
 
     @media (max-width: 560px) {
       .success-card { padding: 36px 24px; }
+      .action-buttons { flex-direction: column; width: 100%; }
+      .btn-download, .btn-home { width: 100%; justify-content: center; }
     }
   `]
 })
 export class RegisterSuccessComponent implements OnInit {
   readonly router = inject(Router);
 
+  registrationNumber = '';
+  receiptNumber = '';
+  emailSent = false;
+  receiptGenerated = false;
+
   ngOnInit(): void {
+    // Read state from router navigation history
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras.state || window.history.state;
+    if (state && state.registrationNumber) {
+      this.registrationNumber = state.registrationNumber;
+      this.receiptNumber = state.receiptNumber || '';
+      this.emailSent = state.emailSent !== false;
+      this.receiptGenerated = state.receiptGenerated !== false;
+    }
+
     // Redirect to home after 5 minutes if user stays idle
     setTimeout(() => this.router.navigate(['/']), 300_000);
+  }
+
+  downloadReceipt() {
+    if (!this.registrationNumber) return;
+    const downloadUrl = `${environment.apiUrl}/auth/receipt/${this.registrationNumber}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = `BCAR_Receipt_${this.registrationNumber}.pdf`;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }

@@ -22,8 +22,14 @@
 
       <!-- Nav -->
       <nav [class.open]="mobileOpen()">
-        <!-- Close button inside drawer for mobile -->
-        <!-- <button class="drawer-close" (click)="closeMobile()" aria-label="Close menu">&times;</button> -->
+        <!-- Brand logo inside mobile drawer -->
+        <div class="mobile-drawer-brand">
+          <img src="/images/bcar-logo.png" alt="BCAR Logo">
+          <div>
+            <b>BCAR</b>
+            <small>Association Rajasthan</small>
+          </div>
+        </div>
 
         <!-- Home -->
         <button [class.nav-active]="isActiveRoute('/')" (click)="scrollTo('hero')">Home</button>

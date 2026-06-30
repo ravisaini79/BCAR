@@ -70,7 +70,7 @@
       </button>
 
       <!-- Grievances -->
-      <button class="sb-item" [class.active]="activeView === 'grievances'" (click)="navigate('grievances')">
+      <button class="sb-item" *ngIf="!isAdmin" [class.active]="activeView === 'grievances'" (click)="navigate('grievances')">
         <i class="pi pi-comments sb-icon"></i>
         <span class="sb-label">Grievances</span>
         <span class="sb-badge danger" *ngIf="openGrievancesCount > 0">{{ openGrievancesCount }}</span>
@@ -227,7 +227,7 @@
             </div>
           </div>
 
-          <div class="stat-card" (click)="navigate('grievances')">
+          <div class="stat-card" *ngIf="!isAdmin" (click)="navigate('grievances')">
             <div class="stat-icon" style="background: linear-gradient(135deg, #be185d, #ec4899)">
               <i class="pi pi-comments"></i>
             </div>

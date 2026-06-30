@@ -1,0 +1,61 @@
+<app-header></app-header>
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="page-badge"><i class="fa-solid fa-crown"></i> Leadership</span>
+    <h1>President &amp; <em>Committee</em></h1>
+    <p>Meet the elected leadership of BCAR driving the mission of BC empowerment across Rajasthan.</p>
+  </div>
+</div>
+
+<div class="page-section">
+  <div class="page-container">
+
+    <!-- President Featured Card -->
+    <div class="president-card">
+      <div class="president-img-wrap">
+        <img src="/images/president.png" alt="पवन कुमार धोबी">
+        <div class="president-info">
+          <h4>श्री पवन कुमार धोबी</h4>
+          <span>प्रदेश अध्यक्ष, BCAR</span>
+        </div>
+      </div>
+      <div class="president-bio">
+        <span class="role-badge"><i class="fa-solid fa-crown"></i> President, BCAR</span>
+        <h2>श्री पवन कुमार धोबी</h2>
+        <p class="president-location"><i class="fa-solid fa-location-dot"></i> राजस्थान</p>
+        <p>
+          राजस्थान के बैंक मित्रों के अधिकारों की रक्षा, सम्मान एवं उज्ज्वल भविष्य के लिए
+          समर्पित नेतृत्व। श्रम विभाग द्वारा BCAR को ट्रेड यूनियन के रूप में
+          आधिकारिक पंजीकरण दिलाने में अग्रणी भूमिका।
+        </p>
+        <blockquote>
+          "अन्याय के खिलाफ जब आवाज़ उठती है, तो बदलाव निश्चित होता है।
+          हम कंपनियों से कोई भीख नहीं मांग रहे — हम अपना <strong>असली हक</strong> मांग रहे हैं।"
+        </blockquote>
+        <div class="slogans">
+          <span><i class="fa-solid fa-fire"></i> इंकलाब जिंदाबाद!</span>
+          <span><i class="fa-solid fa-users"></i> बैंक मित्र एकता—जिंदाबाद!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Committee Grid -->
+    <h2 class="committee-heading">Executive <em>Committee</em></h2>
+    <div class="committee-grid">
+      <div class="committee-card" *ngFor="let member of committee">
+        <div class="member-img-wrap">
+          <img [src]="member.photo" [alt]="member.name">
+        </div>
+        <div class="member-body">
+          <span class="member-role-badge">{{ member.role }}</span>
+          <h3>{{ member.name }}</h3>
+          <p class="member-role-en">{{ member.roleEn }}</p>
+          <p class="member-location"><i class="fa-solid fa-location-dot"></i> {{ member.location }}</p>
+          <blockquote class="member-quote">"{{ member.quote }}"</blockquote>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<app-footer></app-footer>

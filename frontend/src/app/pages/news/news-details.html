@@ -1,0 +1,121 @@
+<app-header></app-header>
+
+<!-- Details View Container -->
+<div class="details-section" *ngIf="article() && !loading()">
+  <div class="details-container">
+
+    <!-- Back Button -->
+    <button class="back-link" (click)="goBack()">
+      <i class="pi pi-arrow-left"></i> Back to News
+    </button>
+
+    <!-- Article Header -->
+    <header class="article-header">
+      <div class="header-meta-top">
+        <span class="article-tag" [class]="article()!.category">
+          {{ getTag(article()!.category) }}
+        </span>
+        <span *ngIf="article()!.pinned" class="pinned-badge">
+          <i class="pi pi-bookmark-fill"></i> Pinned Update
+        </span>
+      </div>
+      <h1>{{ article()!.title }}</h1>
+      <div class="article-meta">
+        <time><i class="pi pi-calendar"></i> {{ article()!.publishDate | date: 'dd MMMM yyyy' }}</time>
+      </div>
+    </header>
+
+    <!-- Large Banner Image -->
+    <div class="article-image-box" *ngIf="article()!.featuredImage?.secure_url">
+      <img [src]="article()!.featuredImage.secure_url" [alt]="article()!.title" class="banner-img" />
+    </div>
+
+    <!-- Short Description Box -->
+    <div class="article-summary" *ngIf="article()!.shortDescription">
+      <p>{{ article()!.shortDescription }}</p>
+    </div>
+
+    <!-- Full HTML Content -->
+    <div class="article-body" [innerHTML]="article()!.fullDescription"></div>
+
+    <!-- Share Buttons Row -->
+    <div class="share-section">
+      <h4>Share this Article</h4>
+      <div class="share-buttons">
+        <a [href]="getShareLink('whatsapp')" target="_blank" class="share-btn whatsapp" rel="noopener noreferrer">
+          <i class="pi pi-whatsapp"></i> WhatsApp
+        </a>
+        <a [href]="getShareLink('facebook')" target="_blank" class="share-btn facebook" rel="noopener noreferrer">
+          <i class="pi pi-facebook"></i> Facebook
+        </a>
+        <a [href]="getShareLink('twitter')" target="_blank" class="share-btn twitter" rel="noopener noreferrer">
+          <i class="pi pi-twitter-x"></i> Twitter / X
+        </a>
+      </div>
+    </div>
+
+    <!-- Prev / Next Navigation Row -->
+    <div class="prev-next-nav">
+      <button class="nav-btn prev" [disabled]="!prevArticle()" (click)="navigateToArticle(prevArticle()?.slug)">
+        <i class="pi pi-arrow-left"></i>
+        <div class="btn-lbl" *ngIf="prevArticle()">
+          <span>Previous Article</span>
+          <strong>{{ prevArticle()?.title }}</strong>
+        </div>
+        <div class="btn-lbl" *ngIf="!prevArticle()">
+          <span>No Previous Article</span>
+        </div>
+      </button>
+
+      <button class="nav-btn next" [disabled]="!nextArticle()" (click)="navigateToArticle(nextArticle()?.slug)">
+        <div class="btn-lbl" *ngIf="nextArticle()">
+          <span>Next Article</span>
+          <strong>{{ nextArticle()?.title }}</strong>
+        </div>
+        <div class="btn-lbl" *ngIf="!nextArticle()">
+          <span>No Next Article</span>
+        </div>
+        <i class="pi pi-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- Related News Section -->
+    <div class="related-section" *ngIf="relatedArticles().length > 0">
+      <h3>Related News</h3>
+      <div class="related-grid">
+        @for (rel of relatedArticles(); track rel._id) {
+          <div class="related-card" (click)="navigateToArticle(rel.slug)">
+            <div class="rel-img-box" *ngIf="rel.featuredImage?.secure_url">
+              <img [src]="rel.featuredImage.secure_url" [alt]="rel.title" />
+            </div>
+            <div class="rel-content">
+              <time>{{ rel.publishDate | date:'dd MMM yyyy' }}</time>
+              <h4>{{ rel.title }}</h4>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="details-section" *ngIf="loading()">
+  <div class="details-container" style="text-align: center; padding: 100px 0;">
+    <i class="pi pi-spin pi-spinner" style="font-size: 40px; color: #082B5C; margin-bottom: 20px;"></i>
+    <p style="color: #64748B;">Loading article details...</p>
+  </div>
+</div>
+
+<!-- Error State -->
+<div class="details-section" *ngIf="error() && !loading()">
+  <div class="details-container" style="text-align: center; padding: 100px 0; color: #64748B;">
+    <i class="pi pi-exclamation-circle" style="font-size: 56px; color: #cbd5e1; display: block; margin-bottom: 20px;"></i>
+    <h3>Article Not Found</h3>
+    <p>The news article you are looking for does not exist or may have been removed.</p>
+    <button class="btn-back-home" (click)="goBack()">Return to News</button>
+  </div>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,99 @@
+<app-header></app-header>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <span class="page-badge"><i class="pi pi-images"></i> Media Gallery</span>
+    <h1>BCAR in Action</h1>
+    <p>Glimpses of meetings, training sessions, and community support assemblies across Rajasthan.</p>
+  </div>
+</div>
+
+<!-- Gallery Section -->
+<div class="page-section">
+  <div class="page-container">
+
+    <!-- Loading State Skeletons -->
+    <div class="gallery-masonry" *ngIf="loading()">
+      @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+        <div class="gallery-item-skeleton">
+          <p-skeleton width="100%" height="220px" borderRadius="14px" />
+          <div class="skeleton-meta">
+            <p-skeleton width="60%" height="16px" styleClass="mb-2" />
+            <p-skeleton width="40%" height="12px" />
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Masonry Grid -->
+    <div class="gallery-masonry" *ngIf="!loading()">
+      @for (item of galleryItems(); track item._id; let idx = $index) {
+        <div class="gallery-item" (click)="openLightbox(idx)">
+          <p-image
+            [src]="item.image?.secure_url"
+            [alt]="item.title"
+            [preview]="false"
+            styleClass="w-full"
+            imageClass="gallery-img"
+          />
+          <div class="gallery-overlay">
+            <i class="pi pi-search zoom-icon"></i>
+            <div class="gallery-info">
+              <h4>{{ item.title }}</h4>
+              <span class="gallery-date" *ngIf="item.createdAt">
+                <i class="pi pi-calendar"></i>
+                {{ item.createdAt | date:'dd MMM yyyy' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+      @empty {
+        <div class="gallery-empty" *ngIf="!loading()">
+          <i class="pi pi-image" style="font-size: 48px; color: #cbd5e1; display: block; margin-bottom: 16px;"></i>
+          <p>No photos published in the gallery yet.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>
+
+<!-- Premium Custom Lightbox Overlay with Previous/Next Controls -->
+@if (selectedIdx() !== -1) {
+  <div class="lightbox-overlay" (click)="closeLightbox()">
+
+    <!-- Previous Nav Button -->
+    <button class="lightbox-nav-btn prev-btn" (click)="prevImage($event)" aria-label="Previous image">
+      <i class="pi pi-chevron-left"></i>
+    </button>
+
+    <div class="lightbox-content" (click)="$event.stopPropagation()">
+      <button class="lightbox-close" (click)="closeLightbox()">
+        <i class="pi pi-times"></i>
+      </button>
+
+      <div class="lightbox-img-box">
+        <img [src]="activeItem()?.image?.secure_url" [alt]="activeItem()?.title" class="lightbox-img">
+      </div>
+
+      <div class="lightbox-caption">
+        <span class="caption-tag">{{ getTag(activeItem()?.category) }}</span>
+        <h3>{{ activeItem()?.title }}</h3>
+        <p class="caption-desc" *ngIf="activeItem()?.description">{{ activeItem()?.description }}</p>
+        <span class="caption-date" *ngIf="activeItem()?.createdAt">
+          Uploaded on {{ activeItem()?.createdAt | date:'dd MMMM yyyy' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Next Nav Button -->
+    <button class="lightbox-nav-btn next-btn" (click)="nextImage($event)" aria-label="Next image">
+      <i class="pi pi-chevron-right"></i>
+    </button>
+
+  </div>
+}
+
+<app-footer></app-footer>

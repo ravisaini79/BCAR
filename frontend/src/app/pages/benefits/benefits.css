@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap');
+
+.page-hero {
+  margin-top: 80px;
+  background: radial-gradient(circle at top right, rgba(212,175,55,0.12) 0%, transparent 60%),
+              linear-gradient(135deg, #051c3c 0%, #0c356a 100%);
+  padding: 60px 24px 50px;
+  text-align: center;
+}
+.page-hero-inner { max-width: 700px; margin: 0 auto; }
+.page-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(212,175,55,0.15); color: #D4AF37;
+  border: 1px solid rgba(212,175,55,0.3);
+  padding: 6px 18px; border-radius: 50px;
+  font-size: 13px; font-weight: 600; margin-bottom: 20px;
+}
+.page-hero h1 {
+  font-family: Poppins, sans-serif;
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 800; color: #ffffff; margin: 0 0 16px;
+}
+.page-hero p { font-size: 16px; color: rgba(255,255,255,0.82); line-height: 1.7; margin: 0; }
+
+.page-section { background: #F5F7FA; padding: 72px 24px 80px; }
+.page-container { max-width: 1100px; margin: 0 auto; }
+
+/* Benefits Grid */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 64px;
+}
+.benefit-item {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+  border-left: 4px solid #D4AF37;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.benefit-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.09);
+}
+.benefit-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0B2D5C, #1e40af);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.benefit-icon i { color: #D4AF37; font-size: 22px; }
+.benefit-text h4 {
+  font-family: Poppins, sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: #0B2D5C; margin: 0 0 6px;
+}
+.benefit-text p { font-size: 13.5px; color: #64748B; line-height: 1.6; margin: 0; }
+
+/* CTA Banner */
+.cta-banner {
+  background: linear-gradient(135deg, #0B2D5C 0%, #1e40af 100%);
+  border-radius: 20px;
+  padding: 48px 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.cta-text h3 {
+  font-family: Poppins, sans-serif;
+  font-size: 24px; font-weight: 800;
+  color: #ffffff; margin: 0 0 10px;
+}
+.cta-text p { font-size: 15px; color: rgba(255,255,255,0.8); margin: 0; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #D4AF37; color: #0B2D5C;
+  font-family: Poppins, sans-serif;
+  font-size: 15px; font-weight: 700;
+  padding: 14px 30px; border-radius: 50px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* ── Rules Section ── */
+.rules-section {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 40px;
+}
+.rules-header {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 20px;
+}
+.rules-header h2 {
+  font-family: Poppins, sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0B2D5C;
+  margin-bottom: 0;
+}
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.rule-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.rule-label {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(239,68,68,0.1);
+  color: #dc2626;
+  font-family: Poppins, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.rule-item p {
+  font-size: 14.5px;
+  color: #334155;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Fund Section ── */
+.fund-section {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 60px;
+}
+.fund-header {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 20px;
+}
+.fund-header h2 {
+  font-family: Poppins, sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0B2D5C;
+  margin-bottom: 10px;
+}
+.fund-sub {
+  font-size: 15px;
+  color: #64748B;
+  margin: 0;
+  font-weight: 500;
+}
+.fund-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.fund-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.fund-label {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(59,130,246,0.1);
+  color: #1d4ed8;
+  font-family: Poppins, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.fund-item p {
+  font-size: 14.5px;
+  color: #334155;
+  line-height: 1.7;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .page-section { padding: 48px 16px; }
+  .cta-banner { flex-direction: column; padding: 32px 24px; }
+}

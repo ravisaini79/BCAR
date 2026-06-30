@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap');
+
+.page-hero {
+  margin-top: 80px;
+  background: radial-gradient(circle at top right, rgba(212,175,55,0.15) 0%, transparent 55%),
+              linear-gradient(135deg, #040f24 0%, #0B2D5C 100%);
+  padding: 60px 24px 50px; text-align: center;
+}
+.page-hero-inner { max-width: 700px; margin: 0 auto; }
+.page-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(212,175,55,0.15); color: #D4AF37;
+  border: 1px solid rgba(212,175,55,0.3);
+  padding: 6px 18px; border-radius: 50px;
+  font-size: 13px; font-weight: 600; margin-bottom: 20px;
+}
+.page-hero h1 {
+  font-family: Poppins, sans-serif; font-size: clamp(28px, 5vw, 46px);
+  font-weight: 800; color: #ffffff; margin: 0 0 16px;
+}
+.page-hero h1 em { color: #D4AF37; font-style: normal; }
+.page-hero p { font-size: 16px; color: rgba(255,255,255,0.82); line-height: 1.7; margin: 0; }
+
+.page-section { background: #F5F7FA; padding: 72px 24px 80px; }
+.page-container { max-width: 1100px; margin: 0 auto; }
+
+/* ── President Card ── */
+.president-card {
+  background: linear-gradient(135deg, #040f24 0%, #0B2D5C 100%);
+  border-radius: 24px;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  overflow: hidden;
+  margin-bottom: 72px;
+  box-shadow: 0 20px 60px rgba(11,45,92,0.3);
+  position: relative;
+}
+.president-card::before {
+  content:''; position: absolute; inset:0;
+  background: radial-gradient(circle at top right, rgba(212,175,55,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.president-img-wrap {
+  position: relative;
+  overflow: hidden;
+  background: #040f24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+}
+.president-img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0.95);
+}
+.president-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(0deg, rgba(4,15,36,0.95) 0%, transparent 100%);
+  padding: 32px 22px 20px;
+}
+.president-info h4 {
+  font-family: Poppins, sans-serif; font-size: 17px; font-weight: 700;
+  color: #ffffff; margin: 0 0 4px;
+}
+.president-info span { font-size: 12px; color: #D4AF37; font-weight: 600; }
+
+.president-bio { padding: 44px 40px; display: flex; flex-direction: column; justify-content: center; gap: 0; }
+.role-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(212,175,55,0.15); color: #D4AF37;
+  border: 1px solid rgba(212,175,55,0.3);
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  padding: 5px 16px; border-radius: 50px; margin-bottom: 14px; width: fit-content;
+}
+.president-bio h2 {
+  font-family: Poppins, sans-serif; font-size: 28px; font-weight: 800;
+  color: #ffffff; margin: 0 0 6px;
+}
+.president-location { font-size: 13px; color: rgba(255,255,255,0.5); margin: 0 0 18px; display: flex; align-items: center; gap: 6px; }
+.president-location i { color: #D4AF37; }
+.president-bio p { font-size: 14px; color: rgba(255,255,255,0.72); line-height: 1.8; margin: 0 0 18px; }
+.president-bio blockquote {
+  background: rgba(255,255,255,0.05);
+  border-left: 3px solid #D4AF37;
+  padding: 14px 18px; border-radius: 0 8px 8px 0;
+  font-size: 14px; font-style: italic; color: rgba(255,255,255,0.85);
+  line-height: 1.7; margin: 0 0 20px;
+}
+.president-bio blockquote strong { color: #D4AF37; font-style: normal; }
+.slogans { display: flex; flex-wrap: wrap; gap: 10px; }
+.slogans span {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(212,175,55,0.12); color: #D4AF37;
+  border: 1px solid rgba(212,175,55,0.25);
+  font-size: 12px; font-weight: 700;
+  padding: 6px 14px; border-radius: 50px;
+}
+
+/* ── Committee Heading ── */
+.committee-heading {
+  font-family: Poppins, sans-serif; font-size: 28px; font-weight: 800;
+  color: #0B2D5C; text-align: center; margin: 0 0 40px;
+}
+.committee-heading em { color: #D4AF37; font-style: normal; }
+
+/* ── Committee Grid ── */
+.committee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+}
+.committee-card {
+  background: #ffffff; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.07);
+  border: 1px solid #e8edf5;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.committee-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(11,45,92,0.12); }
+
+.member-img-wrap {
+  height: 320px;
+  background: #ffffff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+.member-img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+.committee-card:hover .member-img-wrap img { transform: scale(1.04); }
+
+.member-body { padding: 24px 26px 28px; }
+.member-role-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #D4AF37, #f0cb60);
+  color: #0B2D5C;
+  font-family: Poppins, sans-serif; font-size: 11px; font-weight: 800;
+  padding: 4px 14px; border-radius: 50px; margin-bottom: 10px;
+}
+.member-body h3 { font-family: Poppins, sans-serif; font-size: 20px; font-weight: 800; color: #0B2D5C; margin: 0 0 4px; }
+.member-role-en { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 8px; }
+.member-location { font-size: 13px; color: #64748B; display: flex; align-items: center; gap: 6px; margin: 0 0 14px; }
+.member-location i { color: #D4AF37; font-size: 12px; }
+.member-quote {
+  background: #f8fafc; border-left: 3px solid #D4AF37;
+  padding: 12px 14px; border-radius: 0 8px 8px 0;
+  font-size: 13px; font-style: italic; color: #475569; line-height: 1.7; margin: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .president-card { grid-template-columns: 1fr; }
+  .president-img-wrap { height: 320px; }
+  .president-bio { padding: 30px 24px; }
+}
+@media (max-width: 640px) {
+  .page-section { padding: 48px 16px; }
+  .committee-grid { grid-template-columns: 1fr; }
+}

@@ -483,6 +483,14 @@
             </div>
             <h4 class="notice-title">{{ n.title }}</h4>
             <p class="notice-body">{{ n.body }}</p>
+            <div class="notice-actions" *ngIf="isAdmin">
+              <button class="btn-action-edit" (click)="editNotice(n)">
+                <i class="pi pi-pencil"></i> Edit
+              </button>
+              <button class="btn-action-delete" (click)="deleteNotice(n._id)">
+                <i class="pi pi-trash"></i> Delete
+              </button>
+            </div>
           </div>
         </div>
 
@@ -669,9 +677,9 @@
 
 <!-- ════════════════════════ NOTICE DIALOG ════════════════════════════ -->
 <p-dialog
-  header="Publish Notice"
+  [header]="editingNoticeId ? 'Edit Notice' : 'Publish Notice'"
   [visible]="showNoticeDialog"
-  (visibleChange)="showNoticeDialog = $event"
+  (visibleChange)="onNoticeDialogVisibleChange($event)"
   [modal]="true"
   [style]="{width: '600px', maxWidth: '95vw'}">
 
@@ -700,7 +708,7 @@
     </button>
     <button class="btn-primary" (click)="submitNotice()"
             [disabled]="busy || !noticeDraft.title || !noticeDraft.body">
-      <i class="pi pi-send"></i> {{ busy ? 'Publishing...' : 'Publish Notice' }}
+      <i class="pi pi-send"></i> {{ busy ? 'Saving...' : (editingNoticeId ? 'Save Changes' : 'Publish Notice') }}
     </button>
   </ng-template>
 </p-dialog>

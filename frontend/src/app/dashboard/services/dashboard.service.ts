@@ -34,6 +34,14 @@ export class DashboardService {
     return this.http.post(`${environment.apiUrl}/dashboard/notices`, notice);
   }
 
+  updateNotice(id: string, notice: { title: string; body: string; category: string }): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/dashboard/notices/${id}`, notice);
+  }
+
+  deleteNotice(id: string): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/dashboard/notices/${id}`);
+  }
+
   // ── Grievances ─────────────────────────────────────────────────────
   /** Member's own grievances */
   getMyGrievances(): Observable<any[]> {

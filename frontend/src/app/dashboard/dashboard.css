@@ -695,6 +695,39 @@
   overflow: hidden;
 }
 
+.notice-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 10px;
+}
+.notice-actions button {
+  background: none;
+  border: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.btn-action-edit {
+  color: #0b2d5c;
+}
+.btn-action-edit:hover {
+  background: #f1f5f9;
+}
+.btn-action-delete {
+  color: #ef4444;
+}
+.btn-action-delete:hover {
+  background: #fef2f2;
+}
+
 /* ── Grievances ───────────────────────────────────────────────── */
 .filter-row {
   display: flex;

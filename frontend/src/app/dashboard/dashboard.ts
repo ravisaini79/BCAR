@@ -130,6 +130,7 @@ export class DashboardComponent implements OnInit {
 
   // Dialog visibilities
   showNoticeDialog = false;
+  editingNoticeId = '';
   showGrievanceDialog = false;
   showViewDialog = false;
   selectedMember: User | null = null;
@@ -551,23 +552,71 @@ export class DashboardComponent implements OnInit {
       return;
     }
     this.busy = true;
-    this.dashboardService.createNotice(this.noticeDraft).subscribe({
-      next: () => {
-        this.busy = false;
-        this.showNoticeDialog = false;
-        this.resetNoticeDraft();
-        this.toastService.success('Notice published successfully.');
-        this.refreshAll();
-      },
-      error: () => {
-        this.busy = false;
-        this.toastService.error('Failed to publish notice.');
-      }
-    });
+    if (this.editingNoticeId) {
+      // Edit mode
+      this.dashboardService.updateNotice(this.editingNoticeId, this.noticeDraft).subscribe({
+        next: () => {
+          this.busy = false;
+          this.showNoticeDialog = false;
+          this.resetNoticeDraft();
+          this.toastService.success('Notice updated successfully.');
+          this.refreshAll();
+        },
+        error: () => {
+          this.busy = false;
+          this.toastService.error('Failed to update notice.');
+        }
+      });
+    } else {
+      // Create mode
+      this.dashboardService.createNotice(this.noticeDraft).subscribe({
+        next: () => {
+          this.busy = false;
+          this.showNoticeDialog = false;
+          this.resetNoticeDraft();
+          this.toastService.success('Notice published successfully.');
+          this.refreshAll();
+        },
+        error: () => {
+          this.busy = false;
+          this.toastService.error('Failed to publish notice.');
+        }
+      });
+    }
+  }
+
+  editNotice(notice: any) {
+    this.editingNoticeId = notice._id;
+    this.noticeDraft = {
+      title: notice.title,
+      body: notice.body,
+      category: notice.category || 'General'
+    };
+    this.showNoticeDialog = true;
+  }
+
+  deleteNotice(id: string) {
+    if (confirm('Are you sure you want to delete this notice?')) {
+      this.dashboardService.deleteNotice(id).subscribe({
+        next: () => {
+          this.toastService.success('Notice deleted successfully.');
+          this.refreshAll();
+        },
+        error: () => this.toastService.error('Failed to delete notice.')
+      });
+    }
   }
 
   resetNoticeDraft() {
     this.noticeDraft = { title: '', body: '', category: 'General' };
+    this.editingNoticeId = '';
+  }
+
+  onNoticeDialogVisibleChange(visible: boolean) {
+    this.showNoticeDialog = visible;
+    if (!visible) {
+      this.resetNoticeDraft();
+    }
   }
 
   // Submit Grievance Draft

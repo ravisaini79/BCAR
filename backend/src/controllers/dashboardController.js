@@ -31,6 +31,41 @@ const createNotice = async (req, res, next) => {
   }
 };
 
+// @desc    Update a notice
+// @route   PUT /api/dashboard/notices/:id
+// @access  Private (Admin/Super Admin/Coordinator)
+const updateNotice = async (req, res, next) => {
+  try {
+    const { title, body, category } = req.body;
+    const notice = await Notice.findByIdAndUpdate(
+      req.params.id,
+      { title, body, category },
+      { new: true, runValidators: true }
+    );
+    if (!notice) {
+      return res.status(404).json({ error: 'Notice not found' });
+    }
+    res.json(notice);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete a notice
+// @route   DELETE /api/dashboard/notices/:id
+// @access  Private (Admin/Super Admin/Coordinator)
+const deleteNotice = async (req, res, next) => {
+  try {
+    const notice = await Notice.findByIdAndDelete(req.params.id);
+    if (!notice) {
+      return res.status(404).json({ error: 'Notice not found' });
+    }
+    res.json({ message: 'Notice deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // @desc    Get dashboard stats
 // @route   GET /api/dashboard/stats
 // @access  Private (Admin/Super Admin/Coordinator)
@@ -220,6 +255,8 @@ const updateGrievanceStatus = async (req, res, next) => {
 module.exports = {
   getNotices,
   createNotice,
+  updateNotice,
+  deleteNotice,
   getStats,
   getMembers,
   updateMemberStatus,

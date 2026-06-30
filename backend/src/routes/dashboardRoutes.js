@@ -4,6 +4,8 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 const {
   getNotices,
   createNotice,
+  updateNotice,
+  deleteNotice,
   getStats,
   getMembers,
   updateMemberStatus,
@@ -20,6 +22,10 @@ router.use(protect);
 router.route('/notices')
   .get(getNotices)
   .post(authorize('super_admin', 'admin', 'coordinator'), createNotice);
+
+router.route('/notices/:id')
+  .put(authorize('super_admin', 'admin', 'coordinator'), updateNotice)
+  .delete(authorize('super_admin', 'admin', 'coordinator'), deleteNotice);
 
 router.route('/stats')
   .get(authorize('super_admin', 'admin', 'coordinator'), getStats);

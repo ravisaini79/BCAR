@@ -279,24 +279,6 @@
                 <p-select formControlName="interestedToJoin" [options]="joinOptions"
                           optionLabel="label" optionValue="value" styleClass="w-full" />
               </div>
-              @if (registerForm.get('interestedToJoin')?.value === 'YES') {
-                <div class="input-group">
-                  <label class="field-label">Admission Fee (Rs.) <span class="required">*</span></label>
-                  <input pInputText type="number" formControlName="admissionFee" placeholder="Amount in Rs"
-                         class="w-full" [class.p-invalid]="hasError('admissionFee')" />
-                  @if (hasError('admissionFee', 'required')) {
-                    <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Admission fee is required.</small>
-                  }
-                </div>
-                <div class="input-group">
-                  <label class="field-label">Monthly Contribution (Rs.) <span class="required">*</span></label>
-                  <input pInputText type="number" formControlName="perMonthMembershipFee" placeholder="Amount per month"
-                         class="w-full" [class.p-invalid]="hasError('perMonthMembershipFee')" />
-                  @if (hasError('perMonthMembershipFee', 'required')) {
-                    <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Monthly fee is required.</small>
-                  }
-                </div>
-              }
             </div>
           </div>
         </div>

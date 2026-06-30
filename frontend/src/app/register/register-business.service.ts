@@ -71,8 +71,6 @@ export class RegisterBusinessService {
       dateOfStartingCsp:  [''],
       // Membership
       interestedToJoin:       ['YES', Validators.required],
-      admissionFee:           [''],
-      perMonthMembershipFee:  [''],
       // Declaration
       declarationAccepted: [false, Validators.requiredTrue],
       // Documents — optional during testing (remove `null` validators to re-enable)
@@ -80,21 +78,6 @@ export class RegisterBusinessService {
       aadhaarCard:       [null],  // TODO: add Validators.required to re-enable
       panCard:           [null],  // TODO: add Validators.required to re-enable
       bankBcCertificate: [null],  // TODO: add Validators.required to re-enable
-    });
-
-    // Conditional fee validation
-    form.get('interestedToJoin')?.valueChanges.subscribe(val => {
-      const admission = form.get('admissionFee');
-      const monthly   = form.get('perMonthMembershipFee');
-      if (val === 'YES') {
-        admission?.setValidators([Validators.required]);
-        monthly?.setValidators([Validators.required]);
-      } else {
-        admission?.clearValidators();
-        monthly?.clearValidators();
-      }
-      admission?.updateValueAndValidity();
-      monthly?.updateValueAndValidity();
     });
 
     return form;

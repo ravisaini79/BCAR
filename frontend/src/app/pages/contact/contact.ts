@@ -1,11 +1,11 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { inject } from '@angular/core';
 import { HeaderComponent } from '../../layout/header/header';
 import { FooterComponent } from '../../layout/footer/footer';
+import { ToastService } from '../../core/services/toast.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -17,6 +17,7 @@ import { environment } from '../../../environments/environment';
 })
 export class ContactComponent {
   private http = inject(HttpClient);
+  private toastService = inject(ToastService);
 
   form = { name: '', email: '', phone: '', message: '' };
   submitting = false;
@@ -29,12 +30,15 @@ export class ContactComponent {
     this.http.post<any>(`${environment.apiUrl}/public/contact`, this.form).subscribe({
       next: (res) => {
         this.submitting = false;
-        this.successMsg = '✓ ' + (res.message || 'Thank you! Your message has been sent.');
+        const msg = res.message || 'Thank you! Your message has been sent.';
+        this.toastService.success(msg);
+        this.successMsg = '✓ ' + msg;
         this.form = { name: '', email: '', phone: '', message: '' };
       },
       error: (err) => {
         this.submitting = false;
         console.error('Failed to submit contact query:', err);
+        this.toastService.error('Failed to send message. Please try again later.');
         this.successMsg = '❌ Failed to send message. Please try again later.';
       }
     });

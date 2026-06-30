@@ -8,6 +8,7 @@ import { HeaderComponent } from '../layout/header/header';
 import { FooterComponent } from '../layout/footer/footer';
 import { GalleryService } from '../core/services/gallery.service';
 import { NewsService } from '../core/services/news.service';
+import { ToastService } from '../core/services/toast.service';
 
 @Component({
   selector: 'app-home',
@@ -107,6 +108,7 @@ export class HomeComponent implements OnInit {
 
   private galleryService = inject(GalleryService);
   private newsService = inject(NewsService);
+  private toastService = inject(ToastService);
 
   ngOnInit() {
     this.fetchNotices();
@@ -146,9 +148,11 @@ export class HomeComponent implements OnInit {
   }
 
   showToast(message: string, type: 'success'|'error' = 'success') {
-    this.toast = message;
-    this.toastType = type;
-    setTimeout(() => this.toast = '', 5000);
+    if (type === 'success') {
+      this.toastService.success(message);
+    } else {
+      this.toastService.error(message);
+    }
   }
 
   scrollTo(id: string) {

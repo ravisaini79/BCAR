@@ -12,7 +12,6 @@ import { environment } from '../../../environments/environment';
   selector: 'app-contact',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, HeaderComponent, FooterComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './contact.html',
   styleUrls: ['./contact.css']
 })
@@ -26,11 +25,18 @@ export class ContactComponent {
   submitForm() {
     this.submitting = true;
     this.successMsg = '';
-    // Simulate API call – wire to real endpoint if available
-    setTimeout(() => {
-      this.submitting = false;
-      this.successMsg = '✓ Thank you! Your message has been sent. We will get back to you shortly.';
-      this.form = { name: '', email: '', phone: '', message: '' };
-    }, 1000);
+    
+    this.http.post<any>(`${environment.apiUrl}/public/contact`, this.form).subscribe({
+      next: (res) => {
+        this.submitting = false;
+        this.successMsg = '✓ ' + (res.message || 'Thank you! Your message has been sent.');
+        this.form = { name: '', email: '', phone: '', message: '' };
+      },
+      error: (err) => {
+        this.submitting = false;
+        console.error('Failed to submit contact query:', err);
+        this.successMsg = '❌ Failed to send message. Please try again later.';
+      }
+    });
   }
 }

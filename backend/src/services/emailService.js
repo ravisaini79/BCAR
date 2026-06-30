@@ -222,8 +222,50 @@ const sendApprovalEmail = async (memberEmail, name, regNumber, membershipNo, tem
   });
 };
 
+const sendContactQueryEmail = async (name, email, phone, message) => {
+  const recipient = process.env.CONTACT_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || 'info@bcarajasthan.org';
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>New Contact Query - BCAR</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #F3F4F6; }
+        .card { max-width: 600px; background: #fff; padding: 30px; border-radius: 8px; border-top: 5px solid #D4AF37; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h3 { color: #0B2D5C; margin-top: 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 10px; border-bottom: 1px solid #E5E7EB; text-align: left; font-size: 14px; }
+        th { color: #4B5563; font-weight: bold; width: 150px; }
+        .message-box { background: #F8FAFC; padding: 15px; border-radius: 6px; border: 1px solid #E2E8F0; font-style: italic; white-space: pre-line; }
+      </style>
+    </head>
+    <body>
+      <div class="card">
+        <h3>New Contact Query Received</h3>
+        <p>A user has submitted the contact form on the BCAR portal. Details are below:</p>
+        <table>
+          <tr><th>Name:</th><td>${name}</td></tr>
+          <tr><th>Email:</th><td>${email}</td></tr>
+          <tr><th>Phone:</th><td>${phone}</td></tr>
+        </table>
+        <h4>Message Details:</h4>
+        <div class="message-box">${message}</div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendMail({
+    to: recipient,
+    subject: `New Contact Form Query from ${name}`,
+    html
+  });
+};
+
 module.exports = {
   sendWelcomeEmail,
   sendAdminAlertEmail,
-  sendApprovalEmail
+  sendApprovalEmail,
+  sendContactQueryEmail
 };

@@ -212,11 +212,17 @@ export class HomeComponent implements OnInit {
 
   submitContactForm() {
     this.submittingContact = true;
-    // Simulate API call
-    setTimeout(() => {
-      this.submittingContact = false;
-      this.showToast('Thank you! Your message has been sent successfully. We will get back to you soon.');
-      this.contact = { name: '', email: '', phone: '', message: '' };
-    }, 1000);
+    this.http.post<any>(`${environment.apiUrl}/public/contact`, this.contact).subscribe({
+      next: (res) => {
+        this.submittingContact = false;
+        this.showToast(res.message || 'Thank you! Your message has been sent successfully.');
+        this.contact = { name: '', email: '', phone: '', message: '' };
+      },
+      error: (err) => {
+        this.submittingContact = false;
+        console.error('Failed to submit contact query from home:', err);
+        this.showToast('Failed to send message. Please try again later.', 'error');
+      }
+    });
   }
 }

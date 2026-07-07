@@ -3,9 +3,10 @@ import { FormGroup } from '@angular/forms';
 import { ToastService } from '../core/services/toast.service';
 import { inject } from '@angular/core';
 
-export type UploadFieldName = 'photograph' | 'aadhaarCard' | 'panCard' | 'bankBcCertificate';
+export type UploadFieldName = 'profileImage' | 'photograph' | 'aadhaarCard' | 'panCard' | 'bankBcCertificate';
 
 export interface FileMetadata {
+  profileImageName: string;
   photographName: string;
   aadhaarCardName: string;
   panCardName: string;
@@ -13,6 +14,7 @@ export interface FileMetadata {
 }
 
 export interface RawFileStore {
+  profileImage: File | null;
   photograph: File | null;
   aadhaarCard: File | null;
   panCard: File | null;
@@ -30,6 +32,7 @@ export class UploadService {
   private toast = inject(ToastService);
 
   fileNames = signal<FileMetadata>({
+    profileImageName: '',
     photographName: '',
     aadhaarCardName: '',
     panCardName: '',
@@ -37,6 +40,7 @@ export class UploadService {
   });
 
   rawFiles = signal<RawFileStore>({
+    profileImage: null,
     photograph: null,
     aadhaarCard: null,
     panCard: null,
@@ -92,12 +96,12 @@ export class UploadService {
    * Reset all file state after form submission
    */
   resetAll(form: FormGroup): void {
-    (['photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(field => {
+    (['profileImage', 'photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(field => {
       form.get(field)?.setValue(null);
       form.get(field)?.markAsUntouched();
     });
-    this.rawFiles.set({ photograph: null, aadhaarCard: null, panCard: null, bankBcCertificate: null });
-    this.fileNames.set({ photographName: '', aadhaarCardName: '', panCardName: '', bankBcCertificateName: '' });
+    this.rawFiles.set({ profileImage: null, photograph: null, aadhaarCard: null, panCard: null, bankBcCertificate: null });
+    this.fileNames.set({ profileImageName: '', photographName: '', aadhaarCardName: '', panCardName: '', bankBcCertificateName: '' });
   }
 
   /**

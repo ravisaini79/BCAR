@@ -51,6 +51,62 @@ export class RegisterComponent implements OnInit, OnDestroy {
   submitted = false;
   readonly today = new Date();
 
+  // ── Camera / Webcam Handling ──────────────────────────────────────────────
+  isCameraActive = false;
+  private mediaStream: MediaStream | null = null;
+
+  async startCamera(event?: Event): Promise<void> {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.isCameraActive = true;
+    this.cdr.markForCheck();
+    try {
+      this.mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: 640, height: 480 },
+        audio: false
+      });
+      setTimeout(() => {
+        const videoEl = document.getElementById('camera-preview-video') as HTMLVideoElement | null;
+        if (videoEl && this.mediaStream) {
+          videoEl.srcObject = this.mediaStream;
+        }
+      }, 100);
+    } catch (err: any) {
+      console.error('Camera access error:', err);
+      this.isCameraActive = false;
+      this.cdr.markForCheck();
+      alert('Could not access camera. Please make sure permissions are granted.');
+    }
+  }
+
+  stopCamera(): void {
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach(track => track.stop());
+      this.mediaStream = null;
+    }
+    this.isCameraActive = false;
+    this.cdr.markForCheck();
+  }
+
+  capturePhoto(): void {
+    const videoEl = document.getElementById('camera-preview-video') as HTMLVideoElement | null;
+    if (videoEl) {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoEl.videoWidth || 640;
+      canvas.height = videoEl.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        this.registerForm.get('profileImage')?.setValue(dataUrl);
+        this.registerForm.get('profileImage')?.markAsTouched();
+        this.upload.fileNames.update(names => ({ ...names, profileImageName: 'profile_capture.jpg' }));
+      }
+    }
+    this.stopCamera();
+  }
+
 
   // District dropdown proxy (needed for ngModel binding in template)
   get districtSearchText(): string { return this.srv.districtSearchText(); }
@@ -80,7 +136,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.registerForm.valueChanges.subscribe(() => this.cdr.markForCheck());
   }
 
-  ngOnDestroy(): void { /* cleanup handled by GC */ }
+  ngOnDestroy(): void {
+    this.stopCamera();
+  }
 
   saveDraft():   void { this.srv.saveDraft(this.registerForm); }
   autoSave():    void { this.srv.autoSave(this.registerForm);  }

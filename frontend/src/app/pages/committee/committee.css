@@ -158,6 +158,25 @@
   background: #f8fafc; border-left: 3px solid #D4AF37;
   padding: 12px 14px; border-radius: 0 8px 8px 0;
   font-size: 13px; font-style: italic; color: #475569; line-height: 1.7; margin: 0;
+  white-space: pre-line;
+}
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: #D4AF37;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 0 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s;
+}
+.read-more-btn:hover {
+  color: #0B2D5C;
 }
 
 /* ── Responsive ── */

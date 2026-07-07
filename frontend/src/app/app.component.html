@@ -10,7 +10,7 @@
   <header>
     <div class="container nav">
       <button class="brand" (click)="go('home')">
-        <img src="/images/bcar-logo.png" alt="BCAR logo">
+        <img src="/images/bcar-logo-official.jpg" alt="BCAR logo">
         <span><b>BCAR</b><small>Business Correspondent<br>Association Rajasthan</small></span>
       </button>
       <button class="menu" (click)="mobileOpen = !mobileOpen" aria-label="Open menu">☰</button>
@@ -136,7 +136,7 @@
   <div class="auth-side">
     <button class="back" (click)="go('home')">← Back to website</button>
     <div class="auth-message">
-      <img src="/images/bcar-logo.png" alt="BCAR">
+      <img src="/images/bcar-logo-official.jpg" alt="BCAR">
       <span class="eyebrow light">Member platform</span>
       <h2>संगठन से शक्ति,<br><em>शक्ति से सम्मान</em></h2>
       <p>A secure digital home for Rajasthan's Business Correspondent community.</p>
@@ -145,7 +145,7 @@
   </div>
   <div class="auth-form-wrap">
     <form class="auth-form" *ngIf="view === 'login'" (ngSubmit)="submitLogin()">
-      <div class="mobile-brand"><img src="/images/bcar-logo.png" alt="BCAR"><b>BCAR</b></div>
+      <div class="mobile-brand"><img src="/images/bcar-logo-official.jpg" alt="BCAR"><b>BCAR</b></div>
       <span class="eyebrow">Welcome back</span><h1>Member login</h1><p>Access your membership, notices and support services.</p>
       <label>Email address<input type="email" name="email" [(ngModel)]="login.email" placeholder="you@example.com" required></label>
       <label>Password<input type="password" name="password" [(ngModel)]="login.password" placeholder="Enter your password" required></label>
@@ -160,7 +160,7 @@
 
 <main class="dashboard" *ngIf="view === 'dashboard' && user">
   <aside>
-    <div class="dash-brand"><img src="/images/bcar-logo.png" alt="BCAR"><div><b>BCAR</b><small>Member Portal</small></div></div>
+    <div class="dash-brand"><img src="/images/bcar-logo-official.jpg" alt="BCAR"><div><b>BCAR</b><small>Member Portal</small></div></div>
     <div class="profile-mini"><span>{{ initials(user.name) }}</span><div><b>{{ user.name }}</b><small>{{ user.role | titlecase }}</small></div></div>
     <nav>
       <button [class.active]="dashboardTab === 'overview'" (click)="dashboardTab='overview'"><span>⌂</span> Overview</button>
@@ -223,6 +223,6 @@
 </main>
 
 <footer *ngIf="view === 'home'">
-  <div class="container footer-grid"><div class="footer-brand"><img src="/images/bcar-logo.png" alt="BCAR"><div><b>BCAR</b><span>Business Correspondent<br>Association Rajasthan</span></div></div><p>एकता हमारी, शक्ति हमारी<br>अधिकार हमारा, सम्मान हमारा</p><div><small>Registered under</small><b>Trade Unions Act, 1926</b><span>TU/2026/14/132549</span></div></div>
+  <div class="container footer-grid"><div class="footer-brand"><img src="/images/bcar-logo-official.jpg" alt="BCAR"><div><b>BCAR</b><span>Business Correspondent<br>Association Rajasthan</span></div></div><p>एकता हमारी, शक्ति हमारी<br>अधिकार हमारा, सम्मान हमारा</p><div><small>Registered under</small><b>Trade Unions Act, 1926</b><span>TU/2026/14/132549</span></div></div>
   <div class="container copyright">© 2026 Business Correspondent Association Rajasthan. All rights reserved.</div>
 </footer>

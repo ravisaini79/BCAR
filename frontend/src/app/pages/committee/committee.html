@@ -64,7 +64,7 @@
 
     <!-- Bank Coordinators Grid Section -->
     <h2 class="committee-heading" style="margin-top: 64px;">Bank <em>Coordinators</em></h2>
-    <div class="committee-grid">
+    <div class="coordinators-grid">
       <div class="committee-card" *ngFor="let member of coordinators">
         <div class="member-img-wrap">
           <img [src]="member.photo" [alt]="member.name">
@@ -74,7 +74,6 @@
           <h3>{{ member.name }}</h3>
           <p class="member-role-en">{{ member.roleEn }}</p>
           <p class="member-location"><i class="fa-solid fa-location-dot"></i> {{ member.location }}</p>
-          <blockquote class="member-quote">"{{ member.quote }}"</blockquote>
         </div>
       </div>
     </div>

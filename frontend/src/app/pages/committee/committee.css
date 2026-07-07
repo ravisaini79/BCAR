@@ -179,6 +179,25 @@
   color: #0B2D5C;
 }
 
+/* ── Coordinators Grid ── */
+.coordinators-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.coordinators-grid .member-img-wrap {
+  height: 240px;
+}
+@media (max-width: 1024px) {
+  .coordinators-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .coordinators-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .coordinators-grid { grid-template-columns: 1fr; }
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .president-card { grid-template-columns: 1fr; }

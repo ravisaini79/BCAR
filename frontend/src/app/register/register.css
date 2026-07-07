@@ -831,3 +831,262 @@ p-datepicker {
 
 /* PrimeNG Toast z-index */
 .p-toast { z-index: 9999 !important; }
+
+/* Webcam capture styling */
+.camera-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px;
+}
+.camera-stream {
+  width: 100%;
+  max-width: 240px;
+  height: 180px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #000;
+  border: 2px solid #D4AF37;
+}
+.camera-controls {
+  display: flex;
+  gap: 8px;
+}
+.camera-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  transition: all 0.2s;
+}
+.capture-btn {
+  background: #0B2D5C;
+  color: #fff;
+}
+.capture-btn:hover {
+  background: #040f24;
+}
+.cancel-btn {
+  background: #EF4444;
+  color: #fff;
+}
+.cancel-btn:hover {
+  background: #DC2626;
+}
+.camera-trigger-wrapper {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto; /* Override pointer-events: none of parent */
+}
+.or-divider {
+  font-size: 11px;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.live-camera-trigger {
+  background: #ffffff;
+  border: 1px solid #D4AF37;
+  color: #0B2D5C;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.live-camera-trigger:hover {
+  background: #D4AF37;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+.live-camera-trigger i {
+  font-size: 11px;
+}
+
+/* ── Profile Image Avatar Styling ── */
+.profile-image-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #E2E8F0;
+  width: 100%;
+}
+.field-label-centered {
+  font-family: Poppins, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0B2D5C;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.profile-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.profile-avatar-display {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 3px dashed #CBD5E1;
+  background: #F8FAFC;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible; /* to allow absolute delete button to hover outside */
+  transition: all 0.2s ease-in-out;
+}
+.profile-avatar-display:hover {
+  border-color: #D4AF37;
+  background: #F1F5F9;
+  transform: scale(1.02);
+}
+.profile-avatar-display.has-image {
+  border: 3px solid #D4AF37;
+  overflow: visible;
+}
+.avatar-img-preview {
+  width: 134px;
+  height: 134px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.avatar-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  gap: 4px;
+  padding: 10px;
+}
+.avatar-placeholder .placeholder-icon {
+  font-size: 40px;
+  color: #CBD5E1;
+}
+.avatar-upload-hint {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748B;
+  text-align: center;
+}
+.remove-avatar-btn {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #EF4444;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  transition: all 0.2s;
+  z-index: 10;
+}
+.remove-avatar-btn:hover {
+  background: #DC2626;
+  transform: scale(1.1);
+}
+.profile-action-links {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-action-btn {
+  background: none;
+  border: none;
+  color: #0B2D5C;
+  font-family: Poppins, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.profile-action-btn:hover {
+  color: #D4AF37;
+}
+.profile-btn-divider {
+  color: #CBD5E1;
+  font-size: 11px;
+}
+
+/* ── Circular Webcam in Avatar ── */
+.profile-camera-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.profile-camera-stream {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #000;
+  border: 3px solid #D4AF37;
+  transform: scaleX(-1); /* Mirror camera stream */
+}
+.profile-camera-controls {
+  display: flex;
+  gap: 12px;
+}
+.avatar-camera-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s;
+  font-size: 13px;
+}
+.avatar-camera-btn.capture {
+  background: #16A34A;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+}
+.avatar-camera-btn.capture:hover {
+  background: #15803D;
+  transform: scale(1.1);
+}
+.avatar-camera-btn.cancel {
+  background: #EF4444;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+.avatar-camera-btn.cancel:hover {
+  background: #DC2626;
+  transform: scale(1.1);
+}

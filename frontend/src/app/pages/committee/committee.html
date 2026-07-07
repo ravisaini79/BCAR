@@ -51,6 +51,29 @@
           <h3>{{ member.name }}</h3>
           <p class="member-role-en">{{ member.roleEn }}</p>
           <p class="member-location"><i class="fa-solid fa-location-dot"></i> {{ member.location }}</p>
+          <blockquote class="member-quote" *ngIf="member.roleEn !== 'General Secretary'">"{{ member.quote }}"</blockquote>
+          <div *ngIf="member.roleEn === 'General Secretary'">
+            <blockquote class="member-quote">"{{ showFullSecretaryQuote ? member.quote : getTruncatedQuote(member.quote) }}"</blockquote>
+            <button class="read-more-btn" (click)="toggleSecretaryQuote()">
+              {{ showFullSecretaryQuote ? 'Show Less' : 'Read More' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank Coordinators Grid Section -->
+    <h2 class="committee-heading" style="margin-top: 64px;">Bank <em>Coordinators</em></h2>
+    <div class="committee-grid">
+      <div class="committee-card" *ngFor="let member of coordinators">
+        <div class="member-img-wrap">
+          <img [src]="member.photo" [alt]="member.name">
+        </div>
+        <div class="member-body">
+          <span class="member-role-badge">{{ member.role }}</span>
+          <h3>{{ member.name }}</h3>
+          <p class="member-role-en">{{ member.roleEn }}</p>
+          <p class="member-location"><i class="fa-solid fa-location-dot"></i> {{ member.location }}</p>
           <blockquote class="member-quote">"{{ member.quote }}"</blockquote>
         </div>
       </div>

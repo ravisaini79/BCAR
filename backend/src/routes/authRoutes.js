@@ -11,6 +11,7 @@ const upload = multer({
 });
 
 const cpUpload = upload.fields([
+  { name: 'profileImage', maxCount: 1 },
   { name: 'photograph', maxCount: 1 },
   { name: 'aadhaarCard', maxCount: 1 },
   { name: 'panCard', maxCount: 1 },

@@ -74,6 +74,7 @@ export class RegisterBusinessService {
       // Declaration
       declarationAccepted: [false, Validators.requiredTrue],
       // Documents — optional during testing (remove `null` validators to re-enable)
+      profileImage:      [null],
       photograph:        [null],  // TODO: add Validators.required to re-enable
       aadhaarCard:       [null],  // TODO: add Validators.required to re-enable
       panCard:           [null],  // TODO: add Validators.required to re-enable
@@ -93,13 +94,14 @@ export class RegisterBusinessService {
 
       // Patch only text fields; files need fresh selection
       const textData = { ...parsed };
-      (['photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(k => {
+      (['profileImage', 'photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(k => {
         delete textData[k];
       });
       form.patchValue(textData, { emitEvent: false });
 
       // Restore base64 previews and display names
       const nameUpdates: Partial<Record<string, string>> = {};
+      if (parsed.profileImage)      { form.get('profileImage')?.setValue(parsed.profileImage, { emitEvent: false });           nameUpdates['profileImageName']      = 'Profile_Image_Restored.jpg'; }
       if (parsed.photograph)        { form.get('photograph')?.setValue(parsed.photograph, { emitEvent: false });               nameUpdates['photographName']        = 'Photograph_Restored.jpg'; }
       if (parsed.aadhaarCard)       { form.get('aadhaarCard')?.setValue(parsed.aadhaarCard, { emitEvent: false });             nameUpdates['aadhaarCardName']       = 'Aadhaar_Restored.pdf'; }
       if (parsed.panCard)           { form.get('panCard')?.setValue(parsed.panCard, { emitEvent: false });                     nameUpdates['panCardName']           = 'PAN_Restored.pdf'; }
@@ -159,12 +161,13 @@ export class RegisterBusinessService {
 
     // Append all text controls
     Object.keys(form.controls).forEach(key => {
-      if (!['photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'].includes(key)) {
+      if (!['profileImage', 'photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'].includes(key)) {
         formData.append(key, form.get(key)?.value ?? '');
       }
     });
 
     // Append file fields via UploadService
+    this.upload.appendFileToFormData(formData, 'profileImage',      form, 'profile_image_draft.jpg', 'image/jpeg');
     this.upload.appendFileToFormData(formData, 'photograph',        form, 'photograph_draft.jpg',  'image/jpeg');
     this.upload.appendFileToFormData(formData, 'aadhaarCard',       form, 'aadhaar_draft.pdf',     'application/pdf');
     this.upload.appendFileToFormData(formData, 'panCard',           form, 'pan_draft.pdf',         'application/pdf');

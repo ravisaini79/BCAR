@@ -24,6 +24,56 @@
             <h3><i class="pi pi-user"></i> Personal Details</h3>
           </div>
           <div class="section-card-body">
+            <!-- Profile Image Capture / Upload Zone -->
+            <div class="profile-image-section">
+              <label class="field-label-centered">Profile Image / User Picture</label>
+              
+              <!-- Circular Avatar View -->
+              <div class="profile-avatar-container">
+                @if (isCameraActive) {
+                  <div class="profile-camera-wrap">
+                    <video id="camera-preview-video" autoplay playsinline class="profile-camera-stream"></video>
+                    <div class="profile-camera-controls">
+                      <button type="button" class="avatar-camera-btn capture" (click)="capturePhoto()" pTooltip="Capture Frame" tooltipPosition="top">
+                        <i class="pi pi-camera"></i>
+                      </button>
+                      <button type="button" class="avatar-camera-btn cancel" (click)="stopCamera()" pTooltip="Cancel" tooltipPosition="top">
+                        <i class="pi pi-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="profile-avatar-display" [class.has-image]="!!registerForm.get('profileImage')?.value" (click)="openFilePicker('upload-profile-file')">
+                    <input id="upload-profile-file" type="file" class="file-input-hidden" accept=".jpg,.jpeg,.png" (change)="onFileSelected($event, 'profileImage')" (click)="$event.stopPropagation()">
+                    
+                    @if (registerForm.get('profileImage')?.value) {
+                      <img [src]="registerForm.get('profileImage')?.value" class="avatar-img-preview" alt="Profile preview">
+                      <button type="button" class="remove-avatar-btn" (click)="removeFile('profileImage'); $event.stopPropagation()" pTooltip="Remove profile image" tooltipPosition="top">
+                        <i class="pi pi-trash"></i>
+                      </button>
+                    } @else {
+                      <div class="avatar-placeholder">
+                        <i class="pi pi-user placeholder-icon"></i>
+                        <span class="avatar-upload-hint">Upload or click camera</span>
+                      </div>
+                    }
+                  </div>
+                  
+                  @if (!registerForm.get('profileImage')?.value) {
+                    <div class="profile-action-links">
+                      <button type="button" class="profile-action-btn" (click)="openFilePicker('upload-profile-file')">
+                        <i class="pi pi-upload"></i> Upload Photo
+                      </button>
+                      <span class="profile-btn-divider">|</span>
+                      <button type="button" class="profile-action-btn" (click)="startCamera($event)">
+                        <i class="pi pi-camera"></i> Take Live Photo
+                      </button>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+
             <div class="form-grid">
 
               <div class="input-group">
@@ -307,7 +357,8 @@
                      (click)="openFilePicker('upload-aadhaar')">
                   <input id="upload-aadhaar" type="file" class="file-input-hidden"
                          accept=".pdf,.jpg,.jpeg,.png"
-                         (change)="onFileSelected($event, 'aadhaarCard')">
+                         (change)="onFileSelected($event, 'aadhaarCard')"
+                         (click)="$event.stopPropagation()">
 
                   @if (!registerForm.get('aadhaarCard')?.value) {
                     <div class="upload-zone-inner">
@@ -345,7 +396,8 @@
                      (click)="openFilePicker('upload-pan')">
                   <input id="upload-pan" type="file" class="file-input-hidden"
                          accept=".pdf,.jpg,.jpeg,.png"
-                         (change)="onFileSelected($event, 'panCard')">
+                         (change)="onFileSelected($event, 'panCard')"
+                         (click)="$event.stopPropagation()">
 
                   @if (!registerForm.get('panCard')?.value) {
                     <div class="upload-zone-inner">
@@ -383,7 +435,8 @@
                      (click)="openFilePicker('upload-photo')">
                   <input id="upload-photo" type="file" class="file-input-hidden"
                          accept=".jpg,.jpeg,.png"
-                         (change)="onFileSelected($event, 'photograph')">
+                         (change)="onFileSelected($event, 'photograph')"
+                         (click)="$event.stopPropagation()">
 
                   @if (!registerForm.get('photograph')?.value) {
                     <div class="upload-zone-inner">
@@ -420,7 +473,8 @@
                      (click)="openFilePicker('upload-bc')">
                   <input id="upload-bc" type="file" class="file-input-hidden"
                          accept=".pdf,.jpg,.jpeg,.png"
-                         (change)="onFileSelected($event, 'bankBcCertificate')">
+                         (change)="onFileSelected($event, 'bankBcCertificate')"
+                         (click)="$event.stopPropagation()">
 
                   @if (!registerForm.get('bankBcCertificate')?.value) {
                     <div class="upload-zone-inner">

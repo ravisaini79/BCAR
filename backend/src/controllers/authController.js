@@ -70,7 +70,7 @@ const registerUser = async (req, res, next) => {
       bcCspIdNo, ssa, bankName, linkBranchName, dateOfStartingCsp, 
       interestedToJoin, admissionFee, perMonthMembershipFee, password, declarationAccepted,
       // Base64 document attachments fallback from request body
-      aadhaarCard, panCard, photograph, bankBcCertificate,
+      profileImage, aadhaarCard, panCard, photograph, bankBcCertificate,
       profilePhoto, aadhaarFront, aadhaarBack, bankPassbook, signature, otherDocuments
     } = req.body;
 
@@ -138,6 +138,7 @@ const registerUser = async (req, res, next) => {
     }
 
     // Step 3: Setup asynchronous Cloudinary upload tasks
+    const profileImageFile = getFileBuffer('profileImage', profileImage);
     const photoFile = getFileBuffer('photograph', photograph || profilePhoto);
     const aadhaarFile = getFileBuffer('aadhaarCard', aadhaarCard || aadhaarFront);
     const panFile = getFileBuffer('panCard', panCard);
@@ -145,6 +146,11 @@ const registerUser = async (req, res, next) => {
     const aadhaarBackFile = getFileBuffer('aadhaarBack', aadhaarBack);
     const signatureFile = getFileBuffer('signature', signature);
     const otherFile = getFileBuffer('otherDocuments', otherDocuments);
+
+    // Validate Profile Image (Formats: JPG, JPEG, PNG; Size: Max 300 KB)
+    if (profileImageFile) {
+      validateDocument(profileImageFile, ['jpg', 'jpeg', 'png'], 300, 'Profile Image');
+    }
 
     // Validate Photograph (Formats: JPG, JPEG, PNG; Size: Max 300 KB)
     if (photoFile) {
@@ -162,6 +168,17 @@ const registerUser = async (req, res, next) => {
 
     const uploadTasks = [];
     const uploadKeys = [];
+
+    // Profile Image goes to bcar/profile, automatically cropped to a square 600x600px face-focused crop
+    if (profileImageFile) {
+      uploadTasks.push(uploadFromBuffer(
+        profileImageFile.buffer,
+        'bcar/profile',
+        profileImageFile.filename,
+        { transformation: [{ width: 600, height: 600, crop: 'fill', gravity: 'face', quality: 'auto', fetch_format: 'auto' }] }
+      ));
+      uploadKeys.push('profileImage');
+    }
 
     // Photograph goes to bcar/profile, automatically cropped to a square 600x600px face-focused crop
     if (photoFile) {
@@ -235,10 +252,13 @@ const registerUser = async (req, res, next) => {
     // Assign Cloudinary file info matching the Mongoose schema structures
     results.forEach((cloudinaryMeta, idx) => {
       const key = uploadKeys[idx];
-      memberData[key] = cloudinaryMeta;
+      if (key !== 'profileImage') {
+        memberData[key] = cloudinaryMeta;
+      }
       
-      // Sync duplicate fields for compatibility (e.g. photograph -> profilePhoto)
-      if (key === 'photograph') memberData['profilePhoto'] = cloudinaryMeta;
+      // Sync duplicate fields for compatibility
+      if (key === 'profileImage') memberData['profilePhoto'] = cloudinaryMeta;
+      if (key === 'photograph' && !memberData['profilePhoto']) memberData['profilePhoto'] = cloudinaryMeta;
       if (key === 'aadhaarCard') memberData['aadhaarFront'] = cloudinaryMeta;
       if (key === 'bankBcCertificate') memberData['bankPassbook'] = cloudinaryMeta;
     });
@@ -300,11 +320,21 @@ const updateMemberDocuments = async (req, res, next) => {
       throw new Error('Member not found');
     }
 
-    const { photograph, aadhaarCard, panCard, bankBcCertificate } = req.body;
+    const { profileImage, photograph, aadhaarCard, panCard, bankBcCertificate } = req.body;
     const uploadTasks = [];
     const uploadKeys = [];
 
     // Setup tasks & delete old Cloudinary assets to avoid duplicate orphan files
+    if (profileImage) {
+      if (member.profilePhoto && member.profilePhoto.public_id) {
+        await deleteFromCloudinary(member.profilePhoto.public_id);
+      }
+      const { buffer, mimeType } = getBufferFromBase64(profileImage);
+      const filename = `profile_photo_${member.email}_${Date.now()}.${getExt(mimeType)}`;
+      uploadTasks.push(uploadFromBuffer(buffer, 'bcar/members/profile', filename));
+      uploadKeys.push('profileImage');
+    }
+
     if (photograph) {
       if (member.photograph && member.photograph.public_id) {
         await deleteFromCloudinary(member.photograph.public_id);
@@ -348,10 +378,13 @@ const updateMemberDocuments = async (req, res, next) => {
     const results = await Promise.all(uploadTasks);
     results.forEach((meta, idx) => {
       const key = uploadKeys[idx];
-      member[key] = meta;
+      if (key !== 'profileImage') {
+        member[key] = meta;
+      }
       
       // Sync duplicates
-      if (key === 'photograph') member['profilePhoto'] = meta;
+      if (key === 'profileImage') member['profilePhoto'] = meta;
+      if (key === 'photograph' && !member['profilePhoto']) member['profilePhoto'] = meta;
       if (key === 'aadhaarCard') member['aadhaarFront'] = meta;
       if (key === 'bankBcCertificate') member['bankPassbook'] = meta;
     });

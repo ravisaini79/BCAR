@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy, ChangeDetectorRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -46,10 +47,39 @@ export class RegisterComponent implements OnInit, OnDestroy {
   readonly upload = inject(UploadService);
   readonly router = inject(Router);
   private  cdr    = inject(ChangeDetectorRef);
+  private  sanitizer = inject(DomSanitizer);
 
   registerForm!: FormGroup;
   submitted = false;
   readonly today = new Date();
+
+  // ── Document Preview Lightbox ──────────────────────────────────────────────
+  previewUrl: string | null = null;
+  previewUrlSafe: SafeResourceUrl | null = null;
+  previewTitle = '';
+  previewIsImage = true;
+
+  viewUploadedFile(fieldName: UploadFieldName, title: string): void {
+    const val = this.registerForm.get(fieldName)?.value;
+    if (!val) return;
+
+    this.previewTitle = title;
+    this.previewUrl = val;
+    if (val.startsWith('data:image') || val.startsWith('data:application/pdf') === false) {
+      this.previewIsImage = true;
+      this.previewUrlSafe = null;
+    } else {
+      this.previewIsImage = false;
+      this.previewUrlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(val);
+    }
+    this.cdr.markForCheck();
+  }
+
+  closePreview(): void {
+    this.previewUrl = null;
+    this.previewUrlSafe = null;
+    this.cdr.markForCheck();
+  }
 
   // ── Camera / Webcam Handling ──────────────────────────────────────────────
   isCameraActive = false;
@@ -122,6 +152,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
   readonly maritalOptions = [
     { label: 'Married',   value: 'Married'   },
     { label: 'Unmarried', value: 'Unmarried' }
+  ];
+
+  readonly bloodGroupOptions = [
+    { label: 'A+',  value: 'A+' },
+    { label: 'A−',  value: 'A-' },
+    { label: 'B+',  value: 'B+' },
+    { label: 'B−',  value: 'B-' },
+    { label: 'AB+', value: 'AB+' },
+    { label: 'AB−', value: 'AB-' },
+    { label: 'O+',  value: 'O+' },
+    { label: 'O−',  value: 'O-' }
   ];
 
   readonly joinOptions = [

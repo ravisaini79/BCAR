@@ -94,3 +94,38 @@
 
 /* Empty state */
 .news-empty { text-align: center; padding: 80px 24px; color: #64748B; }
+
+/* Category Filter Tabs */
+.news-filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.filter-tab-btn {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #475569;
+  padding: 8px 20px;
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.filter-tab-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.filter-tab-btn.active {
+  background: #0b2d5c;
+  border-color: #0b2d5c;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(11, 45, 92, 0.15);
+}

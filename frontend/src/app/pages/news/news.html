@@ -28,9 +28,17 @@
       }
     </div>
 
+    <!-- Category Filter Tabs -->
+    <div class="news-filter-tabs" *ngIf="!loading() && articles().length > 0">
+      <button class="filter-tab-btn" [class.active]="selectedCategory() === 'all'" (click)="filterCategory('all')">All News</button>
+      <button class="filter-tab-btn" [class.active]="selectedCategory() === 'circular'" (click)="filterCategory('circular')">Circulars</button>
+      <button class="filter-tab-btn" [class.active]="selectedCategory() === 'policy'" (click)="filterCategory('policy')">Policy Updates</button>
+      <button class="filter-tab-btn" [class.active]="selectedCategory() === 'event'" (click)="filterCategory('event')">Events</button>
+    </div>
+
     <!-- News Grid -->
     <div class="news-grid" *ngIf="!loading()">
-      @for (item of articles(); track item._id) {
+      @for (item of filteredArticles; track item._id) {
         <p-card class="news-card">
           <!-- Featured Image header -->
           <ng-template pTemplate="header">

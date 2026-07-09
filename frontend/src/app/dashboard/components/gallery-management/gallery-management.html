@@ -107,27 +107,6 @@
         </small>
       </div>
 
-      <!-- Category -->
-      <div class="form-group">
-        <label for="category">Category *</label>
-        <p-select id="category" [options]="formCategories" formControlName="category" placeholder="Select category"></p-select>
-        <small class="p-error" *ngIf="galleryForm.get('category')?.touched && galleryForm.get('category')?.invalid">
-          Category is required.
-        </small>
-      </div>
-
-      <!-- Display Order -->
-      <div class="form-group">
-        <label for="displayOrder">Display Order</label>
-        <input pInputText type="number" id="displayOrder" formControlName="displayOrder" placeholder="0" min="0" />
-      </div>
-
-      <!-- Description -->
-      <div class="form-group col-span-2">
-        <label for="description">Description</label>
-        <textarea pInputTextarea id="description" formControlName="description" rows="3" placeholder="Enter a brief description of the photo"></textarea>
-      </div>
-
       <!-- Image Upload -->
       <div class="form-group col-span-2">
         <label>Image File * (JPG, JPEG, PNG, WEBP; max 500 KB)</label>
@@ -148,18 +127,6 @@
             <i class="pi pi-times"></i>
           </button>
         </div>
-      </div>
-
-      <!-- Status (Draft / Published) -->
-      <div class="form-group">
-        <label for="status">Publish Status</label>
-        <p-select id="status" [options]="statusOptions" formControlName="status"></p-select>
-      </div>
-
-      <!-- Featured Toggle -->
-      <div class="form-group switch-group" style="margin-top: 26px;">
-        <input type="checkbox" id="featured" formControlName="featured" />
-        <label for="featured">Mark as Featured Photo</label>
       </div>
 
       <!-- Footer Buttons -->

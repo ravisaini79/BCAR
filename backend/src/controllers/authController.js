@@ -478,10 +478,35 @@ const downloadReceipt = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Send generated ID card to member via email
+ * @route   POST /api/auth/send-card-email
+ * @access  Public
+ */
+const sendCardEmail = async (req, res, next) => {
+  try {
+    const { email, name, membershipNo, cardImageBase64 } = req.body;
+    if (!email || !cardImageBase64) {
+      res.status(400);
+      throw new Error('Email and card image base64 are required');
+    }
+
+    const { buffer } = getBufferFromBase64(cardImageBase64);
+    const { sendCardImageEmail } = require('../services/emailService');
+
+    await sendCardImageEmail(email, name || 'Member', membershipNo || 'N/A', buffer);
+
+    res.json({ success: true, message: 'ID Card emailed successfully!' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   updateMemberDocuments,
   loginUser,
   getUserProfile,
-  downloadReceipt
+  downloadReceipt,
+  sendCardEmail
 };

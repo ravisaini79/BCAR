@@ -8,6 +8,9 @@ export interface RegistrationData {
   childrenSon?: number;
   childrenDaughter?: number;
   educationalQualification?: string;
+  bloodGroup?: string;
+  aadhaarNumber?: string;
+  subDistrict?: string;
   email: string;
   phone: string;
   password?: string;

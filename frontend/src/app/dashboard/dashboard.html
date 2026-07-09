@@ -434,6 +434,12 @@
                             (click)="generateCard(m)" pTooltip="Generate Card" tooltipPosition="top">
                       <i class="pi pi-id-card"></i>
                     </button>
+                    <button class="action-btn card"
+                            *ngIf="m.membershipNo"
+                            (click)="emailCard(m)" pTooltip="Email Card to Member" tooltipPosition="top"
+                            style="background-color: #10b981; color: white;">
+                      <i class="pi pi-envelope"></i>
+                    </button>
                     <button class="action-btn delete" (click)="confirmDelete(m)" pTooltip="Delete" tooltipPosition="top">
                       <i class="pi pi-trash"></i>
                     </button>
@@ -666,6 +672,11 @@
               *ngIf="selectedMember.membershipNo"
               (click)="generateCard(selectedMember)">
         <i class="pi pi-id-card"></i> Generate Card
+      </button>
+      <button class="btn-success"
+              *ngIf="selectedMember.membershipNo"
+              (click)="emailCard(selectedMember)">
+        <i class="pi pi-envelope"></i> Email Card
       </button>
       <button class="btn-secondary" (click)="showViewDialog = false">
         <i class="pi pi-times"></i> Close

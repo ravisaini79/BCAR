@@ -88,7 +88,7 @@ export class GalleryManagementComponent implements OnInit {
       category: ['inclusion', Validators.required],
       description: [''],
       displayOrder: [0],
-      status: ['Draft', Validators.required],
+      status: ['Published', Validators.required],
       featured: [false]
     });
   }
@@ -191,8 +191,8 @@ export class GalleryManagementComponent implements OnInit {
     this.galleryForm.reset({
       category: 'inclusion',
       displayOrder: 0,
-      status: 'Draft',
-      featured: [false]
+      status: 'Published',
+      featured: false
     });
     this.dialogVisible.set(true);
   }

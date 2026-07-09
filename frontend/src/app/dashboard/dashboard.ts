@@ -534,9 +534,40 @@ export class DashboardComponent implements OnInit {
   }
 
   // Card Generator helper
-  generateCard(m: User) {
-    this.cardService.generateCard(m);
-    this.toastService.info(`Downloading membership card for ${m.name}...`);
+  async generateCard(m: User) {
+    this.toastService.info(`Generating CSP card for ${m.name}...`);
+    try {
+      await this.cardService.generateCard(m);
+      this.toastService.success(`Card downloaded for ${m.name}`);
+    } catch (err) {
+      console.error('Card generation failed:', err);
+      this.toastService.error('Failed to generate card. Please try again.');
+    }
+  }
+
+  async emailCard(m: User) {
+    this.toastService.info(`Generating ID Card to email for ${m.name}...`);
+    try {
+      const base64 = await this.cardService.getCardBase64(m);
+      this.toastService.info(`Sending card email to ${m.email}...`);
+      this.dashboardService.sendCardEmail({
+        email: m.email,
+        name: m.name,
+        membershipNo: m.membershipNo || 'N/A',
+        cardImageBase64: base64
+      }).subscribe({
+        next: () => {
+          this.toastService.success(`ID Card successfully emailed to ${m.email}!`);
+        },
+        error: (err) => {
+          console.error('Email card failed:', err);
+          this.toastService.error('Failed to send card email.');
+        }
+      });
+    } catch (err) {
+      console.error('Card rendering failed:', err);
+      this.toastService.error('Failed to render card for emailing.');
+    }
   }
 
   // Dialog handling

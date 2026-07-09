@@ -60,4 +60,8 @@ export class DashboardService {
   updateGrievanceStatus(id: string, status: string): Observable<any> {
     return this.http.put(`${environment.apiUrl}/dashboard/grievances/${id}/status`, { status });
   }
+
+  sendCardEmail(payload: { email: string; name: string; membershipNo: string; cardImageBase64: string }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/auth/send-card-email`, payload);
+  }
 }

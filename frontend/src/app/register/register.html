@@ -48,6 +48,9 @@
                     
                     @if (registerForm.get('profileImage')?.value) {
                       <img [src]="registerForm.get('profileImage')?.value" class="avatar-img-preview" alt="Profile preview">
+                      <button type="button" class="view-avatar-btn" (click)="viewUploadedFile('profileImage', 'Profile Image'); $event.stopPropagation()" pTooltip="View profile image" tooltipPosition="top" style="right: 48px;">
+                        <i class="pi pi-eye"></i>
+                      </button>
                       <button type="button" class="remove-avatar-btn" (click)="removeFile('profileImage'); $event.stopPropagation()" pTooltip="Remove profile image" tooltipPosition="top">
                         <i class="pi pi-trash"></i>
                       </button>
@@ -118,26 +121,16 @@
               </div>
 
               <div class="input-group">
-                <label class="field-label">Name of Spouse</label>
-                <input pInputText formControlName="wifeHusbandName" placeholder="Enter spouse's name if married" class="w-full" />
+                <label class="field-label">Blood Group</label>
+                <p-select formControlName="bloodGroup" [options]="bloodGroupOptions"
+                          optionLabel="label" optionValue="value"
+                          placeholder="Select Blood Group" styleClass="w-full" />
               </div>
 
               <div class="input-group">
-                <label class="field-label">Number of Sons</label>
-                <input pInputText type="number" formControlName="childrenSon" min="0" placeholder="0" class="w-full"
-                       [class.p-invalid]="hasError('childrenSon')" />
-                @if (hasError('childrenSon', 'min')) {
-                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Value must be 0 or greater.</small>
-                }
-              </div>
-
-              <div class="input-group">
-                <label class="field-label">Number of Daughters</label>
-                <input pInputText type="number" formControlName="childrenDaughter" min="0" placeholder="0" class="w-full"
-                       [class.p-invalid]="hasError('childrenDaughter')" />
-                @if (hasError('childrenDaughter', 'min')) {
-                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Value must be 0 or greater.</small>
-                }
+                <label class="field-label">Aadhaar Number</label>
+                <input pInputText formControlName="aadhaarNumber" placeholder="12-digit Aadhaar number"
+                       maxlength="12" class="w-full" />
               </div>
 
             </div>
@@ -263,6 +256,11 @@
               </div>
 
               <div class="input-group">
+                <label class="field-label">Sub District / Tehsil</label>
+                <input pInputText formControlName="subDistrict" placeholder="Enter Sub District or Tehsil" class="w-full" />
+              </div>
+
+              <div class="input-group">
                 <label class="field-label">PIN Code</label>
                 <input pInputText formControlName="pin" placeholder="6-digit PIN code" maxlength="6"
                        class="w-full" [class.p-invalid]="hasError('pin')" />
@@ -375,6 +373,11 @@
                         <span class="file-name">{{ upload.fileNames().aadhaarCardName }}</span>
                         <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
                       </div>
+                      <button type="button" class="view-file-btn"
+                              pTooltip="View file" tooltipPosition="top"
+                              (click)="viewUploadedFile('aadhaarCard', 'Aadhaar Card')">
+                        <i class="pi pi-eye"></i>
+                      </button>
                       <button type="button" class="remove-file-btn"
                               pTooltip="Remove file" tooltipPosition="top"
                               (click)="removeFile('aadhaarCard')">
@@ -414,6 +417,11 @@
                         <span class="file-name">{{ upload.fileNames().panCardName }}</span>
                         <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
                       </div>
+                      <button type="button" class="view-file-btn"
+                              pTooltip="View file" tooltipPosition="top"
+                              (click)="viewUploadedFile('panCard', 'PAN Card')">
+                        <i class="pi pi-eye"></i>
+                      </button>
                       <button type="button" class="remove-file-btn"
                               pTooltip="Remove file" tooltipPosition="top"
                               (click)="removeFile('panCard')">
@@ -452,6 +460,11 @@
                         <span class="file-name">{{ upload.fileNames().photographName }}</span>
                         <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
                       </div>
+                      <button type="button" class="view-file-btn"
+                              pTooltip="View photo" tooltipPosition="top"
+                              (click)="viewUploadedFile('photograph', 'Passport Photograph')">
+                        <i class="pi pi-eye"></i>
+                      </button>
                       <button type="button" class="remove-file-btn"
                               pTooltip="Remove photo" tooltipPosition="top"
                               (click)="removeFile('photograph')">
@@ -491,6 +504,11 @@
                         <span class="file-name">{{ upload.fileNames().bankBcCertificateName }}</span>
                         <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
                       </div>
+                      <button type="button" class="view-file-btn"
+                              pTooltip="View file" tooltipPosition="top"
+                              (click)="viewUploadedFile('bankBcCertificate', 'Bank BC Certificate')">
+                        <i class="pi pi-eye"></i>
+                      </button>
                       <button type="button" class="remove-file-btn"
                               pTooltip="Remove file" tooltipPosition="top"
                               (click)="removeFile('bankBcCertificate')">
@@ -593,5 +611,21 @@
   </footer>
 
 </div><!-- /register-page-wrapper -->
+
+  <!-- ── Image / Document Preview Lightbox Modal ── -->
+  <div class="custom-preview-modal" *ngIf="previewUrl" (click)="closePreview()">
+    <div class="modal-content-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4>{{ previewTitle }}</h4>
+        <button type="button" class="close-btn" (click)="closePreview()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <div class="modal-body-scroll">
+        <img *ngIf="previewIsImage" [src]="previewUrl" class="preview-img-full" alt="Document Preview">
+        <iframe *ngIf="!previewIsImage" [src]="previewUrlSafe!" class="preview-pdf-full" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
 
 <app-footer></app-footer>

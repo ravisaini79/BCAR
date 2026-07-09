@@ -12,6 +12,9 @@ const userSchema = new mongoose.Schema({
   childrenSon: String,
   childrenDaughter: String,
   educationalQualification: String,
+  bloodGroup: String,
+  aadhaarNumber: String,
+  subDistrict: String,
 
   // Contact Info
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },

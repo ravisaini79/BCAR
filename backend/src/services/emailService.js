@@ -34,6 +34,11 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
 }
 
 const sendMail = async (options) => {
+  if (process.env.DISABLE_EMAIL === 'true') {
+    console.log(`[EMAIL BYPASSED] To: ${options.to}, Subject: ${options.subject}`);
+    return { messageId: 'disabled-mock-' + Date.now() };
+  }
+
   const mailOptions = {
     from: process.env.SMTP_FROM || '"BCAR Admin" <info@bcarajasthan.org>',
     to: options.to,
@@ -50,6 +55,61 @@ const sendMail = async (options) => {
     console.error(`Email log: Failed to send email to ${options.to}. Error: ${error.message}`);
     throw error; // Propagate error for proper JSON feedback
   }
+};
+
+/**
+ * Send Generated Member Card via Email
+ */
+const sendCardImageEmail = async (email, name, membershipNo, imageBuffer) => {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Your BCAR CSP Franchisee ID Card</title>
+      <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #F3F4F6; margin: 0; padding: 20px; }
+        .container { max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin: 0 auto; }
+        .header { background-color: #0B2D5C; padding: 30px; text-align: center; border-bottom: 4px solid #D4AF37; }
+        .content { padding: 40px 30px; color: #374151; line-height: 1.6; }
+        .title { color: #0B2D5C; font-size: 22px; font-weight: 700; margin-top: 0; }
+        .footer { background-color: #F9FAFB; padding: 20px; text-align: center; font-size: 12px; color: #9CA3AF; border-top: 1px solid #E5E7EB; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h2 style="color: #ffffff; margin: 0;">BCAR ID Card Issued</h2>
+        </div>
+        <div class="content">
+          <h2 class="title">Digital ID Card Delivery</h2>
+          <p>Dear <strong>${name}</strong>,</p>
+          <p>Your official <strong>BCAR CSP Franchisee ID Card</strong> has been generated and issued.</p>
+          <p>We have attached the digital copy of your ID Card (Front and Back sides stacked) as a PNG image to this email. You can download, print, and laminate it for official use.</p>
+          <p><strong>Membership Number:</strong> ${membershipNo}</p>
+          <br>
+          <p>Regards,<br><strong>BCAR Executive Team</strong></p>
+        </div>
+        <div class="footer">
+          <p>© 2026 Business Correspondent Association Rajasthan. All Rights Reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return sendMail({
+    to: email,
+    subject: `Your BCAR CSP Franchisee ID Card - ${membershipNo}`,
+    html,
+    attachments: [
+      {
+        filename: `BCAR_ID_Card_${membershipNo}.png`,
+        content: imageBuffer,
+        contentType: 'image/png'
+      }
+    ]
+  });
 };
 
 /**
@@ -300,5 +360,6 @@ module.exports = {
   sendApprovalEmail,
   sendContactQueryEmail,
   sendRegistrationWelcomeWithReceiptEmail,
-  sendAdminAlertRegistrationEmail
+  sendAdminAlertRegistrationEmail,
+  sendCardImageEmail
 };

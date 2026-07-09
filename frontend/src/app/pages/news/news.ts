@@ -22,6 +22,7 @@ export class NewsComponent implements OnInit {
 
   articles = signal<any[]>([]);
   loading = signal<boolean>(true);
+  selectedCategory = signal<string>('all');
 
   ngOnInit() { this.loadNews(); }
 
@@ -37,6 +38,17 @@ export class NewsComponent implements OnInit {
       },
       error: () => { this.loading.set(false); }
     });
+  }
+
+  filterCategory(cat: string) {
+    this.selectedCategory.set(cat);
+  }
+
+  get filteredArticles() {
+    const cat = this.selectedCategory();
+    const list = this.articles();
+    if (cat === 'all') return list;
+    return list.filter((a: any) => a.category === cat);
   }
 
   readMore(slug: string) { this.router.navigate(['/news', slug]); }

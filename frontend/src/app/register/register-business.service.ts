@@ -51,6 +51,8 @@ export class RegisterBusinessService {
       childrenSon:              [0,  [Validators.min(0)]],
       childrenDaughter:         [0,  [Validators.min(0)]],
       educationalQualification: [''],
+      bloodGroup:               [''],
+      aadhaarNumber:            [''],
       // Contact
       email:    ['', [Validators.required, Validators.email]],
       phone:    ['', [Validators.required, CustomValidators.phonePattern()]],
@@ -63,6 +65,7 @@ export class RegisterBusinessService {
       pin:             ['', [CustomValidators.pinPattern()]],
       gramPanchayat:   [''],
       devBlock:        [''],
+      subDistrict:     [''],
       // Professional
       bcCspIdNo:          [''],
       ssa:                [''],

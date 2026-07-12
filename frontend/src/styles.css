@@ -724,6 +724,16 @@ body {
   position: relative;
   margin-top: 114px;
 }
+@media (min-width: 992px) {
+  .hero {
+    height: calc(100vh - 114px - 44px) !important;
+    min-height: 550px !important;
+  }
+  .hero-grid {
+    height: 100% !important;
+    min-height: auto !important;
+  }
+}
 .hero::before {
   background-image: radial-gradient(rgba(212, 175, 55, 0.15) 1px, transparent 1px) !important;
   opacity: 0.3 !important;
@@ -878,9 +888,32 @@ body {
 /* ── Gallery Masonry ── */
 .gallery-filters { display: none; }
 .gallery-masonry {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
   gap: 20px;
+}
+.gallery-item,
+.gallery-skeleton {
+  width: calc(25% - 15px);
+  min-width: 280px;
+  max-width: 400px;
+}
+@media (max-width: 1200px) {
+  .gallery-item, .gallery-skeleton {
+    width: calc(33.333% - 14px);
+  }
+}
+@media (max-width: 991px) {
+  .gallery-item, .gallery-skeleton {
+    width: calc(50% - 10px);
+  }
+}
+@media (max-width: 575px) {
+  .gallery-item, .gallery-skeleton {
+    width: 100%;
+  }
 }
 .gallery-item {
   border-radius: var(--radius-md);
@@ -1523,8 +1556,7 @@ h3, .notice-grid h3, .benefit-card h3 {
 .counter-grid,
 .benefits-grid,
 .notice-grid,
-.testimonials-grid,
-.gallery-masonry {
+.testimonials-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
   gap: 24px !important;
@@ -1532,17 +1564,17 @@ h3, .notice-grid h3, .benefit-card h3 {
 
 /* 4-3-2-1 Columns specifications */
 @media (min-width: 1200px) {
-  .counter-grid, .benefits-grid, .gallery-masonry {
+  .counter-grid, .benefits-grid {
     grid-template-columns: repeat(4, 1fr) !important;
   }
 }
 @media (max-width: 1199px) and (min-width: 992px) {
-  .counter-grid, .benefits-grid, .gallery-masonry, .notice-grid, .testimonials-grid {
+  .counter-grid, .benefits-grid, .notice-grid, .testimonials-grid {
     grid-template-columns: repeat(3, 1fr) !important;
   }
 }
 @media (max-width: 991px) and (min-width: 768px) {
-  .counter-grid, .benefits-grid, .gallery-masonry, .notice-grid, .testimonials-grid {
+  .counter-grid, .benefits-grid, .notice-grid, .testimonials-grid {
     grid-template-columns: repeat(2, 1fr) !important;
   }
   .split {
@@ -1551,7 +1583,7 @@ h3, .notice-grid h3, .benefit-card h3 {
   }
 }
 @media (max-width: 767px) {
-  .counter-grid, .benefits-grid, .gallery-masonry, .notice-grid, .testimonials-grid, .split, .quick-grid, .footer-grid, .contact-section-grid {
+  .counter-grid, .benefits-grid, .notice-grid, .testimonials-grid, .split, .quick-grid, .footer-grid, .contact-section-grid {
     grid-template-columns: 1fr !important;
   }
   .quick-grid > div {

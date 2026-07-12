@@ -2,105 +2,72 @@
 
 <div class="page-hero">
   <div class="page-hero-inner">
-    <span class="page-badge"><i class="fa-solid fa-gift"></i> सदस्यता लाभ</span>
-    <h1>Membership Benefits</h1>
-    <p>BCAR membership gives you legal protection, training access, and collective bargaining power.</p>
+    <span class="page-badge"><i class="fa-solid fa-circle-exclamation"></i> राष्ट्रीय मांगें</span>
+    <h1>11-सूत्रीय राष्ट्रीय मांगें</h1>
+    <p>बिज़नेस कॉरेस्पोंडेंट एसोसिएशन राजस्थान (BCAR) द्वारा बैंक मित्रों के अधिकारों व सामाजिक सुरक्षा हेतु सरकार व बैंकों के समक्ष उठाई गई मांगें।</p>
   </div>
 </div>
 
 <div class="page-section">
   <div class="page-container">
 
-    <!-- Benefits Grid -->
-    <!-- <div class="benefits-grid">
-      <div class="benefit-item" *ngFor="let b of benefits">
-        <div class="benefit-icon"><i [class]="b.icon"></i></div>
-        <div class="benefit-text">
-          <h4>{{ b.title }}</h4>
-          <p>{{ b.desc }}</p>
+    <!-- ── 11-Point Demands List (11-सूत्रीय राष्ट्रीय मांगें) ── -->
+    <div class="demands-list">
+      <div class="demand-card" *ngFor="let b of benefits" [ngClass]="b.colorClass">
+        <div class="demand-icon-wrapper">
+          <span class="demand-num">{{ b.num }}</span>
+          <div class="demand-icon">
+            <i [class]="b.icon"></i>
+          </div>
+        </div>
+        <div class="demand-content">
+          <h3 class="demand-title">{{ b.title }}</h3>
+          <p class="demand-desc">{{ b.desc }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Registration CTA ── -->
+    <div class="register-cta-container">
+      <a routerLink="/register" class="register-cta-btn">
+        <i class="fa-solid fa-user-plus"></i> संगठन की सदस्यता हेतु पंजीकरण करें (Register Here) <span style="margin-left: 8px;">→</span>
+      </a>
+    </div>
+
+    <!-- ── Poster Bottom Banner (न्याय संगत अधिकार दो!) ── -->
+    <div class="poster-callout">
+      न्याय संगत अधिकार दो! बैंक मित्रों को हकदार दो!
+    </div>
+
+    <!-- ── Poster Footer Info Card ── -->
+    <!-- <div class="poster-footer-card">
+      <div class="poster-footer-grid">
+     
+        <div class="footer-president">
+          <div class="role-badge">प्रदेश अध्यक्ष</div>
+          <div class="president-name">पवन कुमार</div>
+        </div>
+
+        
+        <div class="footer-association">
+          <div class="reg-number">*TU/2026/14/132549*</div>
+          <div class="assoc-name">बिजनेस कॉरस्पोंडेंट एसोसिएशन राजस्थान</div>
+          <div class="footer-logo">
+            <img src="/images/bcar-logo-official.jpg" alt="BCAR Seal">
+          </div>
+        </div>
+
+     
+        <div class="footer-coordinator">
+          <div class="coord-item">संयोजक : ____________________</div>
+          <div class="coord-item">मोबाइल : ____________________</div>
         </div>
       </div>
     </div> -->
 
-    <!-- ── Members Benefits Rules Section (सदस्य लाभ संबंधी नियम) ── -->
-    <div class="rules-section">
-      <div class="rules-header">
-        <h2>सदस्यता लाभ प्राप्त करने संबंधी नियम</h2>
-      </div>
-      <div class="rules-list">
-        <div class="rule-item">
-          <div class="rule-label">अ</div>
-          <p>कोई भी सदस्य संस्था द्वारा सदस्यों को दिए गए लाभ को पाने का अधिकार कम से कम 6 माह तक संस्था का सदस्य रहने और पूर्ण चंदा चुकाने पर ही प्राप्त करेगा।</p>
-        </div>
-        <div class="rule-item">
-          <div class="rule-label">ब</div>
-          <p>वह सदस्य जिसका संगठन का बकाया चंदा अथवा किसी प्रकार का लेना शेष है जबतक उसका भुगतान पूरा नहीं कर देता, और दो माह की अवधि नहीं बीत जाती, संस्था द्वारा संचालित किसी भी लाभ को पाने का भागी नहीं होगा।</p>
-        </div>
-        <div class="rule-item">
-          <div class="rule-label">स</div>
-          <p>यदि संस्था के सदस्य प्रबंधकारिणी समिति का अनुमोदन एवं स्वीकृति लिए बिना किसी हड़ताल पर जाएंगे तो वे संस्था द्वारा संचालित किसी लाभ को पाने के भागी नहीं होंगे।</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── General Fund Section (सामान्य निधि का उपयोग) ── -->
-    <div class="fund-section">
-      <div class="fund-header">
-        <h2>(3) सामान्य निधि का उपयोग</h2>
-        <p class="fund-sub">व्यावसायिक संघ विधान सन 1926 की धारा 15 के अनुसार सामान्य निधि का उपयोग निम्नांकित मदों पर ही किया जा सकता है –</p>
-      </div>
-      
-      <div class="fund-list">
-        <div class="fund-item">
-          <div class="fund-label">क</div>
-          <p>संस्था संचालन का व्यय, जिसमें संस्था के हिसाब की जांच का भी व्यय सम्मिलित है।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">ख</div>
-          <p>ट्रेड यूनियन के नाते संस्था के अधिकार प्राप्त करने या सुरक्षित रखने हेतु अथवा संस्था के किसी सदस्य के अपने सेवा-योजक के साथ जो सम्बन्ध हों उनसे निर्माण होने वाले अधिकार प्राप्त करने या सुरक्षित रखने हेतु किसी ऐसी वैधानिक कार्यवाही को चलाना या उससे बचाव करना कि जिसमें एक पक्ष संस्था या उसका कोई सदस्य हो।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">ग</div>
-          <p>संस्था या उसके किसी संरक्षक की और से औद्योगिक विवाद को चलाना।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">घ</div>
-          <p>सदस्यों की औद्योगिक विवाद से होने वाली हानि की क्षतिपूर्ति।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">ङ</div>
-          <p>सदस्यों या उनके आश्रितों की मृत्यु, वृद्धावस्था, बीमारी, दुर्घटना और बेरोजगारी की अवस्था में सहायता।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">च</div>
-          <p>सदस्यों के जीवन–बीमा या बीमारी, दुर्घटना या बेरोजगारी के बीमे उतराना या संघ बीमे के अधीन उन्हें लाना।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">छ</div>
-          <p>ट्रेड यूनियन के दायित्व को उठाना, सामान्य निधि का उपयोग जिन उद्देश्यों के लिए निश्चित हैं उनकी पूर्ति के हेतु सर्व साधारण श्रमिकों को कल्याणप्रद किसी भी आर्थिक वर्ष में किसी भी समय इस मद का व्यय उस समय तक उस वर्ष में प्राप्त सामान्य निधि की आमदनी व वर्ष के प्रारम्भ में सामान्य निधि के खाते जमा कुल रकम के एक–चौथाई से अधिक नहीं होगा।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">ज</div>
-          <p>सदस्यों या उनके आश्रितों के लिए शैक्षणिक, सामाजिक और धार्मिक लाभों की व्यवस्था करना जिसमें मृत क्रिया या धार्मिक-क्रिया के खर्च का भी समावेश होगा।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">झ</div>
-          <p>मुख्यतः सेवायोजक तथा सेवायुक्त के प्रश्नों की चर्चा के हेतु प्रकाशित नियतकालिक-पत्र चालू रखना।</p>
-        </div>
-        <div class="fund-item">
-          <div class="fund-label">ञ</div>
-          <p>शासन द्वारा राजपत्र में विज्ञप्ति किसी अन्य उद्देश्य के हेतु, विज्ञप्ति में अनुलग्नित प्रतिबंधों के अनुसार, यदि कोई हो।</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- CTA Banner -->
-    <div class="cta-banner">
-      <div class="cta-text">
-        <h3>Ready to Join BCAR?</h3>
-        <p>Join thousands of Bank Mitras across Rajasthan and unlock all these benefits today.</p>
-      </div>
-      <a routerLink="/register" class="cta-btn">Register Now <i class="fa-solid fa-arrow-right"></i></a>
+    <!-- ── Poster Bottom Blue Strip ── -->
+    <div class="poster-blue-strip">
+      एकजुट बैंक मित्र - सशक्त बैंक मित्र - सम्मानित बैंक मित्र
     </div>
 
   </div>

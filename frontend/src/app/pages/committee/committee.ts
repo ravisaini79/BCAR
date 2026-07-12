@@ -30,9 +30,10 @@ export class CommitteeComponent {
       name: 'अमर चंद शर्मा',
       nameEn: 'Amar Chand Sharma',
       photo: '/images/secretary.jpg',
-      role: 'प्रदेश महामंत्री',
-      roleEn: 'General Secretary',
-      location: 'कंचनपुर, राजस्थान',
+      role: 'बैंक ऑफ बड़ौदा BC',
+      roleEn: 'Bank of Baroda BC',
+      location: 'कंचनपुर (सीकर), राजस्थान',
+      isGeneralSecretary: true,
       quote: `आदरणीय अतिथियों, सम्मानित बैंक मित्रों/निर्णायकों और यहाँ उपस्थित मेरे प्यारे साथियों,
 
 आप सभी को मेरा नमस्कार!
@@ -56,9 +57,10 @@ export class CommitteeComponent {
       name: 'प्रदीप भार्गव',
       nameEn: 'Pradeep Bhargava',
       photo: '/images/pradeep_bhargava.jpg',
-      role: 'प्रदेश कोषाध्यक्ष',
-      roleEn: 'State Treasurer',
+      role: 'बैंक ऑफ बड़ौदा BC',
+      roleEn: 'Bank of Baroda BC',
       location: 'कोटा, राजस्थान',
+      isGeneralSecretary: false,
       quote: 'नेतृत्व करने का एक अच्छा उद्देश्य यह है कि जो लोग अच्छा प्रदर्शन नहीं कर रहे हैं, उन्हें अच्छा प्रदर्शन करने में मदद की जाए और जो लोग अच्छा प्रदर्शन कर रहे हैं, उन्हें और भी बेहतर प्रदर्शन करने में मदद की जाए।'
     }
   ];

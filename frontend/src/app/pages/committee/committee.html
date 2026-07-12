@@ -2,7 +2,7 @@
 <div class="page-hero">
   <div class="page-hero-inner">
     <span class="page-badge"><i class="fa-solid fa-crown"></i> Leadership</span>
-    <h1>President &amp; <em>Committee</em></h1>
+    <h1>Chairman &amp; <em>Committee</em></h1>
     <p>Meet the elected leadership of BCAR driving the mission of BC empowerment across Rajasthan.</p>
   </div>
 </div>
@@ -16,11 +16,11 @@
         <img src="/images/president.png" alt="पवन कुमार धोबी">
         <div class="president-info">
           <h4>श्री पवन कुमार धोबी</h4>
-          <span>प्रदेश अध्यक्ष, BCAR</span>
+          <span>चेयरमैन, BCAR (स्टेट बैंक ऑफ इंडिया BC)</span>
         </div>
       </div>
       <div class="president-bio">
-        <span class="role-badge"><i class="fa-solid fa-crown"></i> President, BCAR</span>
+        <span class="role-badge"><i class="fa-solid fa-crown"></i> Chairman, BCAR (State Bank of India BC)</span>
         <h2>श्री पवन कुमार धोबी</h2>
         <p class="president-location"><i class="fa-solid fa-location-dot"></i> राजस्थान</p>
         <p>
@@ -51,8 +51,8 @@
           <h3>{{ member.name }}</h3>
           <p class="member-role-en">{{ member.roleEn }}</p>
           <p class="member-location"><i class="fa-solid fa-location-dot"></i> {{ member.location }}</p>
-          <blockquote class="member-quote" *ngIf="member.roleEn !== 'General Secretary'">"{{ member.quote }}"</blockquote>
-          <div *ngIf="member.roleEn === 'General Secretary'">
+          <blockquote class="member-quote" *ngIf="!member.isGeneralSecretary">"{{ member.quote }}"</blockquote>
+          <div *ngIf="member.isGeneralSecretary">
             <blockquote class="member-quote">"{{ showFullSecretaryQuote ? member.quote : getTruncatedQuote(member.quote) }}"</blockquote>
             <button class="read-more-btn" (click)="toggleSecretaryQuote()">
               {{ showFullSecretaryQuote ? 'Show Less' : 'Read More' }}

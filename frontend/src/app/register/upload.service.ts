@@ -3,12 +3,13 @@ import { FormGroup } from '@angular/forms';
 import { ToastService } from '../core/services/toast.service';
 import { inject } from '@angular/core';
 
-export type UploadFieldName = 'profileImage' | 'photograph' | 'aadhaarCard' | 'panCard' | 'bankBcCertificate';
+export type UploadFieldName = 'profileImage' | 'photograph' | 'aadhaarCard' | 'aadhaarBack' | 'panCard' | 'bankBcCertificate';
 
 export interface FileMetadata {
   profileImageName: string;
   photographName: string;
   aadhaarCardName: string;
+  aadhaarBackName: string;
   panCardName: string;
   bankBcCertificateName: string;
 }
@@ -17,6 +18,7 @@ export interface RawFileStore {
   profileImage: File | null;
   photograph: File | null;
   aadhaarCard: File | null;
+  aadhaarBack: File | null;
   panCard: File | null;
   bankBcCertificate: File | null;
 }
@@ -35,6 +37,7 @@ export class UploadService {
     profileImageName: '',
     photographName: '',
     aadhaarCardName: '',
+    aadhaarBackName: '',
     panCardName: '',
     bankBcCertificateName: ''
   });
@@ -43,6 +46,7 @@ export class UploadService {
     profileImage: null,
     photograph: null,
     aadhaarCard: null,
+    aadhaarBack: null,
     panCard: null,
     bankBcCertificate: null
   });
@@ -51,13 +55,24 @@ export class UploadService {
    * Validate and process a single file for a given field
    */
   processFile(file: File, fieldName: UploadFieldName, form: FormGroup): void {
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      this.toast.error(`Unsupported file type. Please upload PDF, JPG or PNG.`, 'Invalid File Type');
+    const isProfileField = fieldName === 'profileImage' || fieldName === 'photograph';
+    const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const allowedDocTypes = [...allowedImageTypes, 'application/pdf'];
+
+    const allowed = isProfileField ? allowedImageTypes : allowedDocTypes;
+
+    if (!allowed.includes(file.type.toLowerCase())) {
+      const formatMsg = isProfileField 
+        ? 'Please select a JPG, JPEG, PNG, or WEBP image.'
+        : 'Please select a PDF, JPG, JPEG, PNG, or WEBP file.';
+      this.toast.error(`Invalid format for ${file.name}. ${formatMsg}`, 'Invalid File Format');
       return;
     }
 
-    if (file.size > MAX_SIZE_BYTES) {
-      this.toast.warning(`File exceeds ${MAX_SIZE_MB}MB size limit.`, 'File Too Large');
+    const maxSizeBytes = 5 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      this.toast.error(`"${file.name}" is ${fileSizeMB} MB. Maximum allowed file size is 5 MB.`, 'File Size Limit Exceeded');
       return;
     }
 
@@ -75,7 +90,7 @@ export class UploadService {
       form.get(fieldName)?.markAsTouched();
     };
     reader.onerror = () => {
-      this.toast.error('Failed to read file.', 'File Error');
+      this.toast.error('Failed to read file contents.', 'File Error');
     };
     reader.readAsDataURL(file);
   }
@@ -96,12 +111,12 @@ export class UploadService {
    * Reset all file state after form submission
    */
   resetAll(form: FormGroup): void {
-    (['profileImage', 'photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(field => {
+    (['profileImage', 'photograph', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(field => {
       form.get(field)?.setValue(null);
       form.get(field)?.markAsUntouched();
     });
-    this.rawFiles.set({ profileImage: null, photograph: null, aadhaarCard: null, panCard: null, bankBcCertificate: null });
-    this.fileNames.set({ profileImageName: '', photographName: '', aadhaarCardName: '', panCardName: '', bankBcCertificateName: '' });
+    this.rawFiles.set({ profileImage: null, photograph: null, aadhaarCard: null, aadhaarBack: null, panCard: null, bankBcCertificate: null });
+    this.fileNames.set({ profileImageName: '', photographName: '', aadhaarCardName: '', aadhaarBackName: '', panCardName: '', bankBcCertificateName: '' });
   }
 
   /**

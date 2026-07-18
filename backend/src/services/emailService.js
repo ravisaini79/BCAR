@@ -1,22 +1,30 @@
 const nodemailer = require('nodemailer');
 const { memberWelcomeTemplate, adminAlertTemplate } = require('../templates/emailTemplates');
 
-// Setup Nodemailer Transporter
-let transporter;
-if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: process.env.SMTP_SECURE === 'true',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
-  });
-  console.log('Nodemailer SMTP Transporter configured successfully.');
-} else {
+// Setup Dynamic Nodemailer Transporter
+const getTransporter = () => {
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+    const rawPass = (process.env.SMTP_PASS || '').trim().replace(/^["']|["']$/g, '');
+    const cleanPass = (process.env.SMTP_HOST || '').includes('gmail.com') ? rawPass.replace(/\s+/g, '') : rawPass;
+    const port = parseInt(process.env.SMTP_PORT || '587', 10);
+    const isSecure = process.env.SMTP_SECURE === 'true' || port === 465;
+
+    return nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: port,
+      secure: isSecure,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: cleanPass
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+  }
+  
   // Mock transporter for local test fallbacks
-  transporter = {
+  return {
     sendMail: async (mailOptions) => {
       console.log('\n=======================================');
       console.log('       MOCK EMAIL LOG SERVICE          ');
@@ -25,13 +33,12 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
       console.log(`To: ${mailOptions.to}`);
       console.log(`Subject: ${mailOptions.subject}`);
       console.log('---------------------------------------');
-      console.log('Content Summary:\n', mailOptions.html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').substring(0, 300) + '...');
+      console.log('Content Summary:\n', mailOptions.html ? mailOptions.html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').substring(0, 300) + '...' : '');
       console.log('=======================================\n');
       return { messageId: 'mock-' + Date.now() };
     }
   };
-  console.log('Nodemailer SMTP details missing. Falling back to Mock Console logging.');
-}
+};
 
 const sendMail = async (options) => {
   if (process.env.DISABLE_EMAIL === 'true') {
@@ -48,7 +55,7 @@ const sendMail = async (options) => {
   };
   
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const info = await getTransporter().sendMail(mailOptions);
     console.log(`Email log: Sent successfully. MessageId: ${info.messageId}`);
     return info;
   } catch (error) {

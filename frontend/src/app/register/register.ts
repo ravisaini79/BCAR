@@ -22,7 +22,7 @@ import { FloatLabelModule }    from 'primeng/floatlabel';
 
 // App
 import { RegisterBusinessService } from './register-business.service';
-import { UploadService, UploadFieldName } from './upload.service';
+import { UploadService, UploadFieldName, FileMetadata } from './upload.service';
 import { HeaderComponent } from '../layout/header/header';
 import { FooterComponent } from '../layout/footer/footer';
 
@@ -129,14 +129,144 @@ export class RegisterComponent implements OnInit, OnDestroy {
       if (ctx) {
         ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-        this.registerForm.get('profileImage')?.setValue(dataUrl);
-        this.registerForm.get('profileImage')?.markAsTouched();
-        this.upload.fileNames.update(names => ({ ...names, profileImageName: 'profile_capture.jpg' }));
+        this.openCropper(dataUrl, 'profileImage');
       }
     }
     this.stopCamera();
   }
 
+  // ── Interactive Image Cropper ─────────────────────────────────────────────
+  isCropping = false;
+  cropperFieldName: UploadFieldName = 'profileImage';
+  cropperImageSrc = '';
+  cropperTitle = 'Crop Profile Photo';
+  cropScale = 1;
+  cropRotate = 0;
+  cropOffsetX = 0;
+  cropOffsetY = 0;
+  isDraggingCropper = false;
+  private dragStartX = 0;
+  private dragStartY = 0;
+
+  openCropper(dataUrl: string, fieldName: UploadFieldName = 'profileImage'): void {
+    this.cropperFieldName = fieldName;
+    this.cropperTitle = fieldName === 'photograph' ? 'Crop Passport Photograph' : 'Crop Profile Image';
+    this.cropperImageSrc = dataUrl;
+    this.cropScale = 1;
+    this.cropRotate = 0;
+    this.cropOffsetX = 0;
+    this.cropOffsetY = 0;
+    this.isCropping = true;
+    this.cdr.markForCheck();
+  }
+
+  openCropperForField(fieldName: UploadFieldName): void {
+    const val = this.registerForm.get(fieldName)?.value;
+    if (val && typeof val === 'string' && val.startsWith('data:image')) {
+      this.openCropper(val, fieldName);
+    }
+  }
+
+  closeCropper(): void {
+    this.isCropping = false;
+    this.cropperImageSrc = '';
+    this.cdr.markForCheck();
+  }
+
+  zoomInCropper(): void {
+    this.cropScale = Math.min(3, +(this.cropScale + 0.15).toFixed(2));
+    this.cdr.markForCheck();
+  }
+
+  zoomOutCropper(): void {
+    this.cropScale = Math.max(0.5, +(this.cropScale - 0.15).toFixed(2));
+    this.cdr.markForCheck();
+  }
+
+  rotateCropper(): void {
+    this.cropRotate = (this.cropRotate + 90) % 360;
+    this.cdr.markForCheck();
+  }
+
+  resetCropper(): void {
+    this.cropScale = 1;
+    this.cropRotate = 0;
+    this.cropOffsetX = 0;
+    this.cropOffsetY = 0;
+    this.cdr.markForCheck();
+  }
+
+  startCropDrag(event: MouseEvent | TouchEvent): void {
+    event.preventDefault();
+    this.isDraggingCropper = true;
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+    this.dragStartX = clientX - this.cropOffsetX;
+    this.dragStartY = clientY - this.cropOffsetY;
+  }
+
+  onCropDrag(event: MouseEvent | TouchEvent): void {
+    if (!this.isDraggingCropper) return;
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+    this.cropOffsetX = clientX - this.dragStartX;
+    this.cropOffsetY = clientY - this.dragStartY;
+    this.cdr.markForCheck();
+  }
+
+  endCropDrag(): void {
+    this.isDraggingCropper = false;
+  }
+
+  applyCrop(): void {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const outputCanvas = document.createElement('canvas');
+      const size = 600;
+      outputCanvas.width = size;
+      outputCanvas.height = size;
+      const ctx = outputCanvas.getContext('2d');
+
+      if (ctx) {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, size, size);
+
+        ctx.save();
+        ctx.translate(size / 2 + this.cropOffsetX, size / 2 + this.cropOffsetY);
+        ctx.rotate((this.cropRotate * Math.PI) / 180);
+        ctx.scale(this.cropScale, this.cropScale);
+
+        const aspect = img.width / img.height;
+        let drawWidth = size;
+        let drawHeight = size;
+        if (aspect > 1) {
+          drawHeight = size;
+          drawWidth = size * aspect;
+        } else {
+          drawWidth = size;
+          drawHeight = size / aspect;
+        }
+
+        ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+        ctx.restore();
+
+        const croppedDataUrl = outputCanvas.toDataURL('image/jpeg', 0.92);
+
+        this.registerForm.get(this.cropperFieldName)?.setValue(croppedDataUrl);
+        this.registerForm.get(this.cropperFieldName)?.markAsTouched();
+
+        const nameKey = `${this.cropperFieldName}Name` as keyof FileMetadata;
+        this.upload.fileNames.update(names => ({
+          ...names,
+          [nameKey]: `${this.cropperFieldName}_cropped.jpg`
+        }));
+
+        this.closeCropper();
+      }
+    };
+    img.src = this.cropperImageSrc;
+  }
 
   // District dropdown proxy (needed for ngModel binding in template)
   get districtSearchText(): string { return this.srv.districtSearchText(); }
@@ -195,7 +325,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     const file  = input.files?.[0];
     if (file) {
-      this.upload.processFile(file, fieldName, this.registerForm);
+      if (fieldName === 'profileImage' || fieldName === 'photograph') {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.openCropper(reader.result as string, fieldName);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.upload.processFile(file, fieldName, this.registerForm);
+      }
       this.cdr.markForCheck();
     }
     // Reset input so same file can be re-selected

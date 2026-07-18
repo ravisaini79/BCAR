@@ -41,11 +41,13 @@ const userSchema = new mongoose.Schema({
   admissionFee: String,
   perMonthMembershipFee: String,
   
-  // Document Upload File Metadata (Cloudinary)
+  // Document Upload File Metadata (S3)
   photograph: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -53,9 +55,11 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   aadhaarCard: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -63,9 +67,11 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   panCard: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -73,9 +79,11 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   bankBcCertificate: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -83,11 +91,13 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   
-  // Additional Cloudinary Fields from Request
+  // Additional Document Fields
   profilePhoto: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -95,9 +105,11 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   aadhaarFront: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -105,9 +117,11 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   aadhaarBack: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -115,9 +129,11 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   bankPassbook: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -125,9 +141,11 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   signature: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,
@@ -135,9 +153,11 @@ const userSchema = new mongoose.Schema({
     uploaded_at: Date
   },
   otherDocuments: {
+    url: String,
+    key: String,
+    bucket: String,
     public_id: String,
     secure_url: String,
-    url: String,
     original_filename: String,
     resource_type: String,
     format: String,

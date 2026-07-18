@@ -17,6 +17,9 @@ const gallerySchema = new mongoose.Schema({
     trim: true
   },
   image: {
+    url: { type: String },
+    key: { type: String },
+    bucket: { type: String },
     public_id: { type: String, required: true },
     secure_url: { type: String, required: true },
     width: Number,

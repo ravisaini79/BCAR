@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
 const { sendWelcomeEmail, sendAdminAlertEmail } = require('../services/emailService');
-const { uploadFromBuffer, deleteFromCloudinary } = require('../services/cloudinaryService');
+const { uploadFile, deleteFile } = require('../services/s3.service');
 const { logRegistration, logEmail, logError } = require('../utils/logger');
 const registrationService = require('../services/registrationService');
 const receiptService = require('../services/receiptService');
@@ -78,12 +78,12 @@ const registerUser = async (req, res, next) => {
     const getFileBuffer = (fieldName, bodyVal) => {
       if (req.files && req.files[fieldName] && req.files[fieldName][0]) {
         const file = req.files[fieldName][0];
-        return { buffer: file.buffer, filename: file.originalname };
+        return { buffer: file.buffer, filename: file.originalname, mimetype: file.mimetype };
       }
       if (bodyVal) {
         const { buffer, mimeType } = getBufferFromBase64(bodyVal);
         const filename = `${fieldName}_${email || 'member'}_${Date.now()}.${getExt(mimeType)}`;
-        return { buffer, filename };
+        return { buffer, filename, mimetype: mimeType };
       }
       return null;
     };
@@ -119,11 +119,6 @@ const registerUser = async (req, res, next) => {
       res.status(400);
       throw new Error('District is required');
     }
-    // TODO: Re-enable document validations before going to production
-    // if (!hasAadhaar) { res.status(400); throw new Error('Aadhaar Card document upload is required'); }
-    // if (!hasPan)     { res.status(400); throw new Error('PAN Card document upload is required'); }
-    // if (!hasPhoto)   { res.status(400); throw new Error('Photograph upload is required'); }
-    // if (!hasBank)    { res.status(400); throw new Error('Bank Certificate or Passbook upload is required'); }
     if (declarationAccepted !== true && declarationAccepted !== 'true') {
       res.status(400);
       throw new Error('Declaration acceptance is required');
@@ -137,7 +132,7 @@ const registerUser = async (req, res, next) => {
       throw new Error('Member already registered.');
     }
 
-    // Step 3: Setup asynchronous Cloudinary upload tasks
+    // Step 3: Setup asynchronous S3 upload tasks
     const profileImageFile = getFileBuffer('profileImage', profileImage);
     const photoFile = getFileBuffer('photograph', photograph || profilePhoto);
     const aadhaarFile = getFileBuffer('aadhaarCard', aadhaarCard || aadhaarFront);
@@ -169,62 +164,51 @@ const registerUser = async (req, res, next) => {
     const uploadTasks = [];
     const uploadKeys = [];
 
-    // Profile Image goes to bcar/profile, automatically cropped to a square 600x600px face-focused crop
+    // Profile Image & Photograph go to members/profile/
     if (profileImageFile) {
-      uploadTasks.push(uploadFromBuffer(
-        profileImageFile.buffer,
-        'bcar/profile',
-        profileImageFile.filename,
-        { transformation: [{ width: 600, height: 600, crop: 'fill', gravity: 'face', quality: 'auto', fetch_format: 'auto' }] }
-      ));
+      uploadTasks.push(uploadFile(profileImageFile.buffer, 'members/profile', profileImageFile.filename, profileImageFile.mimetype));
       uploadKeys.push('profileImage');
     }
 
-    // Photograph goes to bcar/profile, automatically cropped to a square 600x600px face-focused crop
     if (photoFile) {
-      uploadTasks.push(uploadFromBuffer(
-        photoFile.buffer,
-        'bcar/profile',
-        photoFile.filename,
-        { transformation: [{ width: 600, height: 600, crop: 'fill', gravity: 'face', quality: 'auto', fetch_format: 'auto' }] }
-      ));
+      uploadTasks.push(uploadFile(photoFile.buffer, 'members/profile', photoFile.filename, photoFile.mimetype));
       uploadKeys.push('photograph');
     }
 
-    // Other documents go to bcar/documents
+    // Documents go to members/documents/
     if (aadhaarFile) {
-      uploadTasks.push(uploadFromBuffer(aadhaarFile.buffer, 'bcar/documents', aadhaarFile.filename));
+      uploadTasks.push(uploadFile(aadhaarFile.buffer, 'members/documents', aadhaarFile.filename, aadhaarFile.mimetype));
       uploadKeys.push('aadhaarCard');
     }
     if (panFile) {
-      uploadTasks.push(uploadFromBuffer(panFile.buffer, 'bcar/documents', panFile.filename));
+      uploadTasks.push(uploadFile(panFile.buffer, 'members/documents', panFile.filename, panFile.mimetype));
       uploadKeys.push('panCard');
     }
     if (bankFile) {
-      uploadTasks.push(uploadFromBuffer(bankFile.buffer, 'bcar/documents', bankFile.filename));
+      uploadTasks.push(uploadFile(bankFile.buffer, 'members/documents', bankFile.filename, bankFile.mimetype));
       uploadKeys.push('bankBcCertificate');
     }
     if (aadhaarBackFile) {
-      uploadTasks.push(uploadFromBuffer(aadhaarBackFile.buffer, 'bcar/documents', aadhaarBackFile.filename));
+      uploadTasks.push(uploadFile(aadhaarBackFile.buffer, 'members/documents', aadhaarBackFile.filename, aadhaarBackFile.mimetype));
       uploadKeys.push('aadhaarBack');
     }
     if (signatureFile) {
-      uploadTasks.push(uploadFromBuffer(signatureFile.buffer, 'bcar/documents', signatureFile.filename));
+      uploadTasks.push(uploadFile(signatureFile.buffer, 'members/signatures', signatureFile.filename, signatureFile.mimetype));
       uploadKeys.push('signature');
     }
     if (otherFile) {
-      uploadTasks.push(uploadFromBuffer(otherFile.buffer, 'bcar/documents', otherFile.filename));
+      uploadTasks.push(uploadFile(otherFile.buffer, 'members/documents', otherFile.filename, otherFile.mimetype));
       uploadKeys.push('otherDocuments');
     }
 
-    // Execute uploads concurrently in buffer streams
+    // Execute uploads concurrently
     let results = [];
     try {
       results = await Promise.all(uploadTasks);
     } catch (uploadErr) {
-      logError(`Cloudinary Upload Error for ${email}: ${uploadErr.message}`);
+      logError(`S3 Upload Error for ${email}: ${uploadErr.message}`);
       res.status(500);
-      throw new Error(`Upload Error: Failed to upload files to Cloudinary: ${uploadErr.message}`);
+      throw new Error(`Upload Error: Failed to upload files to Amazon S3: ${uploadErr.message}`);
     }
 
     // Keep track of successfully uploaded files for fallback cleanup
@@ -249,30 +233,30 @@ const registerUser = async (req, res, next) => {
       createdBy: 'Self Registration'
     };
 
-    // Assign Cloudinary file info matching the Mongoose schema structures
-    results.forEach((cloudinaryMeta, idx) => {
+    // Assign S3 file metadata matching schema
+    results.forEach((s3Meta, idx) => {
       const key = uploadKeys[idx];
       if (key !== 'profileImage') {
-        memberData[key] = cloudinaryMeta;
+        memberData[key] = s3Meta;
       }
       
       // Sync duplicate fields for compatibility
-      if (key === 'profileImage') memberData['profilePhoto'] = cloudinaryMeta;
-      if (key === 'photograph' && !memberData['profilePhoto']) memberData['profilePhoto'] = cloudinaryMeta;
-      if (key === 'aadhaarCard') memberData['aadhaarFront'] = cloudinaryMeta;
-      if (key === 'bankBcCertificate') memberData['bankPassbook'] = cloudinaryMeta;
+      if (key === 'profileImage') memberData['profilePhoto'] = s3Meta;
+      if (key === 'photograph' && !memberData['profilePhoto']) memberData['profilePhoto'] = s3Meta;
+      if (key === 'aadhaarCard') memberData['aadhaarFront'] = s3Meta;
+      if (key === 'bankBcCertificate') memberData['bankPassbook'] = s3Meta;
     });
 
     let regResult;
     try {
       regResult = await registrationService.registerNewMember(memberData);
     } catch (dbError) {
-      logError(`Database save failed for ${email}. Triggering Cloudinary cleanup: ${dbError.message}`);
+      logError(`Database save failed for ${email}. Triggering S3 cleanup: ${dbError.message}`);
       for (const file of uploadedFiles) {
         try {
-          await deleteFromCloudinary(file.public_id);
+          await deleteFile(file.key || file.public_id);
         } catch (cleanupErr) {
-          logError(`Failed to clean up file ${file.public_id}: ${cleanupErr.message}`);
+          logError(`Failed to clean up file ${file.key}: ${cleanupErr.message}`);
         }
       }
       throw dbError; // rethrow to errorHandler middleware
@@ -290,11 +274,11 @@ const registerUser = async (req, res, next) => {
       message: 'Registration successful. Waiting for admin approval.',
       status: user.status,
       
-      // Cloudinary urls for frontend previews
-      photograph: user.photograph ? user.photograph.secure_url : '',
-      aadhaarCard: user.aadhaarCard ? user.aadhaarCard.secure_url : '',
-      panCard: user.panCard ? user.panCard.secure_url : '',
-      bankBcCertificate: user.bankBcCertificate ? user.bankBcCertificate.secure_url : '',
+      // File urls for frontend previews
+      photograph: user.photograph ? user.photograph.secure_url || user.photograph.url : '',
+      aadhaarCard: user.aadhaarCard ? user.aadhaarCard.secure_url || user.aadhaarCard.url : '',
+      panCard: user.panCard ? user.panCard.secure_url || user.panCard.url : '',
+      bankBcCertificate: user.bankBcCertificate ? user.bankBcCertificate.secure_url || user.bankBcCertificate.url : '',
       
       // Legacy compliance keys
       Success: true,
@@ -324,54 +308,54 @@ const updateMemberDocuments = async (req, res, next) => {
     const uploadTasks = [];
     const uploadKeys = [];
 
-    // Setup tasks & delete old Cloudinary assets to avoid duplicate orphan files
+    // Setup tasks & delete old S3 objects
     if (profileImage) {
-      if (member.profilePhoto && member.profilePhoto.public_id) {
-        await deleteFromCloudinary(member.profilePhoto.public_id);
+      if (member.profilePhoto && (member.profilePhoto.key || member.profilePhoto.public_id)) {
+        await deleteFile(member.profilePhoto.key || member.profilePhoto.public_id);
       }
       const { buffer, mimeType } = getBufferFromBase64(profileImage);
       const filename = `profile_photo_${member.email}_${Date.now()}.${getExt(mimeType)}`;
-      uploadTasks.push(uploadFromBuffer(buffer, 'bcar/members/profile', filename));
+      uploadTasks.push(uploadFile(buffer, 'members/profile', filename, mimeType));
       uploadKeys.push('profileImage');
     }
 
     if (photograph) {
-      if (member.photograph && member.photograph.public_id) {
-        await deleteFromCloudinary(member.photograph.public_id);
+      if (member.photograph && (member.photograph.key || member.photograph.public_id)) {
+        await deleteFile(member.photograph.key || member.photograph.public_id);
       }
       const { buffer, mimeType } = getBufferFromBase64(photograph);
       const filename = `profile_${member.email}_${Date.now()}.${getExt(mimeType)}`;
-      uploadTasks.push(uploadFromBuffer(buffer, 'bcar/members/profile', filename));
+      uploadTasks.push(uploadFile(buffer, 'members/profile', filename, mimeType));
       uploadKeys.push('photograph');
     }
 
     if (aadhaarCard) {
-      if (member.aadhaarCard && member.aadhaarCard.public_id) {
-        await deleteFromCloudinary(member.aadhaarCard.public_id);
+      if (member.aadhaarCard && (member.aadhaarCard.key || member.aadhaarCard.public_id)) {
+        await deleteFile(member.aadhaarCard.key || member.aadhaarCard.public_id);
       }
       const { buffer, mimeType } = getBufferFromBase64(aadhaarCard);
       const filename = `aadhaar_${member.email}_${Date.now()}.${getExt(mimeType)}`;
-      uploadTasks.push(uploadFromBuffer(buffer, 'bcar/members/aadhaar', filename));
+      uploadTasks.push(uploadFile(buffer, 'members/documents', filename, mimeType));
       uploadKeys.push('aadhaarCard');
     }
 
     if (panCard) {
-      if (member.panCard && member.panCard.public_id) {
-        await deleteFromCloudinary(member.panCard.public_id);
+      if (member.panCard && (member.panCard.key || member.panCard.public_id)) {
+        await deleteFile(member.panCard.key || member.panCard.public_id);
       }
       const { buffer, mimeType } = getBufferFromBase64(panCard);
       const filename = `pan_${member.email}_${Date.now()}.${getExt(mimeType)}`;
-      uploadTasks.push(uploadFromBuffer(buffer, 'bcar/members/pan', filename));
+      uploadTasks.push(uploadFile(buffer, 'members/documents', filename, mimeType));
       uploadKeys.push('panCard');
     }
 
     if (bankBcCertificate) {
-      if (member.bankBcCertificate && member.bankBcCertificate.public_id) {
-        await deleteFromCloudinary(member.bankBcCertificate.public_id);
+      if (member.bankBcCertificate && (member.bankBcCertificate.key || member.bankBcCertificate.public_id)) {
+        await deleteFile(member.bankBcCertificate.key || member.bankBcCertificate.public_id);
       }
       const { buffer, mimeType } = getBufferFromBase64(bankBcCertificate);
       const filename = `bank_${member.email}_${Date.now()}.${getExt(mimeType)}`;
-      uploadTasks.push(uploadFromBuffer(buffer, 'bcar/members/documents', filename));
+      uploadTasks.push(uploadFile(buffer, 'members/documents', filename, mimeType));
       uploadKeys.push('bankBcCertificate');
     }
 
@@ -498,7 +482,11 @@ const sendCardEmail = async (req, res, next) => {
 
     res.json({ success: true, message: 'ID Card emailed successfully!' });
   } catch (error) {
-    next(error);
+    console.error('[sendCardEmail Error]:', error.message);
+    res.status(400).json({
+      success: false,
+      message: `Failed to send ID Card email: ${error.message}`
+    });
   }
 };
 

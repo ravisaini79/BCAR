@@ -14,6 +14,29 @@
   z-index: 9999 !important;
 }
 
+/* ─── Toast Notifications Z-Index & Position Fix ───────────────────────── */
+.p-toast,
+#toast-container,
+.ngx-toastr,
+.p-toast-message-content {
+  z-index: 999999 !important;
+}
+
+.p-toast-top-right,
+.p-toast-top-left,
+.p-toast-top-center,
+.toast-top-right,
+.toast-top-left,
+.toast-top-center {
+  top: 95px !important;
+  z-index: 999999 !important;
+}
+
+#toast-container {
+  top: 95px !important;
+  z-index: 999999 !important;
+}
+
 /* =====================================================
    BCAR — Global Design Tokens & Typography System
    Fonts: Fraunces (display/headings) + Plus Jakarta Sans (body)

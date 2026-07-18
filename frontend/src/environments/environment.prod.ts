@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://bcar.onrender.com/api'
+  apiUrl: 'https://bcarbankmitra.com/api'
 };

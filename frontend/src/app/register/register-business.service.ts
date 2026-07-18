@@ -78,10 +78,11 @@ export class RegisterBusinessService {
       declarationAccepted: [false, Validators.requiredTrue],
       // Documents — optional during testing (remove `null` validators to re-enable)
       profileImage:      [null],
-      photograph:        [null],  // TODO: add Validators.required to re-enable
-      aadhaarCard:       [null],  // TODO: add Validators.required to re-enable
-      panCard:           [null],  // TODO: add Validators.required to re-enable
-      bankBcCertificate: [null],  // TODO: add Validators.required to re-enable
+      photograph:        [null],
+      aadhaarCard:       [null],  // Aadhaar Front Side
+      aadhaarBack:       [null],  // Aadhaar Back Side
+      panCard:           [null],
+      bankBcCertificate: [null],
     });
 
     return form;
@@ -97,7 +98,7 @@ export class RegisterBusinessService {
 
       // Patch only text fields; files need fresh selection
       const textData = { ...parsed };
-      (['profileImage', 'photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(k => {
+      (['profileImage', 'photograph', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(k => {
         delete textData[k];
       });
       form.patchValue(textData, { emitEvent: false });
@@ -164,7 +165,7 @@ export class RegisterBusinessService {
 
     // Append all text controls
     Object.keys(form.controls).forEach(key => {
-      if (!['profileImage', 'photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate'].includes(key)) {
+      if (!['profileImage', 'photograph', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'].includes(key)) {
         formData.append(key, form.get(key)?.value ?? '');
       }
     });
@@ -172,7 +173,8 @@ export class RegisterBusinessService {
     // Append file fields via UploadService
     this.upload.appendFileToFormData(formData, 'profileImage',      form, 'profile_image_draft.jpg', 'image/jpeg');
     this.upload.appendFileToFormData(formData, 'photograph',        form, 'photograph_draft.jpg',  'image/jpeg');
-    this.upload.appendFileToFormData(formData, 'aadhaarCard',       form, 'aadhaar_draft.pdf',     'application/pdf');
+    this.upload.appendFileToFormData(formData, 'aadhaarCard',       form, 'aadhaar_front_draft.pdf', 'application/pdf');
+    this.upload.appendFileToFormData(formData, 'aadhaarBack',       form, 'aadhaar_back_draft.pdf',  'application/pdf');
     this.upload.appendFileToFormData(formData, 'panCard',           form, 'pan_draft.pdf',         'application/pdf');
     this.upload.appendFileToFormData(formData, 'bankBcCertificate', form, 'bc_cert_draft.pdf',     'application/pdf');
 
@@ -180,7 +182,7 @@ export class RegisterBusinessService {
       next: res => {
         this.submitting.set(false);
         this.toast.success(
-          'Your registration has been submitted successfully. A confirmation email along with your ₹600 registration receipt has been sent to your registered email address.',
+          'Your registration has been submitted successfully. A confirmation email along with your ₹700 fee receipt (₹100 Registration + ₹600 Membership) has been sent to your registered email address.',
           'Registration Successful'
         );
 

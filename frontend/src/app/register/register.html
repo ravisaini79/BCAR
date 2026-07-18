@@ -48,7 +48,10 @@
                     
                     @if (registerForm.get('profileImage')?.value) {
                       <img [src]="registerForm.get('profileImage')?.value" class="avatar-img-preview" alt="Profile preview">
-                      <button type="button" class="view-avatar-btn" (click)="viewUploadedFile('profileImage', 'Profile Image'); $event.stopPropagation()" pTooltip="View profile image" tooltipPosition="top" style="right: 48px;">
+                      <button type="button" class="view-avatar-btn" (click)="openCropperForField('profileImage'); $event.stopPropagation()" pTooltip="Crop profile photo" tooltipPosition="top" style="right: 84px;">
+                        <i class="pi pi-pencil"></i>
+                      </button>
+                      <button type="button" class="view-avatar-btn" (click)="viewUploadedFile('profileImage', 'Profile Image'); $event.stopPropagation()" pTooltip="View profile image" tooltipPosition="top" style="right: 44px;">
                         <i class="pi pi-eye"></i>
                       </button>
                       <button type="button" class="remove-avatar-btn" (click)="removeFile('profileImage'); $event.stopPropagation()" pTooltip="Remove profile image" tooltipPosition="top">
@@ -344,9 +347,9 @@
 
             <div class="document-uploads-grid">
 
-              <!-- Aadhaar Card -->
+              <!-- Aadhaar Card (Front Side) -->
               <div class="doc-upload-item">
-                <label class="doc-label">Aadhaar Card</label>
+                <label class="doc-label">Aadhaar Card (Front Side)</label>
                 <div class="upload-zone"
                      [class.drag-over]="srv.dragOverField() === 'aadhaarCard'"
                      (dragover)="onDragOver($event, 'aadhaarCard')"
@@ -368,19 +371,63 @@
                     <div class="upload-preview" (click)="$event.stopPropagation()">
                       <i class="pi pi-file-pdf file-icon" *ngIf="!isImagePreview(registerForm.get('aadhaarCard')?.value)"></i>
                       <img *ngIf="isImagePreview(registerForm.get('aadhaarCard')?.value)"
-                           [src]="registerForm.get('aadhaarCard')?.value" class="photo-preview-image" alt="Aadhaar preview">
+                           [src]="registerForm.get('aadhaarCard')?.value" class="photo-preview-image" alt="Aadhaar Front preview">
                       <div class="file-details">
                         <span class="file-name">{{ upload.fileNames().aadhaarCardName }}</span>
                         <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
                       </div>
                       <button type="button" class="view-file-btn"
                               pTooltip="View file" tooltipPosition="top"
-                              (click)="viewUploadedFile('aadhaarCard', 'Aadhaar Card')">
+                              (click)="viewUploadedFile('aadhaarCard', 'Aadhaar Card Front Side')">
                         <i class="pi pi-eye"></i>
                       </button>
                       <button type="button" class="remove-file-btn"
                               pTooltip="Remove file" tooltipPosition="top"
                               (click)="removeFile('aadhaarCard')">
+                        <i class="pi pi-trash"></i>
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Aadhaar Card (Back Side) -->
+              <div class="doc-upload-item">
+                <label class="doc-label">Aadhaar Card (Back Side)</label>
+                <div class="upload-zone"
+                     [class.drag-over]="srv.dragOverField() === 'aadhaarBack'"
+                     (dragover)="onDragOver($event, 'aadhaarBack')"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onDrop($event, 'aadhaarBack')"
+                     (click)="openFilePicker('upload-aadhaar-back')">
+                  <input id="upload-aadhaar-back" type="file" class="file-input-hidden"
+                         accept=".pdf,.jpg,.jpeg,.png"
+                         (change)="onFileSelected($event, 'aadhaarBack')"
+                         (click)="$event.stopPropagation()">
+
+                  @if (!registerForm.get('aadhaarBack')?.value) {
+                    <div class="upload-zone-inner">
+                      <i class="pi pi-id-card upload-icon"></i>
+                      <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
+                    </div>
+                  } @else {
+                    <div class="upload-preview" (click)="$event.stopPropagation()">
+                      <i class="pi pi-file-pdf file-icon" *ngIf="!isImagePreview(registerForm.get('aadhaarBack')?.value)"></i>
+                      <img *ngIf="isImagePreview(registerForm.get('aadhaarBack')?.value)"
+                           [src]="registerForm.get('aadhaarBack')?.value" class="photo-preview-image" alt="Aadhaar Back preview">
+                      <div class="file-details">
+                        <span class="file-name">{{ upload.fileNames().aadhaarBackName }}</span>
+                        <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
+                      </div>
+                      <button type="button" class="view-file-btn"
+                              pTooltip="View file" tooltipPosition="top"
+                              (click)="viewUploadedFile('aadhaarBack', 'Aadhaar Card Back Side')">
+                        <i class="pi pi-eye"></i>
+                      </button>
+                      <button type="button" class="remove-file-btn"
+                              pTooltip="Remove file" tooltipPosition="top"
+                              (click)="removeFile('aadhaarBack')">
                         <i class="pi pi-trash"></i>
                       </button>
                     </div>
@@ -460,6 +507,11 @@
                         <span class="file-name">{{ upload.fileNames().photographName }}</span>
                         <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
                       </div>
+                      <button type="button" class="view-file-btn"
+                              pTooltip="Crop photo" tooltipPosition="top"
+                              (click)="openCropperForField('photograph')">
+                        <i class="pi pi-pencil"></i>
+                      </button>
                       <button type="button" class="view-file-btn"
                               pTooltip="View photo" tooltipPosition="top"
                               (click)="viewUploadedFile('photograph', 'Passport Photograph')">
@@ -545,6 +597,27 @@
                   <li>If any information or document is found false or incorrect, my membership is liable to be
                       cancelled and I shall be liable for disciplinary or legal action.</li>
                 </ol>
+
+                <!-- ── Registration & Membership Fee Breakdown Box ── -->
+                <div class="fee-breakdown-box">
+                  <div class="fee-breakdown-header">
+                    <i class="pi pi-wallet"></i>
+                    <span>Membership Fee Breakdown</span>
+                  </div>
+                  <div class="fee-row">
+                    <span>Registration Fee:</span>
+                    <strong class="fee-amount">₹100</strong>
+                  </div>
+                  <div class="fee-row">
+                    <span>Membership Fee:</span>
+                    <strong class="fee-amount">₹600</strong>
+                  </div>
+                  <div class="fee-divider"></div>
+                  <div class="fee-row fee-total-row">
+                    <span>Total Payment Required for Registration:</span>
+                    <strong class="fee-total-amount">₹700</strong>
+                  </div>
+                </div>
               </div>
 
               <div class="checkbox-row">
@@ -627,5 +700,76 @@
       </div>
     </div>
   </div>
+
+  <!-- ── Interactive Image Cropper Modal ── -->
+  @if (isCropping) {
+    <div class="cropper-modal-overlay" (click)="closeCropper()">
+      <div class="cropper-modal-card" (click)="$event.stopPropagation()">
+        
+        <div class="cropper-modal-header">
+          <h4><i class="pi pi-crop"></i> {{ cropperTitle }}</h4>
+          <button type="button" class="close-cropper-btn" (click)="closeCropper()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+
+        <div class="cropper-modal-body">
+          <p class="cropper-instructions"><i class="pi pi-info-circle"></i> Drag image to position &amp; use controls below to scale or rotate</p>
+          
+          <div class="cropper-viewport-wrap"
+               (mousedown)="startCropDrag($event)"
+               (mousemove)="onCropDrag($event)"
+               (mouseup)="endCropDrag()"
+               (mouseleave)="endCropDrag()"
+               (touchstart)="startCropDrag($event)"
+               (touchmove)="onCropDrag($event)"
+               (touchend)="endCropDrag()">
+
+            <!-- Crop Square/Circle Frame Guide -->
+            <div class="cropper-guide-box"></div>
+
+            <!-- Source Image -->
+            <img [src]="cropperImageSrc"
+                 class="cropper-source-img"
+                 [style.transform]="'translate(' + cropOffsetX + 'px, ' + cropOffsetY + 'px) scale(' + cropScale + ') rotate(' + cropRotate + 'deg)'"
+                 alt="Source Image to Crop">
+          </div>
+
+          <!-- Controls Toolbar -->
+          <div class="cropper-controls-toolbar">
+            <div class="cropper-tool-group">
+              <span class="tool-label">Zoom:</span>
+              <button type="button" class="crop-tool-btn" (click)="zoomOutCropper()" pTooltip="Zoom Out" tooltipPosition="top">
+                <i class="pi pi-search-minus"></i>
+              </button>
+              <span class="crop-scale-label">{{ (cropScale * 100).toFixed(0) }}%</span>
+              <button type="button" class="crop-tool-btn" (click)="zoomInCropper()" pTooltip="Zoom In" tooltipPosition="top">
+                <i class="pi pi-search-plus"></i>
+              </button>
+            </div>
+
+            <div class="cropper-tool-group">
+              <button type="button" class="crop-tool-btn" (click)="rotateCropper()" pTooltip="Rotate 90°" tooltipPosition="top">
+                <i class="pi pi-refresh"></i> Rotate
+              </button>
+              <button type="button" class="crop-tool-btn" (click)="resetCropper()" pTooltip="Reset Position" tooltipPosition="top">
+                <i class="pi pi-undo"></i> Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cropper-modal-footer">
+          <button type="button" class="cropper-btn-cancel" (click)="closeCropper()">
+            Cancel
+          </button>
+          <button type="button" class="cropper-btn-save" (click)="applyCrop()">
+            <i class="pi pi-check"></i> Crop &amp; Save Photo
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
 
 <app-footer></app-footer>

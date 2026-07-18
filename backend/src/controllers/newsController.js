@@ -1,5 +1,5 @@
 const News = require('../models/News');
-const { uploadFromBuffer, deleteFromCloudinary } = require('../services/cloudinaryService');
+const { uploadFile, deleteFile } = require('../services/s3.service');
 
 // Helper to convert text to URL safe slug
 const slugify = (text) => {
@@ -123,16 +123,13 @@ const createNewsArticle = async (req, res, next) => {
     // Generate unique slug
     const slug = await makeUniqueSlug(title);
 
-    // Upload to Cloudinary (Folder: bcar/news, transformation: compress and fit to 1200x630)
+    // Upload to Amazon S3 (Folder: news/)
     let uploadResult;
     try {
-      const filename = `news_${Date.now()}_${req.file.originalname}`;
-      uploadResult = await uploadFromBuffer(req.file.buffer, 'bcar/news', filename, {
-        transformation: [{ width: 1200, height: 630, crop: 'limit', quality: 'auto', fetch_format: 'auto' }]
-      });
+      uploadResult = await uploadFile(req.file.buffer, 'news', req.file.originalname, req.file.mimetype);
     } catch (uploadErr) {
       res.status(500);
-      throw new Error(`Cloudinary upload failed: ${uploadErr.message}`);
+      throw new Error(`S3 upload failed: ${uploadErr.message}`);
     }
 
     // Create record in MongoDB
@@ -142,12 +139,15 @@ const createNewsArticle = async (req, res, next) => {
       shortDescription,
       fullDescription,
       featuredImage: {
+        url: uploadResult.url,
+        key: uploadResult.key,
+        bucket: uploadResult.bucket,
         public_id: uploadResult.public_id,
         secure_url: uploadResult.secure_url,
-        width: uploadResult.width || 1200,
-        height: uploadResult.height || 630,
-        format: uploadResult.format,
-        bytes: uploadResult.file_size
+        width: 1200,
+        height: 630,
+        format: req.file.originalname ? req.file.originalname.split('.').pop() : 'jpg',
+        bytes: req.file.size
       },
       category,
       publishDate: publishDate ? new Date(publishDate) : new Date(),
@@ -203,35 +203,35 @@ const updateNewsArticle = async (req, res, next) => {
         throw new Error('Featured image size exceeds the 500 KB limit');
       }
 
-      // Upload new image to Cloudinary
+      // Upload new image to S3
       let uploadResult;
       try {
-        const filename = `news_${Date.now()}_${req.file.originalname}`;
-        uploadResult = await uploadFromBuffer(req.file.buffer, 'bcar/news', filename, {
-          transformation: [{ width: 1200, height: 630, crop: 'limit', quality: 'auto', fetch_format: 'auto' }]
-        });
+        uploadResult = await uploadFile(req.file.buffer, 'news', req.file.originalname, req.file.mimetype);
       } catch (uploadErr) {
         res.status(500);
-        throw new Error(`Cloudinary upload failed: ${uploadErr.message}`);
+        throw new Error(`S3 upload failed: ${uploadErr.message}`);
       }
 
-      // Delete old image from Cloudinary
-      if (item.featuredImage && item.featuredImage.public_id) {
+      // Delete old image from S3
+      if (item.featuredImage && (item.featuredImage.key || item.featuredImage.public_id)) {
         try {
-          await deleteFromCloudinary(item.featuredImage.public_id);
+          await deleteFile(item.featuredImage.key || item.featuredImage.public_id);
         } catch (delErr) {
-          console.error(`[CLOUDINARY] Failed to delete old image ${item.featuredImage.public_id}: ${delErr.message}`);
+          console.error(`[S3] Failed to delete old image ${item.featuredImage.key || item.featuredImage.public_id}: ${delErr.message}`);
         }
       }
 
       // Assign new image metadata
       item.featuredImage = {
+        url: uploadResult.url,
+        key: uploadResult.key,
+        bucket: uploadResult.bucket,
         public_id: uploadResult.public_id,
         secure_url: uploadResult.secure_url,
-        width: uploadResult.width || 1200,
-        height: uploadResult.height || 630,
-        format: uploadResult.format,
-        bytes: uploadResult.file_size
+        width: 1200,
+        height: 630,
+        format: req.file.originalname ? req.file.originalname.split('.').pop() : 'jpg',
+        bytes: req.file.size
       };
     }
 
@@ -257,12 +257,12 @@ const deleteNewsArticle = async (req, res, next) => {
     item.isDeleted = true;
     item.deletedAt = new Date();
 
-    // Delete image from Cloudinary to clean up storage
-    if (item.featuredImage && item.featuredImage.public_id) {
+    // Delete image from S3 first to clean up storage
+    if (item.featuredImage && (item.featuredImage.key || item.featuredImage.public_id)) {
       try {
-        await deleteFromCloudinary(item.featuredImage.public_id);
+        await deleteFile(item.featuredImage.key || item.featuredImage.public_id);
       } catch (delErr) {
-        console.error(`[CLOUDINARY] Failed to delete image ${item.featuredImage.public_id}: ${delErr.message}`);
+        console.error(`[S3] Failed to delete image ${item.featuredImage.key || item.featuredImage.public_id}: ${delErr.message}`);
       }
     }
 

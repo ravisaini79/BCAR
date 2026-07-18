@@ -170,6 +170,24 @@ const deleteMember = async (req, res, next) => {
     if (member) {
       const name = member.name;
       const email = member.email;
+
+      // Delete member images and documents from S3 before DB deletion
+      const documentFields = [
+        'photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate',
+        'profilePhoto', 'aadhaarFront', 'aadhaarBack', 'bankPassbook',
+        'signature', 'otherDocuments'
+      ];
+
+      for (const field of documentFields) {
+        if (member[field] && (member[field].key || member[field].public_id)) {
+          try {
+            await deleteFile(member[field].key || member[field].public_id);
+          } catch (delErr) {
+            logError(`Failed to delete S3 file ${field} for member ${email}: ${delErr.message}`);
+          }
+        }
+      }
+
       await member.deleteOne();
       logRegistration(`Admin deleted member: ${name} (${email})`);
       res.json({ message: 'Member deleted successfully' });

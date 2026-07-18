@@ -10,8 +10,9 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1090.0",
+    "@aws-sdk/lib-storage": "^3.1090.0",
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.10.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
@@ -20,7 +21,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "multer": "^2.2.0",
+    "multer-s3": "^3.0.1",
     "nodemailer": "^9.0.1",
-    "pdfkit": "^0.19.1"
+    "pdfkit": "^0.19.1",
+    "uuid": "^14.0.1"
   }
 }

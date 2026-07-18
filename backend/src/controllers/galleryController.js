@@ -1,5 +1,5 @@
 const Gallery = require('../models/Gallery');
-const { uploadFromBuffer, deleteFromCloudinary } = require('../services/cloudinaryService');
+const { uploadFile, deleteFile } = require('../services/s3.service');
 
 // @desc    Get all gallery items
 // @route   GET /api/gallery
@@ -79,16 +79,13 @@ const createGalleryItem = async (req, res, next) => {
       throw new Error('Image size exceeds the 500 KB limit');
     }
 
-    // Upload to Cloudinary (Folder: bcar/gallery, transformation: fit/compress to 1920x1080)
+    // Upload to Amazon S3 (Folder: gallery/)
     let uploadResult;
     try {
-      const filename = `gallery_${Date.now()}_${req.file.originalname}`;
-      uploadResult = await uploadFromBuffer(req.file.buffer, 'bcar/gallery', filename, {
-        transformation: [{ width: 1920, height: 1080, crop: 'limit', quality: 'auto', fetch_format: 'auto' }]
-      });
+      uploadResult = await uploadFile(req.file.buffer, 'gallery', req.file.originalname, req.file.mimetype);
     } catch (uploadErr) {
       res.status(500);
-      throw new Error(`Cloudinary upload failed: ${uploadErr.message}`);
+      throw new Error(`S3 upload failed: ${uploadErr.message}`);
     }
 
     // Create item in MongoDB
@@ -97,12 +94,15 @@ const createGalleryItem = async (req, res, next) => {
       category,
       description,
       image: {
+        url: uploadResult.url,
+        key: uploadResult.key,
+        bucket: uploadResult.bucket,
         public_id: uploadResult.public_id,
         secure_url: uploadResult.secure_url,
-        width: uploadResult.width || 1920,
-        height: uploadResult.height || 1080,
-        format: uploadResult.format,
-        bytes: uploadResult.file_size
+        width: 1920,
+        height: 1080,
+        format: req.file.originalname ? req.file.originalname.split('.').pop() : 'jpg',
+        bytes: req.file.size
       },
       displayOrder: Number(displayOrder || 0),
       status: status || 'Draft',
@@ -151,35 +151,35 @@ const updateGalleryItem = async (req, res, next) => {
         throw new Error('Image size exceeds the 500 KB limit');
       }
 
-      // Upload new image to Cloudinary
+      // Upload new image to S3
       let uploadResult;
       try {
-        const filename = `gallery_${Date.now()}_${req.file.originalname}`;
-        uploadResult = await uploadFromBuffer(req.file.buffer, 'bcar/gallery', filename, {
-          transformation: [{ width: 1920, height: 1080, crop: 'limit', quality: 'auto', fetch_format: 'auto' }]
-        });
+        uploadResult = await uploadFile(req.file.buffer, 'gallery', req.file.originalname, req.file.mimetype);
       } catch (uploadErr) {
         res.status(500);
-        throw new Error(`Cloudinary upload failed: ${uploadErr.message}`);
+        throw new Error(`S3 upload failed: ${uploadErr.message}`);
       }
 
-      // Delete old image from Cloudinary
-      if (item.image && item.image.public_id) {
+      // Delete old image from S3
+      if (item.image && (item.image.key || item.image.public_id)) {
         try {
-          await deleteFromCloudinary(item.image.public_id);
+          await deleteFile(item.image.key || item.image.public_id);
         } catch (delErr) {
-          console.error(`[CLOUDINARY] Failed to delete old image ${item.image.public_id}: ${delErr.message}`);
+          console.error(`[S3] Failed to delete old image ${item.image.key || item.image.public_id}: ${delErr.message}`);
         }
       }
 
       // Assign new image metadata
       item.image = {
+        url: uploadResult.url,
+        key: uploadResult.key,
+        bucket: uploadResult.bucket,
         public_id: uploadResult.public_id,
         secure_url: uploadResult.secure_url,
-        width: uploadResult.width || 1920,
-        height: uploadResult.height || 1080,
-        format: uploadResult.format,
-        bytes: uploadResult.file_size
+        width: 1920,
+        height: 1080,
+        format: req.file.originalname ? req.file.originalname.split('.').pop() : 'jpg',
+        bytes: req.file.size
       };
     }
 
@@ -205,12 +205,12 @@ const deleteGalleryItem = async (req, res, next) => {
     item.isDeleted = true;
     item.deletedAt = new Date();
 
-    // Delete image from Cloudinary to clean up storage
-    if (item.image && item.image.public_id) {
+    // Delete image from S3 first to clean up storage
+    if (item.image && (item.image.key || item.image.public_id)) {
       try {
-        await deleteFromCloudinary(item.image.public_id);
+        await deleteFile(item.image.key || item.image.public_id);
       } catch (delErr) {
-        console.error(`[CLOUDINARY] Failed to delete image ${item.image.public_id}: ${delErr.message}`);
+        console.error(`[S3] Failed to delete image ${item.image.key || item.image.public_id}: ${delErr.message}`);
       }
     }
 

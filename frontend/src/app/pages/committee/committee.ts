@@ -58,7 +58,7 @@ export class CommitteeComponent {
       nameEn: 'Pradeep Bhargava',
       photo: '/images/pradeep_bhargava.jpg',
       role: 'बैंक ऑफ बड़ौदा BC',
-      roleEn: 'Bank of Baroda BC',
+      roleEn: 'State Treasurer',
       location: 'कोटा, राजस्थान',
       isGeneralSecretary: false,
       quote: 'नेतृत्व करने का एक अच्छा उद्देश्य यह है कि जो लोग अच्छा प्रदर्शन नहीं कर रहे हैं, उन्हें अच्छा प्रदर्शन करने में मदद की जाए और जो लोग अच्छा प्रदर्शन कर रहे हैं, उन्हें और भी बेहतर प्रदर्शन करने में मदद की जाए।'

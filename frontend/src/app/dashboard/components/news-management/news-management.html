@@ -38,7 +38,7 @@
         <tr>
           <td>
             <div class="news-cell-info">
-              <img [src]="item.featuredImage?.secure_url" [alt]="item.title" class="news-thumb" />
+              <img [src]="getArticleImageUrl(item)" [alt]="item.title" class="news-thumb" (error)="onImageError($event)" />
               <div class="news-title-text">
                 {{ item.title }}
                 <small class="slug-preview">Slug: <span class="slug-val">{{ item.slug }}</span></small>

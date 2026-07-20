@@ -10,6 +10,7 @@ const publicRoutes = require('./routes/publicRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
 const newsRoutes = require('./routes/newsRoutes');
+const mediaRoutes = require('./routes/mediaRoutes');
 
 const app = express();
 
@@ -17,6 +18,9 @@ const app = express();
 app.use(helmet({
   contentSecurityPolicy: false // Disable CSP for API server to avoid blocking static resources
 }));
+
+// Media proxy route (unlimited for asset loading)
+app.use('/api/media', mediaRoutes);
 
 // Rate Limiting (100 requests per 15 minutes)
 const limiter = rateLimit({

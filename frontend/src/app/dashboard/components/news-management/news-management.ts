@@ -323,4 +323,27 @@ export class NewsManagementComponent implements OnInit {
       }
     });
   }
+
+  getArticleImageUrl(item: any): string {
+    if (!item) return '/images/bcar-logo-official.jpg';
+    let url = item.image?.secure_url || item.image?.url || item.imageUrl;
+    if (!url && typeof item.image === 'string') {
+      url = item.image;
+    }
+    if (!url || typeof url !== 'string' || !url.trim()) {
+      return '/images/bcar-logo-official.jpg';
+    }
+    if (url.includes('amazonaws.com') && (item.image?.key || item.image?.public_id)) {
+      const key = item.image.key || item.image.public_id;
+      return `/api/media/${key}`;
+    }
+    return url;
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img && !img.src.includes('bcar-logo-official.jpg')) {
+      img.src = '/images/bcar-logo-official.jpg';
+    }
+  }
 }

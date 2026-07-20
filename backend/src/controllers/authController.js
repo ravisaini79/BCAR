@@ -111,6 +111,11 @@ const registerUser = async (req, res, next) => {
       res.status(400);
       throw new Error('Password is required');
     }
+    const aadhaarClean = req.body.aadhaarNumber ? req.body.aadhaarNumber.toString().replace(/\s/g, '') : '';
+    if (!aadhaarClean || aadhaarClean.length !== 12) {
+      res.status(400);
+      throw new Error('Valid 12-digit Aadhaar Number is required');
+    }
     if (!homeAddressVill) {
       res.status(400);
       throw new Error('Home Address is required');
@@ -122,6 +127,22 @@ const registerUser = async (req, res, next) => {
     if (declarationAccepted !== true && declarationAccepted !== 'true') {
       res.status(400);
       throw new Error('Declaration acceptance is required');
+    }
+    if (!hasPhoto) {
+      res.status(400);
+      throw new Error('Passport Photograph attachment is mandatory');
+    }
+    if (!hasAadhaar) {
+      res.status(400);
+      throw new Error('Aadhaar Card attachment is mandatory');
+    }
+    if (!hasPan) {
+      res.status(400);
+      throw new Error('PAN Card attachment is mandatory');
+    }
+    if (!hasBank) {
+      res.status(400);
+      throw new Error('Bank BC Certificate attachment is mandatory');
     }
 
     // Step 2: Check whether Email or Mobile already exists

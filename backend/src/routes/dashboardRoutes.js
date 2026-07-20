@@ -9,6 +9,7 @@ const {
   getStats,
   getMembers,
   updateMemberStatus,
+  updateMemberProfile,
   deleteMember,
   getGrievances,
   getAllGrievances,
@@ -37,6 +38,7 @@ router.route('/members/:id/status')
   .put(authorize('super_admin', 'admin'), updateMemberStatus);
 
 router.route('/members/:id')
+  .put(updateMemberProfile)
   .delete(authorize('super_admin', 'admin'), deleteMember);
 
 router.route('/grievances')

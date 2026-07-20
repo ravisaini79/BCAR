@@ -127,11 +127,30 @@ export class HomeComponent implements OnInit {
     this.galleryLoading = true;
     this.galleryService.getItems().subscribe({
       next: (data) => {
-        this.galleryItems = (data || []).slice(0, 6);
+        this.galleryItems = (data || [])
+          .filter((item: any) => !item.isDeleted)
+          .sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+          .slice(0, 6);
         this.galleryLoading = false;
       },
       error: () => { this.galleryLoading = false; }
     });
+  }
+
+  getImageUrl(item: any): string {
+    if (!item) return 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop';
+    if (typeof item.image === 'string' && item.image.trim()) return item.image;
+    if (item.image?.secure_url) return item.image.secure_url;
+    if (item.image?.url) return item.image.url;
+    if (item.imageUrl) return item.imageUrl;
+    if (typeof item.featuredImage === 'string' && item.featuredImage.trim()) return item.featuredImage;
+    if (item.featuredImage?.secure_url) return item.featuredImage.secure_url;
+    if (item.featuredImage?.url) return item.featuredImage.url;
+    return 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop';
+  }
+
+  onImageError(event: Event) {
+    (event.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop';
   }
 
   fetchLatestNews() {

@@ -48,7 +48,7 @@ const memberWelcomeTemplate = (member) => {
           <h2 class="title">Welcome to BCAR Association</h2>
           <p class="intro">Dear <strong>${name}</strong>,</p>
           <p>Thank you for registering with the <strong>Business Correspondent Association Rajasthan (BCAR)</strong>. Your application has been successfully submitted and is under verification by our executive committee.</p>
-          <p>We have successfully received your registration fee of <strong>₹600</strong>. Your official receipt is generated and attached to this email for your records.</p>
+          <p>We have successfully received your registration fee of <strong>₹700</strong> (₹100 Registration + ₹600 Annual Membership). Your official receipt is generated and attached to this email for your records.</p>
           
           <div class="details-card">
             <h3>Registration Details</h3>
@@ -66,7 +66,7 @@ const memberWelcomeTemplate = (member) => {
             </div>
             <div class="info-row">
               <span class="info-label">Registration Fee</span>
-              <span class="info-value">₹600.00 (Paid)</span>
+              <span class="info-value">₹700.00 (Paid)</span>
             </div>
             <div class="info-row" style="align-items: center;">
               <span class="info-label">Registration Status</span>
@@ -134,7 +134,7 @@ const adminAlertTemplate = (member) => {
           <tr><th>Email Address</th><td>${member.email || ''}</td></tr>
           <tr><th>District</th><td>${member.district || ''}</td></tr>
           <tr><th>Registration Date</th><td>${dateStr}</td></tr>
-          <tr><th>Registration Fee</th><td>₹600 (Paid)</td></tr>
+          <tr><th>Registration Fee</th><td>₹700 (Paid)</td></tr>
           <tr><th>Current Status</th><td><span style="color: #D4AF37;">Pending Approval</span></td></tr>
         </table>
         <div class="btn-container">

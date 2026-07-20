@@ -1,0 +1,111 @@
+.news-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .news-home-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .news-home-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.news-home-card {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.news-home-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(8, 43, 92, 0.1);
+  border-color: #cbd5e1;
+}
+
+.news-home-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  background: #082b5c;
+}
+
+.news-home-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.news-home-card:hover .news-home-img-wrap img {
+  transform: scale(1.05);
+}
+
+.news-home-category-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 50px;
+  color: #ffffff;
+  background: rgba(8, 43, 92, 0.85);
+}
+
+.news-home-category-badge.circular { background: #92700e; }
+.news-home-category-badge.policy { background: #0369a1; }
+.news-home-category-badge.event { background: #0f766e; }
+
+.news-home-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.news-home-meta {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.news-home-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #082b5c;
+  margin: 0 0 6px;
+  line-height: 1.35;
+}
+
+.news-home-card:hover .news-home-title {
+  color: #d4af37;
+}
+
+.news-home-desc {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

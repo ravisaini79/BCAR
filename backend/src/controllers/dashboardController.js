@@ -161,6 +161,50 @@ const updateMemberStatus = async (req, res, next) => {
   }
 };
 
+// @desc    Update member profile (Edit Profile)
+// @route   PUT /api/dashboard/members/:id
+// @access  Private (Member / Admin)
+const updateMemberProfile = async (req, res, next) => {
+  try {
+    const member = await User.findById(req.params.id);
+    if (!member) {
+      res.status(404);
+      throw new Error('Member profile not found');
+    }
+
+    // Security check: member can only update own profile unless admin/super_admin
+    if (req.user.role === 'member' && req.user._id.toString() !== member._id.toString()) {
+      res.status(403);
+      throw new Error('Not authorized to edit this profile');
+    }
+
+    const fieldsToUpdate = [
+      'name', 'fatherHusbandName', 'dob', 'gender', 'maritalStatus', 'wifeHusbandName',
+      'childrenSon', 'childrenDaughter', 'educationalQualification', 'bloodGroup', 'aadhaarNumber',
+      'phone', 'email', 'homeAddressVill', 'po', 'ps', 'district', 'pin',
+      'gramPanchayat', 'devBlock', 'subDistrict', 'bcCspIdNo', 'ssa', 'bankName',
+      'linkBranchName', 'dateOfStartingCsp'
+    ];
+
+    fieldsToUpdate.forEach(field => {
+      if (req.body[field] !== undefined) {
+        member[field] = req.body[field];
+      }
+    });
+
+    const updatedUser = await member.save();
+    logRegistration(`Profile updated for member: ${updatedUser.name} (${updatedUser.email})`);
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: updatedUser
+    });
+  } catch (error) {
+    logError(`updateMemberProfile exception: ${error.message}`);
+    next(error);
+  }
+};
+
 // @desc    Delete a member
 // @route   DELETE /api/dashboard/members/:id
 // @access  Private (Admin/Super Admin)
@@ -278,6 +322,7 @@ module.exports = {
   getStats,
   getMembers,
   updateMemberStatus,
+  updateMemberProfile,
   deleteMember,
   getGrievances,
   getAllGrievances,

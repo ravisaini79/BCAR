@@ -21,6 +21,10 @@ export class DashboardService {
     return this.http.put(`${environment.apiUrl}/dashboard/members/${id}/status`, { status });
   }
 
+  updateMemberProfile(id: string, data: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/dashboard/members/${id}`, data);
+  }
+
   deleteMember(id: string): Observable<any> {
     return this.http.delete(`${environment.apiUrl}/dashboard/members/${id}`);
   }

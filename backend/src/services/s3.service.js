@@ -42,11 +42,11 @@ const uploadFile = async (fileBuffer, folder = 'temp', fileName = 'file', mimeTy
 
     await upload.done();
 
-    const publicUrl = `https://${BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/${key}`;
+    const mediaProxyUrl = `/api/media/${key}`;
 
     return {
-      url: publicUrl,
-      secure_url: publicUrl, // Backwards compatibility with existing frontend
+      url: mediaProxyUrl,
+      secure_url: mediaProxyUrl, // Backwards compatibility with existing frontend
       key: key,
       public_id: key, // Backwards compatibility alias
       bucket: BUCKET_NAME,

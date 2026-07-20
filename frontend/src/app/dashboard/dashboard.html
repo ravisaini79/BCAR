@@ -122,10 +122,10 @@
         <button class="topbar-btn" (click)="refreshAll()" pTooltip="Refresh data" tooltipPosition="bottom">
           <i class="pi pi-refresh"></i>
         </button>
-        <div class="topbar-user">
+        <div class="topbar-user" (click)="openEditProfile()" style="cursor:pointer;" pTooltip="Click to edit profile" tooltipPosition="bottom">
           <p-avatar [label]="userInitial" shape="circle" />
           <div class="topbar-user-info">
-            <span>{{ user.name }}</span>
+            <span>{{ user.name }} <i class="pi pi-user-edit" style="font-size:12px;margin-left:4px;color:#d4af37"></i></span>
             <small>{{ user.role | titlecase }}</small>
           </div>
         </div>
@@ -213,17 +213,6 @@
               <div class="stat-value">{{ stats.monthlyRegistrations || 0 }}</div>
               <div class="stat-label">This Month</div>
               <div class="stat-trend">Monthly count</div>
-            </div>
-          </div>
-
-          <div class="stat-card" (click)="navigate('notices')">
-            <div class="stat-icon" style="background: linear-gradient(135deg, #b8942a, #D4AF37)">
-              <i class="pi pi-bell"></i>
-            </div>
-            <div class="stat-body">
-              <div class="stat-value">{{ notices.length }}</div>
-              <div class="stat-label">Notices</div>
-              <div class="stat-trend">Published</div>
             </div>
           </div>
 
@@ -658,6 +647,9 @@
     </div>
 
     <div class="dialog-actions">
+      <button class="btn-primary" (click)="openEditProfile(selectedMember)">
+        <i class="pi pi-user-edit"></i> Edit Profile
+      </button>
       <button class="btn-success"
               *ngIf="selectedMember.status === 'pending' || selectedMember.status === 'Pending Approval'"
               (click)="confirmApprove(selectedMember); showViewDialog = false">
@@ -761,4 +753,136 @@
       <i class="pi pi-send"></i> {{ busy ? 'Submitting...' : 'Submit Grievance' }}
     </button>
   </ng-template>
+</p-dialog>
+
+
+<!-- ════════════════════ EDIT MEMBER PROFILE DIALOG ════════════════════ -->
+<p-dialog
+  header="Edit User Profile"
+  [visible]="showEditProfileDialog"
+  (visibleChange)="showEditProfileDialog = $event"
+  [modal]="true"
+  [style]="{width: '860px', maxWidth: '95vw'}"
+  [closable]="true">
+
+  <div class="dialog-form" *ngIf="editMemberData">
+    
+    <!-- Personal Details -->
+    <h4 class="form-section-title"><i class="pi pi-user"></i> Personal Information</h4>
+    <div class="form-grid-2col">
+      <div class="form-field">
+        <label>Full Name *</label>
+        <input pInputText [(ngModel)]="editMemberData.name" placeholder="Member Full Name" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Father / Husband Name</label>
+        <input pInputText [(ngModel)]="editMemberData.fatherHusbandName" placeholder="Father / Husband Name" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Aadhaar Number (12 Digits) *</label>
+        <input pInputText [(ngModel)]="editMemberData.aadhaarNumber" placeholder="12-digit Aadhaar Number" maxlength="12" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Date of Birth</label>
+        <input pInputText [(ngModel)]="editMemberData.dob" placeholder="DD/MM/YYYY" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Gender</label>
+        <p-select [options]="[ {label:'Male',value:'Male'}, {label:'Female',value:'Female'}, {label:'Other',value:'Other'} ]" [(ngModel)]="editMemberData.gender" optionLabel="label" optionValue="value" styleClass="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Marital Status</label>
+        <p-select [options]="[ {label:'Married',value:'Married'}, {label:'Unmarried',value:'Unmarried'} ]" [(ngModel)]="editMemberData.maritalStatus" optionLabel="label" optionValue="value" styleClass="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Blood Group</label>
+        <input pInputText [(ngModel)]="editMemberData.bloodGroup" placeholder="Blood Group (e.g. O+)" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Educational Qualification</label>
+        <input pInputText [(ngModel)]="editMemberData.educationalQualification" placeholder="Education" class="w-full" />
+      </div>
+    </div>
+
+    <!-- Contact Details -->
+    <h4 class="form-section-title" style="margin-top:20px;"><i class="pi pi-phone"></i> Contact Details</h4>
+    <div class="form-grid-2col">
+      <div class="form-field">
+        <label>Mobile Number *</label>
+        <input pInputText [(ngModel)]="editMemberData.phone" placeholder="10-digit Mobile Number" maxlength="10" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Email Address *</label>
+        <input pInputText [(ngModel)]="editMemberData.email" type="email" placeholder="Email Address" class="w-full" />
+      </div>
+    </div>
+
+    <!-- Address Details -->
+    <h4 class="form-section-title" style="margin-top:20px;"><i class="pi pi-map-marker"></i> Address Details</h4>
+    <div class="form-grid-2col">
+      <div class="form-field">
+        <label>Home Address / Village *</label>
+        <input pInputText [(ngModel)]="editMemberData.homeAddressVill" placeholder="Street / Village" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Post Office (P.O.)</label>
+        <input pInputText [(ngModel)]="editMemberData.po" placeholder="Post Office" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Police Station (P.S.)</label>
+        <input pInputText [(ngModel)]="editMemberData.ps" placeholder="Police Station" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>District *</label>
+        <input pInputText [(ngModel)]="editMemberData.district" placeholder="District" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>PIN Code</label>
+        <input pInputText [(ngModel)]="editMemberData.pin" placeholder="6-digit PIN Code" maxlength="6" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Gram Panchayat</label>
+        <input pInputText [(ngModel)]="editMemberData.gramPanchayat" placeholder="Gram Panchayat" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Dev Block</label>
+        <input pInputText [(ngModel)]="editMemberData.devBlock" placeholder="Dev Block" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Sub District</label>
+        <input pInputText [(ngModel)]="editMemberData.subDistrict" placeholder="Sub District" class="w-full" />
+      </div>
+    </div>
+
+    <!-- Professional Details -->
+    <h4 class="form-section-title" style="margin-top:20px;"><i class="pi pi-briefcase"></i> Professional / CSP Details</h4>
+    <div class="form-grid-2col">
+      <div class="form-field">
+        <label>BC / CSP ID No.</label>
+        <input pInputText [(ngModel)]="editMemberData.bcCspIdNo" placeholder="BC/CSP ID" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>SSA Code</label>
+        <input pInputText [(ngModel)]="editMemberData.ssa" placeholder="SSA Code" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Bank Name</label>
+        <input pInputText [(ngModel)]="editMemberData.bankName" placeholder="Bank Name" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Link Branch Name</label>
+        <input pInputText [(ngModel)]="editMemberData.linkBranchName" placeholder="Link Branch" class="w-full" />
+      </div>
+    </div>
+
+    <div class="dialog-actions" style="margin-top: 24px;">
+      <button class="btn-primary" [disabled]="editSubmitting" (click)="saveMemberProfile()">
+        <i class="pi pi-check"></i> {{ editSubmitting ? 'Saving...' : 'Save Profile Changes' }}
+      </button>
+      <button class="btn-secondary" (click)="showEditProfileDialog = false">
+        <i class="pi pi-times"></i> Cancel
+      </button>
+    </div>
+
+  </div>
 </p-dialog>

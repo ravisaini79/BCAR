@@ -1,120 +1,326 @@
 <app-header></app-header>
 
-<!-- Details View Container -->
-<div class="details-section" *ngIf="article() && !loading()">
-  <div class="details-container">
+<!-- Main Portal Container -->
+<article class="news-portal-page" *ngIf="article() && !loading()">
+  
+  <!-- Breadcrumb Navigation Bar -->
+  <nav class="portal-breadcrumb-strip" aria-label="Breadcrumb">
+    <div class="portal-container">
+      <div class="breadcrumb-inner">
+        <ol class="breadcrumb-list">
+          <li>
+            <a routerLink="/"><i class="pi pi-home"></i> Home</a>
+          </li>
+          <li class="separator"><i class="pi pi-chevron-right"></i></li>
+          <li>
+            <a routerLink="/news">Latest News</a>
+          </li>
+          <li class="separator"><i class="pi pi-chevron-right"></i></li>
+          <li class="active-crumb" aria-current="page">{{ displayTitle() }}</li>
+        </ol>
 
-    <!-- Back Button -->
-    <button class="back-link" (click)="goBack()">
-      <i class="pi pi-arrow-left"></i> Back to News
-    </button>
+        <button class="back-hub-btn" (click)="goBack()">
+          <i class="pi pi-arrow-left"></i> Back to News
+        </button>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Article Header -->
-    <header class="article-header">
-      <div class="header-meta-top">
-        <span class="article-tag" [class]="article()!.category">
+  <div class="portal-container">
+
+    <!-- News Article Header Meta -->
+    <header class="article-portal-header">
+      <div class="header-badges">
+        <span class="category-badge" [class]="article()!.category">
           {{ getTag(article()!.category) }}
         </span>
         <span *ngIf="article()!.pinned" class="pinned-badge">
-          <i class="pi pi-bookmark-fill"></i> Pinned Update
+          <i class="pi pi-bookmark-fill"></i> Pinned Notice
         </span>
       </div>
-      <h1>{{ article()!.title }}</h1>
-      <div class="article-meta">
-        <time><i class="pi pi-calendar"></i> {{ article()!.publishDate | date: 'dd MMMM yyyy' }}</time>
+
+      <h1 class="portal-article-title">{{ displayTitle() }}</h1>
+
+      <div class="header-author-meta">
+        <div class="author-info">
+          <div class="author-avatar">
+            <i class="pi pi-building"></i>
+          </div>
+          <div class="author-details">
+            <span class="author-name">BCAR Nodal Office</span>
+            <span class="author-role">State Executive Committee</span>
+          </div>
+        </div>
+
+        <div class="meta-divider"></div>
+
+        <div class="meta-stats">
+          <div class="stat-pill">
+            <i class="pi pi-calendar"></i>
+            <span>{{ article()!.publishDate | date: 'dd MMMM yyyy' }}</span>
+          </div>
+          <div class="stat-pill">
+            <i class="pi pi-clock"></i>
+            <span>{{ getReadingTime(article()!.fullDescription || article()!.shortDescription) }}</span>
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- Large Banner Image -->
-    <div class="article-image-box" *ngIf="article()!.featuredImage?.secure_url">
-      <img [src]="article()!.featuredImage.secure_url" [alt]="article()!.title" class="banner-img" />
-    </div>
-
-    <!-- Short Description Box -->
-    <div class="article-summary" *ngIf="article()!.shortDescription">
-      <p>{{ article()!.shortDescription }}</p>
-    </div>
-
-    <!-- Full HTML Content -->
-    <div class="article-body" [innerHTML]="article()!.fullDescription"></div>
-
-    <!-- Share Buttons Row -->
-    <div class="share-section">
-      <h4>Share this Article</h4>
-      <div class="share-buttons">
-        <a [href]="getShareLink('whatsapp')" target="_blank" class="share-btn whatsapp" rel="noopener noreferrer">
-          <i class="pi pi-whatsapp"></i> WhatsApp
-        </a>
-        <a [href]="getShareLink('facebook')" target="_blank" class="share-btn facebook" rel="noopener noreferrer">
-          <i class="pi pi-facebook"></i> Facebook
-        </a>
-        <a [href]="getShareLink('twitter')" target="_blank" class="share-btn twitter" rel="noopener noreferrer">
-          <i class="pi pi-twitter-x"></i> Twitter / X
-        </a>
+    <!-- 1. Hero Section (16:9 Image Banner with Gradient Overlay) -->
+    <div class="portal-hero-banner" *ngIf="article()!.featuredImage || getImageUrl(article())">
+      <div class="hero-image-wrap">
+        <img 
+          [src]="getImageUrl(article())" 
+          [alt]="displayTitle()" 
+          class="portal-hero-img" 
+          loading="eager"
+          (error)="onImageError($event)"
+        />
+        <div class="hero-gradient-overlay"></div>
+        <span class="hero-image-caption" *ngIf="article()!.title">
+          <i class="pi pi-camera"></i> Official Release Banner
+        </span>
       </div>
     </div>
 
-    <!-- Prev / Next Navigation Row -->
-    <div class="prev-next-nav">
-      <button class="nav-btn prev" [disabled]="!prevArticle()" (click)="navigateToArticle(prevArticle()?.slug)">
-        <i class="pi pi-arrow-left"></i>
-        <div class="btn-lbl" *ngIf="prevArticle()">
-          <span>Previous Article</span>
-          <strong>{{ prevArticle()?.title }}</strong>
-        </div>
-        <div class="btn-lbl" *ngIf="!prevArticle()">
-          <span>No Previous Article</span>
-        </div>
-      </button>
+    <!-- 4. 70/30 Desktop Layout Grid -->
+    <div class="portal-grid-layout">
+      
+      <!-- 7. Desktop Sticky Left Floating Share Bar + Article Column -->
+      <div class="portal-main-column">
+        
+        <div class="article-body-wrapper">
+          
+          <!-- Sticky Left Floating Share Bar (Desktop) -->
+          <aside class="sticky-share-bar-desktop">
+            <span class="share-label">SHARE</span>
+            <a [href]="getShareLink('whatsapp')" target="_blank" class="share-icon-btn whatsapp" title="Share on WhatsApp" rel="noopener noreferrer">
+              <i class="pi pi-whatsapp"></i>
+            </a>
+            <a [href]="getShareLink('facebook')" target="_blank" class="share-icon-btn facebook" title="Share on Facebook" rel="noopener noreferrer">
+              <i class="pi pi-facebook"></i>
+            </a>
+            <a [href]="getShareLink('twitter')" target="_blank" class="share-icon-btn twitter" title="Share on Twitter/X" rel="noopener noreferrer">
+              <i class="pi pi-twitter-x"></i>
+            </a>
+            <a [href]="getShareLink('linkedin')" target="_blank" class="share-icon-btn linkedin" title="Share on LinkedIn" rel="noopener noreferrer">
+              <i class="pi pi-linkedin"></i>
+            </a>
+            <button class="share-icon-btn copy" (click)="copyLink()" title="Copy Link">
+              <i class="pi pi-link"></i>
+            </button>
+          </aside>
 
-      <button class="nav-btn next" [disabled]="!nextArticle()" (click)="navigateToArticle(nextArticle()?.slug)">
-        <div class="btn-lbl" *ngIf="nextArticle()">
-          <span>Next Article</span>
-          <strong>{{ nextArticle()?.title }}</strong>
+          <!-- Main Article Container -->
+          <div class="article-text-container">
+
+            <!-- Executive Summary Callout Box -->
+            <div class="executive-summary-card" *ngIf="article()!.shortDescription">
+              <div class="summary-icon-box">
+                <i class="pi pi-info-circle"></i>
+              </div>
+              <div class="summary-body">
+                <strong class="summary-heading">EXECUTIVE SUMMARY</strong>
+                <p class="summary-text">{{ article()!.shortDescription }}</p>
+              </div>
+            </div>
+
+            <!-- 3. Article Body Content with Rich HTML, Responsive Tables & Images -->
+            <div class="portal-rich-content" [innerHTML]="cleanFullDescription()"></div>
+
+            <!-- Mobile Social Share Bar -->
+            <div class="mobile-share-bar">
+              <span class="mobile-share-title">Share this article:</span>
+              <div class="mobile-share-buttons">
+                <a [href]="getShareLink('whatsapp')" target="_blank" class="m-share-btn whatsapp" rel="noopener noreferrer">
+                  <i class="pi pi-whatsapp"></i> WhatsApp
+                </a>
+                <a [href]="getShareLink('facebook')" target="_blank" class="m-share-btn facebook" rel="noopener noreferrer">
+                  <i class="pi pi-facebook"></i> Facebook
+                </a>
+                <a [href]="getShareLink('twitter')" target="_blank" class="m-share-btn twitter" rel="noopener noreferrer">
+                  <i class="pi pi-twitter-x"></i> X
+                </a>
+                <a [href]="getShareLink('linkedin')" target="_blank" class="m-share-btn linkedin" rel="noopener noreferrer">
+                  <i class="pi pi-linkedin"></i> LinkedIn
+                </a>
+                <button class="m-share-btn copy" (click)="copyLink()">
+                  <i class="pi pi-link"></i> {{ copied() ? 'Copied' : 'Copy' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- 8. Navigation (Previous & Next Article Buttons) -->
+            <nav class="article-pagination-nav" *ngIf="prevArticle() || nextArticle()">
+              <button 
+                class="pagination-card prev" 
+                *ngIf="prevArticle()" 
+                (click)="navigateToArticle(prevArticle()?.slug)"
+              >
+                <i class="pi pi-arrow-left nav-icon"></i>
+                <div class="nav-text">
+                  <span class="nav-direction">Previous Announcement</span>
+                  <strong class="nav-article-title">{{ prevArticle()?.title }}</strong>
+                </div>
+              </button>
+
+              <button 
+                class="pagination-card next" 
+                *ngIf="nextArticle()" 
+                (click)="navigateToArticle(nextArticle()?.slug)"
+              >
+                <div class="nav-text">
+                  <span class="nav-direction">Next Announcement</span>
+                  <strong class="nav-article-title">{{ nextArticle()?.title }}</strong>
+                </div>
+                <i class="pi pi-arrow-right nav-icon"></i>
+              </button>
+            </nav>
+
+          </div>
+
         </div>
-        <div class="btn-lbl" *ngIf="!nextArticle()">
-          <span>No Next Article</span>
+
+      </div>
+
+      <!-- Right Sidebar Column (30%) -->
+      <aside class="portal-sidebar-column">
+        
+        <!-- Sidebar Widget 1: Latest News / Recent Posts -->
+        <div class="sidebar-card">
+          <div class="widget-header">
+            <h3><i class="pi pi-bolt"></i> Latest Announcements</h3>
+          </div>
+          <div class="recent-posts-list">
+            @for (post of recentPosts(); track post._id) {
+              <div class="post-item-mini" (click)="navigateToArticle(post.slug)">
+                <div class="post-mini-thumb">
+                  <img [src]="getImageUrl(post)" [alt]="post.title" loading="lazy" (error)="onImageError($event)">
+                </div>
+                <div class="post-mini-info">
+                  <span class="mini-date"><i class="pi pi-calendar"></i> {{ post.publishDate | date:'dd MMM yyyy' }}</span>
+                  <h4 class="mini-title">{{ post.title }}</h4>
+                </div>
+              </div>
+            }
+          </div>
         </div>
-        <i class="pi pi-arrow-right"></i>
-      </button>
+
+        <!-- Sidebar Widget 2: Popular Categories -->
+        <div class="sidebar-card">
+          <div class="widget-header">
+            <h3><i class="pi pi-folder"></i> News Categories</h3>
+          </div>
+          <div class="categories-list">
+            @for (cat of categories(); track cat.key) {
+              <div class="category-list-item" (click)="filterCategory(cat.key)">
+                <span class="cat-name"><i class="pi {{ cat.icon }}"></i> {{ cat.name }}</span>
+                <span class="cat-count-badge">{{ cat.count }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Sidebar Widget 3: Official Verification Notice -->
+        <div class="sidebar-card notice-card">
+          <div class="notice-card-header">
+            <i class="pi pi-shield notice-shield-icon"></i>
+            <div>
+              <h4 class="notice-card-title">Official Verification</h4>
+              <span class="notice-card-sub">BCAR Nodal Secretariat</span>
+            </div>
+          </div>
+          <p class="notice-card-desc">
+            All announcements published on this portal are authorized by the Business Correspondent Association Rajasthan under Union Registration No. TU/2026/14/132549.
+          </p>
+          <a routerLink="/pages/contact" class="notice-contact-btn">
+            Contact Nodal Desk <i class="pi pi-arrow-right"></i>
+          </a>
+        </div>
+
+      </aside>
+
     </div>
 
-    <!-- Related News Section -->
-    <div class="related-section" *ngIf="relatedArticles().length > 0">
-      <h3>Related News</h3>
-      <div class="related-grid">
+    <!-- 5. Related News Section (Below Article) -->
+    <section class="portal-related-section" *ngIf="relatedArticles().length > 0">
+      <div class="related-section-header">
+        <h2>Related <em>Announcements</em></h2>
+        <a routerLink="/news" class="view-all-link">View All News <i class="pi pi-arrow-right"></i></a>
+      </div>
+
+      <div class="related-cards-grid">
         @for (rel of relatedArticles(); track rel._id) {
-          <div class="related-card" (click)="navigateToArticle(rel.slug)">
-            <div class="rel-img-box" *ngIf="rel.featuredImage?.secure_url">
-              <img [src]="rel.featuredImage.secure_url" [alt]="rel.title" />
+          <div class="related-news-card" (click)="navigateToArticle(rel.slug)">
+            <div class="rel-card-img-wrap">
+              <img [src]="getImageUrl(rel)" [alt]="rel.title" loading="lazy" (error)="onImageError($event)">
+              <span class="rel-card-tag" [class]="rel.category">{{ getTag(rel.category) }}</span>
             </div>
-            <div class="rel-content">
-              <time>{{ rel.publishDate | date:'dd MMM yyyy' }}</time>
-              <h4>{{ rel.title }}</h4>
+
+            <div class="rel-card-body">
+              <div class="rel-card-meta">
+                <i class="pi pi-calendar"></i>
+                <span>{{ rel.publishDate | date:'dd MMM yyyy' }}</span>
+              </div>
+
+              <h3 class="rel-card-title">{{ rel.title }}</h3>
+              <p class="rel-card-excerpt">{{ rel.shortDescription }}</p>
+
+              <div class="rel-card-footer">
+                <span class="rel-read-btn">
+                  Read Article <i class="pi pi-arrow-right"></i>
+                </span>
+              </div>
             </div>
           </div>
         }
       </div>
+    </section>
+
+  </div>
+</article>
+
+<!-- 9. Loading State (Animated Skeleton Loader) -->
+<div class="news-portal-page" *ngIf="loading()">
+  <div class="portal-container" style="padding-top: 130px; padding-bottom: 90px;">
+    <p-skeleton width="300px" height="20px" styleClass="mb-4" />
+    <p-skeleton width="80%" height="44px" styleClass="mb-3" />
+    <p-skeleton width="40%" height="20px" styleClass="mb-4" />
+    
+    <div style="margin: 30px 0;">
+      <p-skeleton width="100%" height="420px" borderRadius="16px" />
     </div>
 
+    <div class="portal-grid-layout" style="margin-top: 40px;">
+      <div>
+        <p-skeleton width="100%" height="100px" styleClass="mb-4" borderRadius="12px" />
+        <p-skeleton width="100%" height="20px" styleClass="mb-2" />
+        <p-skeleton width="95%" height="20px" styleClass="mb-2" />
+        <p-skeleton width="90%" height="20px" styleClass="mb-2" />
+        <p-skeleton width="70%" height="20px" styleClass="mb-4" />
+      </div>
+      <div>
+        <p-skeleton width="100%" height="280px" borderRadius="16px" styleClass="mb-4" />
+        <p-skeleton width="100%" height="200px" borderRadius="16px" />
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- Loading State -->
-<div class="details-section" *ngIf="loading()">
-  <div class="details-container" style="text-align: center; padding: 100px 0;">
-    <i class="pi pi-spin pi-spinner" style="font-size: 40px; color: #082B5C; margin-bottom: 20px;"></i>
-    <p style="color: #64748B;">Loading article details...</p>
-  </div>
-</div>
-
-<!-- Error State -->
-<div class="details-section" *ngIf="error() && !loading()">
-  <div class="details-container" style="text-align: center; padding: 100px 0; color: #64748B;">
-    <i class="pi pi-exclamation-circle" style="font-size: 56px; color: #cbd5e1; display: block; margin-bottom: 20px;"></i>
-    <h3>Article Not Found</h3>
-    <p>The news article you are looking for does not exist or may have been removed.</p>
-    <button class="btn-back-home" (click)="goBack()">Return to News</button>
+<!-- 10. Empty State (Article Not Found) -->
+<div class="news-portal-page" *ngIf="error() && !loading()">
+  <div class="portal-container" style="padding-top: 140px; padding-bottom: 100px; text-align: center;">
+    <div class="empty-state-card">
+      <div class="empty-state-icon">
+        <i class="pi pi-file-excel"></i>
+      </div>
+      <h2>News Article Not Found</h2>
+      <p>The announcement or circular you are looking for does not exist, may have been renamed, or was removed.</p>
+      <button class="btn-return-news" (click)="goBack()">
+        <i class="pi pi-arrow-left"></i> Back to Latest News
+      </button>
+    </div>
   </div>
 </div>
 

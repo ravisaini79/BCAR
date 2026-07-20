@@ -52,7 +52,8 @@ export class RegisterBusinessService {
       childrenDaughter:         [0,  [Validators.min(0)]],
       educationalQualification: [''],
       bloodGroup:               [''],
-      aadhaarNumber:            [''],
+      // Mandatory Aadhaar Number (12 digits)
+      aadhaarNumber:            ['', [Validators.required, CustomValidators.aadhaarPattern()]],
       // Contact
       email:    ['', [Validators.required, Validators.email]],
       phone:    ['', [Validators.required, CustomValidators.phonePattern()]],
@@ -76,13 +77,14 @@ export class RegisterBusinessService {
       interestedToJoin:       ['YES', Validators.required],
       // Declaration
       declarationAccepted: [false, Validators.requiredTrue],
-      // Documents — optional during testing (remove `null` validators to re-enable)
-      profileImage:      [null],
-      photograph:        [null],
-      aadhaarCard:       [null],  // Aadhaar Front Side
-      aadhaarBack:       [null],  // Aadhaar Back Side
-      panCard:           [null],
-      bankBcCertificate: [null],
+      
+      // Mandatory Document Attachments
+      profileImage:      [null, Validators.required],
+      photograph:        [null, Validators.required],
+      aadhaarCard:       [null, Validators.required],
+      aadhaarBack:       [null],
+      panCard:           [null, Validators.required],
+      bankBcCertificate: [null, Validators.required],
     });
 
     return form;
@@ -96,7 +98,7 @@ export class RegisterBusinessService {
       if (!raw) return;
       const parsed = JSON.parse(raw);
 
-      // Patch only text fields; files need fresh selection
+      // Patch text fields
       const textData = { ...parsed };
       (['profileImage', 'photograph', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(k => {
         delete textData[k];

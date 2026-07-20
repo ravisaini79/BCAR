@@ -31,7 +31,7 @@ import { environment } from '../../environments/environment';
 
         <p class="success-subtitle">
           Your BCAR membership application has been submitted and is now under review by our team.
-          A confirmation email along with your ₹600 registration receipt has been sent to your registered email.
+          A confirmation email along with your ₹700 registration receipt (₹100 Enrollment + ₹600 Annual Membership) has been sent to your registered email.
         </p>
 
         <!-- Dynamic Registration Details -->
@@ -47,7 +47,7 @@ import { environment } from '../../environments/environment';
           </div>
           <div class="detail-row">
             <span class="detail-lbl">Membership Fee Paid</span>
-            <span class="detail-val">₹600.00</span>
+            <span class="detail-val">₹700.00 (Paid)</span>
           </div>
           <div class="detail-row">
             <span class="detail-lbl">Verification Status</span>

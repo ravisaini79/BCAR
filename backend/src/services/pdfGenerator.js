@@ -103,12 +103,13 @@ const generateReceiptPDF = (member) => {
       const rows = [
         { label: 'Registration Number', val: member.registrationNumber || 'Pending' },
         { label: 'Member Name', val: member.name || '' },
+        { label: 'Aadhaar Number', val: member.aadhaarNumber || 'N/A' },
         { label: 'Father / Husband Name', val: member.fatherHusbandName || 'N/A' },
         { label: 'Mobile Number', val: member.phone || '' },
         { label: 'Email Address', val: member.email || '' },
         { label: 'District', val: member.district || '' },
         { label: 'Membership Type', val: member.interestedToJoin === 'YES' ? 'Regular Member' : 'Associate' },
-        { label: 'Registration Fee', val: `Rs. ${member.registrationFee || 600}.00` },
+        { label: 'Total Fee Paid', val: `Rs. ${member.registrationFee || 700}.00 (Rs. 100 Reg. + Rs. 600 Membership)` },
         { label: 'Payment Status', val: member.paymentStatus || 'Paid', isStatus: true },
         { label: 'Payment Mode', val: member.paymentMode || 'Online / UPI' },
         { label: 'Transaction ID', val: member.transactionId || 'BCAR-TXN-' + Date.now().toString().substring(5) }

@@ -131,9 +131,14 @@
               </div>
 
               <div class="input-group">
-                <label class="field-label">Aadhaar Number</label>
+                <label class="field-label">Aadhaar Number <span class="required">*</span></label>
                 <input pInputText formControlName="aadhaarNumber" placeholder="12-digit Aadhaar number"
-                       maxlength="12" class="w-full" />
+                       maxlength="12" class="w-full" [class.p-invalid]="hasError('aadhaarNumber')" />
+                @if (hasError('aadhaarNumber', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Aadhaar Number is mandatory.</small>
+                } @else if (hasError('aadhaarNumber', 'aadhaarInvalid')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Enter a valid 12-digit Aadhaar Number.</small>
+                }
               </div>
 
             </div>
@@ -337,21 +342,22 @@
         <!-- ========== SECTION 6: DOCUMENT UPLOADS ========== -->
         <div class="form-section-card">
           <div class="section-card-header">
-            <h3><i class="pi pi-file-arrow-up"></i> Supporting Document Uploads</h3>
+            <h3><i class="pi pi-file-arrow-up"></i> Supporting Document Uploads <span class="required">*</span></h3>
           </div>
           <div class="section-card-body">
             <p class="step-guide-text">
-              Upload clear scanned copies of the following documents. Accepted formats: PDF, JPG, PNG (max 5 MB each).
-              <p-tag value="Optional during testing" severity="warn" styleClass="ml-2" />
+              Upload clear scanned copies of the following mandatory documents. Accepted formats: PDF, JPG, PNG (max 5 MB each).
+              <p-tag value="Mandatory Attachments" severity="danger" styleClass="ml-2" />
             </p>
 
             <div class="document-uploads-grid">
 
               <!-- Aadhaar Card (Front Side) -->
               <div class="doc-upload-item">
-                <label class="doc-label">Aadhaar Card (Front Side)</label>
+                <label class="doc-label">Aadhaar Card (Front Side) <span class="required">*</span></label>
                 <div class="upload-zone"
                      [class.drag-over]="srv.dragOverField() === 'aadhaarCard'"
+                     [class.invalid-control]="hasError('aadhaarCard')"
                      (dragover)="onDragOver($event, 'aadhaarCard')"
                      (dragleave)="onDragLeave($event)"
                      (drop)="onDrop($event, 'aadhaarCard')"
@@ -389,6 +395,9 @@
                     </div>
                   }
                 </div>
+                @if (hasError('aadhaarCard', 'required')) {
+                  <small class="validation-error" style="margin-top:6px;display:block;"><i class="pi pi-exclamation-circle"></i> Aadhaar Card Front attachment is mandatory.</small>
+                }
               </div>
 
               <!-- Aadhaar Card (Back Side) -->
@@ -437,9 +446,10 @@
 
               <!-- PAN Card -->
               <div class="doc-upload-item">
-                <label class="doc-label">PAN Card</label>
+                <label class="doc-label">PAN Card <span class="required">*</span></label>
                 <div class="upload-zone"
                      [class.drag-over]="srv.dragOverField() === 'panCard'"
+                     [class.invalid-control]="hasError('panCard')"
                      (dragover)="onDragOver($event, 'panCard')"
                      (dragleave)="onDragLeave($event)"
                      (drop)="onDrop($event, 'panCard')"
@@ -477,13 +487,17 @@
                     </div>
                   }
                 </div>
+                @if (hasError('panCard', 'required')) {
+                  <small class="validation-error" style="margin-top:6px;display:block;"><i class="pi pi-exclamation-circle"></i> PAN Card attachment is mandatory.</small>
+                }
               </div>
 
               <!-- Passport Photograph -->
               <div class="doc-upload-item">
-                <label class="doc-label">Passport Photograph</label>
+                <label class="doc-label">Passport Photograph <span class="required">*</span></label>
                 <div class="upload-zone"
                      [class.drag-over]="srv.dragOverField() === 'photograph'"
+                     [class.invalid-control]="hasError('photograph')"
                      (dragover)="onDragOver($event, 'photograph')"
                      (dragleave)="onDragLeave($event)"
                      (drop)="onDrop($event, 'photograph')"
@@ -525,13 +539,17 @@
                     </div>
                   }
                 </div>
+                @if (hasError('photograph', 'required')) {
+                  <small class="validation-error" style="margin-top:6px;display:block;"><i class="pi pi-exclamation-circle"></i> Passport Photograph attachment is mandatory.</small>
+                }
               </div>
 
               <!-- Bank BC Certificate -->
               <div class="doc-upload-item">
-                <label class="doc-label">Bank BC Certificate</label>
+                <label class="doc-label">Bank BC Certificate <span class="required">*</span></label>
                 <div class="upload-zone"
                      [class.drag-over]="srv.dragOverField() === 'bankBcCertificate'"
+                     [class.invalid-control]="hasError('bankBcCertificate')"
                      (dragover)="onDragOver($event, 'bankBcCertificate')"
                      (dragleave)="onDragLeave($event)"
                      (drop)="onDrop($event, 'bankBcCertificate')"
@@ -569,6 +587,9 @@
                     </div>
                   }
                 </div>
+                @if (hasError('bankBcCertificate', 'required')) {
+                  <small class="validation-error" style="margin-top:6px;display:block;"><i class="pi pi-exclamation-circle"></i> Bank BC Certificate attachment is mandatory.</small>
+                }
               </div>
 
             </div><!-- /document-uploads-grid -->

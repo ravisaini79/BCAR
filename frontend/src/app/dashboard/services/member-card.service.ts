@@ -8,8 +8,8 @@ export class MemberCardService {
    * Design features:
    * - Deep metallic navy radial gradients
    * - Double-ring gold border frames
-   * - Circular clipped profile photo with a double gold-and-white frame
-   * - Synthetic realistically-rendered QR Code
+   * - Large framed profile photo with double gold-and-white border
+   * - Official BCAR Verified Seal Emblem (No QR Code)
    * - Golden gradient badges for Bank Mitra
    * - Structured grid partition lines for detail values
    * - T&C back page with golden star bullet points and centered watermark seal
@@ -166,22 +166,27 @@ export class MemberCardService {
     ctx.fillText('✦  CSP MEMBERSHIP CARD', badgeX + badgeW / 2, badgeY + 17);
     ctx.textAlign = 'left';
 
-    // ── 2. Member Photo (y: 130–310) ──
+    // ── 2. Member Profile Photo (y: 130–300) ──
     const photoX = 50;
-    const photoY = 135;
-    const photoW = 125;
-    const photoH = 155;
+    const photoY = 130;
+    const photoW = 140;
+    const photoH = 170;
 
     // Premium outer gold & inner white frame borders
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+    ctx.shadowBlur = 10;
     ctx.strokeStyle = '#D4AF37';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(photoX - 3, photoY - 3, photoW + 6, photoH + 6);
+    ctx.lineWidth = 3.5;
+    ctx.strokeRect(photoX - 3.5, photoY - 3.5, photoW + 7, photoH + 7);
+    ctx.restore();
+
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(photoX - 1, photoY - 1, photoW + 2, photoH + 2);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(photoX - 1.5, photoY - 1.5, photoW + 3, photoH + 3);
 
     let photoLoaded = false;
-    const photoUrl = member.profilePhoto?.secure_url || member.photograph?.secure_url;
+    const photoUrl = this.getProfilePhotoUrl(member);
     if (photoUrl) {
       try {
         const img = await this.loadImage(photoUrl);
@@ -193,32 +198,32 @@ export class MemberCardService {
     }
 
     if (!photoLoaded) {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
       ctx.fillRect(photoX, photoY, photoW, photoH);
       this.drawPersonIcon(ctx, photoX + photoW / 2, photoY + photoH / 2);
     }
 
-    // ── 3. Profile Main details next to photo ──
-    const detailsX = 200;
+    // ── 3. Profile Main Details Next to Photo ──
+    const detailsX = 215;
 
     // Member Name
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 32px sans-serif';
-    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), detailsX, 178);
+    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), detailsX, 175);
 
     // Membership Number
     ctx.fillStyle = '#D4AF37';
-    ctx.font = 'bold 18.5px monospace';
-    ctx.fillText(member.membershipNo || 'BCAR/RJ/0000', detailsX, 210);
+    ctx.font = 'bold 19px monospace';
+    ctx.fillText(member.membershipNo || 'BCAR/RJ/0000', detailsX, 208);
 
     // Registration Metadata
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
     ctx.font = '12px monospace';
-    ctx.fillText(`Reg Number: ${member.registrationNumber || 'N/A'}`, detailsX, 230);
+    ctx.fillText(`Reg Number: ${member.registrationNumber || 'N/A'}`, detailsX, 228);
 
     // Gold Gradient Badge for "BANK MITRA"
     const bmBadgeX = detailsX;
-    const bmBadgeY = 248;
+    const bmBadgeY = 246;
     const bmGrad = ctx.createLinearGradient(bmBadgeX, bmBadgeY, bmBadgeX + 130, bmBadgeY);
     bmGrad.addColorStop(0, '#D4AF37');
     bmGrad.addColorStop(1, '#B8942A');
@@ -230,12 +235,42 @@ export class MemberCardService {
     ctx.font = 'bold 11px sans-serif';
     ctx.fillText('✦  BANK MITRA', bmBadgeX + 15, bmBadgeY + 17);
 
-    // Draw a real synthetic QR code (highly realistic) instead of a plain box
-    const qrX = w - 150;
-    const qrY = 135;
-    this.drawSyntheticQRCode(ctx, qrX, qrY, 100);
+    // Top-Right Official BCAR Verified Emblem Badge (NO QR Code)
+    const sealX = w - 165;
+    const sealY = 130;
+    const sealSize = 115;
 
-    // ── 4. Two-Column Detailed Information Grid with partition underlines (y: 310–495) ──
+    const sealGrad = ctx.createRadialGradient(sealX + sealSize / 2, sealY + sealSize / 2, 10, sealX + sealSize / 2, sealY + sealSize / 2, sealSize / 2);
+    sealGrad.addColorStop(0, 'rgba(212, 175, 55, 0.22)');
+    sealGrad.addColorStop(1, 'rgba(212, 175, 55, 0.04)');
+
+    ctx.beginPath();
+    ctx.arc(sealX + sealSize / 2, sealY + sealSize / 2, sealSize / 2, 0, Math.PI * 2);
+    ctx.fillStyle = sealGrad;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(sealX + sealSize / 2, sealY + sealSize / 2, sealSize / 2 - 8, 0, Math.PI * 2);
+    ctx.strokeStyle = '#D4AF37';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = '#D4AF37';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('✓', sealX + sealSize / 2, sealY + 46);
+
+    ctx.font = 'bold 10px sans-serif';
+    ctx.fillText('VERIFIED', sealX + sealSize / 2, sealY + 66);
+    ctx.font = '9px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('BCAR MEMBER', sealX + sealSize / 2, sealY + 81);
+    ctx.textAlign = 'left';
+
+    // ── 4. Two-Column Detailed Information Grid with partition underlines (y: 325–495) ──
     const leftColX = 50;
     const rightColX = 525;
     let gridLeftY = 330;
@@ -332,8 +367,6 @@ export class MemberCardService {
     ctx.fillText('Authorized Signatory', w - 50, bottomY + 18);
     ctx.textAlign = 'left';
 
-    // Thin bottom gold line removed
-
     // Footer copyright bar text
     ctx.fillStyle = 'rgba(212, 175, 55, 0.75)';
     ctx.font = 'bold 11px sans-serif';
@@ -341,7 +374,7 @@ export class MemberCardService {
     ctx.fillText('BCAR  ·  Member Portal  ·  Business Correspondent Association Rajasthan', w / 2, h - 16);
     ctx.textAlign = 'left';
 
-    // Subtle center watermark logo graphic (shield watermarked in center)
+    // Subtle center watermark logo graphic
     ctx.save();
     ctx.globalAlpha = 0.015;
     ctx.fillStyle = '#ffffff';
@@ -444,73 +477,28 @@ export class MemberCardService {
     ctx.fillText('Reg. No. TU/2026/14/132549,', w / 2, contactStartY + 48);
     ctx.fillText('Rajasthan, India', w / 2, contactStartY + 70);
 
-    // Bottom Gold Stripe removed
-
     ctx.textAlign = 'left';
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // SYNTHETIC QR CODE GENERATOR
+  // PROFILE IMAGE & UTILITY HELPERS
   // ════════════════════════════════════════════════════════════════════
 
-  /**
-   * Generates a fully realistic QR code graphic using canvas APIs.
-   */
-  private drawSyntheticQRCode(ctx: CanvasRenderingContext2D, x: number, y: number, size: number): void {
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x, y, size, size);
+  private getProfilePhotoUrl(member: any): string | null {
+    if (!member) return null;
+    let url = member.profilePhoto?.secure_url || member.photograph?.secure_url
+           || member.profilePhoto?.url || member.photograph?.url
+           || (typeof member.profilePhoto === 'string' && member.profilePhoto.trim() ? member.profilePhoto : null)
+           || (typeof member.photograph === 'string' && member.photograph.trim() ? member.photograph : null)
+           || (typeof member.profileImage === 'string' && member.profileImage.trim() ? member.profileImage : null)
+           || member.profileImage?.secure_url || member.profileImage?.url;
 
-    ctx.fillStyle = '#06162d'; // Navy blue QR dots
-
-    // Helper to draw QR alignment boxes
-    const drawFinderPattern = (px: number, py: number, sqSize: number) => {
-      ctx.fillRect(px, py, sqSize, sqSize);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(px + 4, py + 4, sqSize - 8, sqSize - 8);
-      ctx.fillStyle = '#06162d';
-      ctx.fillRect(px + 8, py + 8, sqSize - 16, sqSize - 16);
-    };
-
-    // Draw the 3 finder squares in corners
-    const finderSize = 28;
-    drawFinderPattern(x + 4, y + 4, finderSize); // Top-left
-    drawFinderPattern(x + size - finderSize - 4, y + 4, finderSize); // Top-right
-    drawFinderPattern(x + 4, y + size - finderSize - 4, finderSize); // Bottom-left
-
-    // Draw small alignment square (bottom-right)
-    ctx.fillRect(x + size - 16, y + size - 16, 8, 8);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x + size - 14, y + size - 14, 4, 4);
-    ctx.fillStyle = '#06162d';
-    ctx.fillRect(x + size - 13, y + size - 13, 2, 2);
-
-    // Render random data blocks/dots in the middle QR grid
-    const blockSize = 4;
-    const gridCount = Math.floor(size / blockSize);
-
-    for (let r = 0; r < gridCount; r++) {
-      for (let c = 0; c < gridCount; c++) {
-        // Skip finder pattern zones
-        const isNearTopLeft = r < 8 && c < 8;
-        const isNearTopRight = r < 8 && c >= gridCount - 8;
-        const isNearBottomLeft = r >= gridCount - 8 && c < 8;
-        const isNearBottomRight = r >= gridCount - 5 && c >= gridCount - 5;
-
-        if (isNearTopLeft || isNearTopRight || isNearBottomLeft || isNearBottomRight) {
-          continue;
-        }
-
-        // Random dot layout
-        if (Math.random() > 0.45) {
-          ctx.fillRect(x + c * blockSize, y + r * blockSize, blockSize, blockSize);
-        }
-      }
+    if (!url) return null;
+    if (url.startsWith('data:') || url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
     }
+    return url.startsWith('/') ? url : `/${url}`;
   }
-
-  // ════════════════════════════════════════════════════════════════════
-  // DRAWING / UTILITY HELPERS
-  // ════════════════════════════════════════════════════════════════════
 
   private loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {

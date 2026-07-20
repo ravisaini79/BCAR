@@ -28,7 +28,7 @@
     <div class="gallery-card" *ngFor="let item of paginatedItems()">
       <!-- Card Image -->
       <div class="card-img-wrapper">
-        <img [src]="item.image?.secure_url" [alt]="item.title" />
+        <img [src]="getItemImageUrl(item)" [alt]="item.title" (error)="onImageError($event)" />
         <span class="card-tag">{{ item.category }}</span>
         
         <div class="card-badges">

@@ -1,80 +1,138 @@
 <app-header></app-header>
 
-<!-- Page Hero -->
-<div class="page-hero">
-  <div class="page-hero-inner">
-    <span class="page-badge"><i class="pi pi-newspaper"></i> Communications</span>
-    <h1>Latest News &amp; Circulars</h1>
-    <p>Official announcements, policy updates, and circulars from the Business Correspondent Association Rajasthan.</p>
+<!-- Page Hero Header -->
+<div class="news-hero">
+  <div class="news-hero-container">
+    <span class="news-hero-badge"><i class="pi pi-bell-fill"></i> BCAR Press &amp; Circulars</span>
+    <h1>News &amp; <em>Announcements</em></h1>
+    
+    <!-- Live Search Toolbar -->
+    <div class="news-search-toolbar">
+      <div class="search-input-box">
+        <i class="pi pi-search search-icon"></i>
+        <input 
+          type="text" 
+          [ngModel]="searchQuery()" 
+          (ngModelChange)="onSearchChange($event)" 
+          placeholder="Search news or circulars..."
+        />
+        <button *ngIf="searchQuery()" class="clear-search-btn" (click)="onSearchChange('')">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <div class="news-stats-pill">
+        <i class="pi pi-file"></i> 
+        <span><strong>{{ articles().length }}</strong> Releases</span>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- News Section -->
-<div class="page-section">
-  <div class="page-container">
+<!-- Main Content Area -->
+<div class="news-section">
+  <div class="news-container">
 
-    <!-- Loading State skeletons -->
-    <div class="news-grid" *ngIf="loading()">
-      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-        <div class="news-skeleton-card">
-          <p-skeleton width="100%" height="200px" borderRadius="16px" />
-          <div style="padding: 20px 0 0 0;">
-            <p-skeleton width="30%" height="12px" styleClass="mb-3" />
-            <p-skeleton width="90%" height="20px" styleClass="mb-2" />
-            <p-skeleton width="100%" height="14px" styleClass="mb-2" />
-            <p-skeleton width="40%" height="14px" />
-          </div>
-        </div>
-      }
-    </div>
-
-    <!-- Category Filter Tabs -->
-    <div class="news-filter-tabs" *ngIf="!loading() && articles().length > 0">
-      <button class="filter-tab-btn" [class.active]="selectedCategory() === 'all'" (click)="filterCategory('all')">All News</button>
-      <button class="filter-tab-btn" [class.active]="selectedCategory() === 'circular'" (click)="filterCategory('circular')">Circulars</button>
-      <button class="filter-tab-btn" [class.active]="selectedCategory() === 'policy'" (click)="filterCategory('policy')">Policy Updates</button>
-      <button class="filter-tab-btn" [class.active]="selectedCategory() === 'event'" (click)="filterCategory('event')">Events</button>
-    </div>
-
-    <!-- News Grid -->
-    <div class="news-grid" *ngIf="!loading()">
-      @for (item of filteredArticles; track item._id) {
-        <p-card class="news-card">
-          <!-- Featured Image header -->
-          <ng-template pTemplate="header">
-            <div class="news-image-wrapper" (click)="readMore(item.slug)">
-              <img [src]="item.featuredImage?.secure_url" [alt]="item.title" class="news-img" loading="lazy">
+    <!-- Loading Skeletons -->
+    <div class="news-loading-grid" *ngIf="loading()">
+      <div class="news-grid">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <div class="news-skeleton-card">
+            <p-skeleton width="100%" height="150px" borderRadius="12px" />
+            <div style="padding: 14px 0 0;">
+              <p-skeleton width="30%" height="12px" styleClass="mb-2" />
+              <p-skeleton width="90%" height="16px" styleClass="mb-2" />
+              <p-skeleton width="100%" height="12px" />
             </div>
-          </ng-template>
+          </div>
+        }
+      </div>
+    </div>
 
-          <!-- Card content -->
-          <div class="news-meta">
-            <span class="news-date">
-              <i class="pi pi-calendar"></i>
-              {{ item.publishDate | date:'dd MMM yyyy' }}
-            </span>
-            <span class="news-tag" [class]="item.category">
-              {{ getTag(item.category) }}
+    <div *ngIf="!loading()">
+
+      <!-- Featured / Pinned Article Spotlight Banner -->
+      <div class="news-spotlight" *ngIf="featuredArticle && selectedCategory() === 'all' && !searchQuery()">
+        <div class="spotlight-card" (click)="readMore(featuredArticle.slug)">
+          <div class="spotlight-image-wrap">
+            <img [src]="getImageUrl(featuredArticle)" [alt]="featuredArticle.title" (error)="onImageError($event)">
+            <span class="spotlight-badge" [class]="featuredArticle.category">
+              <i class="pi pi-star-fill"></i> Featured {{ getTag(featuredArticle.category) }}
             </span>
           </div>
-
-          <h3 class="news-title" (click)="readMore(item.slug)">{{ item.title }}</h3>
-          <p class="news-desc">{{ item.shortDescription }}</p>
-
-          <!-- Card footer -->
-          <ng-template pTemplate="footer">
-            <button class="read-btn" (click)="readMore(item.slug)">
-              Read Article <i class="pi pi-arrow-right"></i>
-            </button>
-          </ng-template>
-        </p-card>
-      }
-      @empty {
-        <div class="news-empty" *ngIf="!loading()">
-          <i class="pi pi-inbox" style="font-size: 48px; color: #cbd5e1; display: block; margin-bottom: 16px;"></i>
-          <p>No news articles published yet.</p>
+          <div class="spotlight-content">
+            <div class="spotlight-meta">
+              <span class="spotlight-date">
+                <i class="pi pi-calendar"></i>
+                {{ featuredArticle.publishDate | date:'dd MMM yyyy' }}
+              </span>
+              <span class="spotlight-readtime">
+                <i class="pi pi-clock"></i>
+                {{ getReadingTime(featuredArticle.fullDescription || featuredArticle.shortDescription) }}
+              </span>
+            </div>
+            <h2 class="spotlight-title">{{ featuredArticle.title }}</h2>
+            <p class="spotlight-desc">{{ featuredArticle.shortDescription }}</p>
+          </div>
         </div>
-      }
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="news-filter-bar" *ngIf="articles().length > 0">
+        <div class="filter-tabs">
+          <button class="filter-btn" [class.active]="selectedCategory() === 'all'" (click)="filterCategory('all')">
+            All
+          </button>
+          <button class="filter-btn" [class.active]="selectedCategory() === 'circular'" (click)="filterCategory('circular')">
+            Circulars
+          </button>
+          <button class="filter-btn" [class.active]="selectedCategory() === 'policy'" (click)="filterCategory('policy')">
+            Policy
+          </button>
+          <button class="filter-btn" [class.active]="selectedCategory() === 'event'" (click)="filterCategory('event')">
+            Events
+          </button>
+        </div>
+      </div>
+
+      <!-- Articles Grid -->
+      <div class="news-grid">
+        @for (item of filteredArticles; track item._id) {
+          <div class="news-card" (click)="readMore(item.slug)">
+            <div class="news-card-img-wrap">
+              <img [src]="getImageUrl(item)" [alt]="item.title" loading="lazy" (error)="onImageError($event)">
+              <span class="news-card-tag" [class]="item.category">{{ getTag(item.category) }}</span>
+            </div>
+
+            <div class="news-card-body">
+              <div class="news-card-meta">
+                <span class="news-card-date">
+                  <i class="pi pi-calendar"></i> {{ item.publishDate | date:'dd MMM yyyy' }}
+                </span>
+                <span class="news-card-readtime">
+                  <i class="pi pi-clock"></i> {{ getReadingTime(item.shortDescription) }}
+                </span>
+              </div>
+
+              <h3 class="news-card-title">{{ item.title }}</h3>
+              <p class="news-card-desc">{{ item.shortDescription }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Empty State -->
+      <div class="news-empty-state" *ngIf="filteredArticles.length === 0">
+        <div class="empty-icon-box">
+          <i class="pi pi-search"></i>
+        </div>
+        <h3>No Articles Found</h3>
+        <p *ngIf="searchQuery()">No announcements matching "<strong>{{ searchQuery() }}</strong>".</p>
+        <p *ngIf="!searchQuery()">No announcements available in this category.</p>
+        <button *ngIf="searchQuery() || selectedCategory() !== 'all'" class="reset-filter-btn" (click)="searchQuery.set(''); selectedCategory.set('all')">
+          Clear Filter
+        </button>
+      </div>
+
     </div>
 
   </div>

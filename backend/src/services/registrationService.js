@@ -25,7 +25,7 @@ class RegistrationService {
     // 2. Add registration fee fields
     memberData.registrationNumber = registrationNumber;
     memberData.receiptNumber = receiptNumber;
-    memberData.registrationFee = 600;
+    memberData.registrationFee = 700;
     memberData.paymentStatus = 'Paid';
     memberData.paymentMode = 'Online / UPI';
     memberData.transactionId = 'BCAR-TXN-' + Date.now().toString().substring(5);

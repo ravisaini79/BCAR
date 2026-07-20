@@ -31,7 +31,7 @@
       @for (item of galleryItems(); track item._id; let idx = $index) {
         <div class="gallery-item" (click)="openLightbox(idx)">
           <p-image
-            [src]="item.image?.secure_url"
+            [src]="getImageUrl(item)"
             [alt]="item.title"
             [preview]="false"
             styleClass="w-full"
@@ -75,7 +75,7 @@
       </button>
 
       <div class="lightbox-img-box">
-        <img [src]="activeItem()?.image?.secure_url" [alt]="activeItem()?.title" class="lightbox-img">
+        <img [src]="getImageUrl(activeItem())" [alt]="activeItem()?.title" class="lightbox-img" (error)="onImageError($event)">
       </div>
 
       <div class="lightbox-caption">

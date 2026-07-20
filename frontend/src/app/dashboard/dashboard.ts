@@ -135,6 +135,11 @@ export class DashboardComponent implements OnInit {
   showViewDialog = false;
   selectedMember: User | null = null;
 
+  // Edit Profile Dialog state
+  showEditProfileDialog = false;
+  editMemberData: any = {};
+  editSubmitting = false;
+
   // Options lists
   categoryOptions = [
     { label: 'General Announcement', value: 'General' },
@@ -574,6 +579,44 @@ export class DashboardComponent implements OnInit {
   viewMember(m: User) {
     this.selectedMember = m;
     this.showViewDialog = true;
+  }
+
+  openEditProfile(m?: User) {
+    const target = m || this.user;
+    if (!target) return;
+    this.editMemberData = JSON.parse(JSON.stringify(target));
+    this.showEditProfileDialog = true;
+  }
+
+  saveMemberProfile() {
+    if (!this.editMemberData || !this.editMemberData._id) return;
+    this.editSubmitting = true;
+
+    this.dashboardService.updateMemberProfile(this.editMemberData._id, this.editMemberData).subscribe({
+      next: (res: any) => {
+        this.editSubmitting = false;
+        this.showEditProfileDialog = false;
+        this.toastService.success('User profile updated successfully.');
+
+        // If updated logged in user's profile, sync local user state & localStorage
+        if (this.user && this.user._id === this.editMemberData._id) {
+          this.user = { ...this.user, ...res.user };
+          localStorage.setItem('bcar_user', JSON.stringify(this.user));
+        }
+
+        // If view dialog is open for this member, sync selectedMember
+        if (this.selectedMember && this.selectedMember._id === this.editMemberData._id) {
+          this.selectedMember = { ...this.selectedMember, ...res.user };
+        }
+
+        this.refreshAll();
+      },
+      error: (err: any) => {
+        this.editSubmitting = false;
+        console.error('Failed to update profile:', err);
+        this.toastService.error(err.error?.message || 'Failed to update profile. Please try again.');
+      }
+    });
   }
 
   // Submit Notice Draft

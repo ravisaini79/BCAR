@@ -22,4 +22,16 @@ export class CustomValidators {
       return valid ? null : { pinInvalid: true };
     };
   }
+
+  /**
+   * Aadhaar Number Validator (12 digits)
+   */
+  static aadhaarPattern(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+      const cleanVal = control.value.toString().replace(/\s/g, '');
+      const valid = /^[0-9]{12}$/.test(cleanVal);
+      return valid ? null : { aadhaarInvalid: true };
+    };
+  }
 }

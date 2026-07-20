@@ -13,7 +13,7 @@ const getGalleryItems = async (req, res, next) => {
       query.status = 'Published';
     }
 
-    const items = await Gallery.find(query).sort({ displayOrder: 1, createdAt: -1 });
+    const items = await Gallery.find(query).sort({ createdAt: -1, displayOrder: 1 });
     res.status(200).json(items);
   } catch (error) {
     next(error);
@@ -105,7 +105,7 @@ const createGalleryItem = async (req, res, next) => {
         bytes: req.file.size
       },
       displayOrder: Number(displayOrder || 0),
-      status: status || 'Draft',
+      status: status || 'Published',
       featured: featured === 'true' || featured === true
     });
 

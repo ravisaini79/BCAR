@@ -32,8 +32,15 @@ export class LoginComponent {
       next: response => {
         this.busy = false;
 
-        // Backend returns flat: { _id, name, email, role, token }
-        const { token, ...user } = response;
+        const token = response.token || response.data?.token;
+        const userObj = {
+          _id: response._id || response.data?._id,
+          name: response.name || response.data?.name,
+          email: response.email || response.data?.email,
+          role: response.role || response.data?.role,
+          status: response.status || response.data?.status,
+          district: response.district || response.data?.district
+        };
 
         if (!token) {
           this.show('Login failed: no token received', 'error');
@@ -41,7 +48,7 @@ export class LoginComponent {
         }
 
         localStorage.setItem('bcar_token', token);
-        localStorage.setItem('bcar_user', JSON.stringify(user));
+        localStorage.setItem('bcar_user', JSON.stringify(userObj));
         this.router.navigate(['/dashboard']);
       },
       error: error => {

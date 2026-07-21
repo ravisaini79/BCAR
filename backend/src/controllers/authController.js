@@ -76,9 +76,16 @@ const registerUser = async (req, res, next) => {
 
     // Helper to get buffer from file either in multipart files or body base64
     const getFileBuffer = (fieldName, bodyVal) => {
-      if (req.files && req.files[fieldName] && req.files[fieldName][0]) {
-        const file = req.files[fieldName][0];
-        return { buffer: file.buffer, filename: file.originalname, mimetype: file.mimetype };
+      if (req.files) {
+        if (Array.isArray(req.files)) {
+          const file = req.files.find(f => f.fieldname === fieldName);
+          if (file) {
+            return { buffer: file.buffer, filename: file.originalname, mimetype: file.mimetype };
+          }
+        } else if (req.files[fieldName] && req.files[fieldName][0]) {
+          const file = req.files[fieldName][0];
+          return { buffer: file.buffer, filename: file.originalname, mimetype: file.mimetype };
+        }
       }
       if (bodyVal) {
         const { buffer, mimeType } = getBufferFromBase64(bodyVal);
@@ -88,99 +95,137 @@ const registerUser = async (req, res, next) => {
       return null;
     };
 
-    // Core document validations (check files array or body properties)
-    const hasPhoto = (req.files && req.files['photograph']) || photograph || profilePhoto;
-    const hasAadhaar = (req.files && req.files['aadhaarCard']) || aadhaarCard || aadhaarFront;
-    const hasPan = (req.files && req.files['panCard']) || panCard;
-    const hasBank = (req.files && req.files['bankBcCertificate']) || bankBcCertificate || bankPassbook;
+    // Helper to check if file attachment exists in req.files or body
+    const hasFileAttachment = (fieldName, bodyVal) => {
+      if (req.files) {
+        if (Array.isArray(req.files)) {
+          if (req.files.some(f => f.fieldname === fieldName)) return true;
+        } else if (req.files[fieldName] && req.files[fieldName][0]) {
+          return true;
+        }
+      }
+      return !!bodyVal;
+    };
 
-    // Step 1: Validate required fields
-    if (!name) {
+    // Core document validations (check files array or body properties)
+    const hasPhoto = hasFileAttachment('photograph', photograph) || hasFileAttachment('profilePhoto', profilePhoto) || hasFileAttachment('profileImage', profileImage);
+    const hasAadhaarFront = hasFileAttachment('aadhaarFront', aadhaarFront) || hasFileAttachment('aadhaarCard', aadhaarCard);
+    const hasAadhaarBack = hasFileAttachment('aadhaarBack', aadhaarBack);
+    const hasPan = hasFileAttachment('panCard', panCard);
+    const hasBank = hasFileAttachment('bankBcCertificate', bankBcCertificate) || hasFileAttachment('bankPassbook', bankPassbook);
+
+    // Step 1: Validate required fields & strong formats
+    if (!name || name.trim().length < 3 || name.trim().length > 100) {
       res.status(400);
-      throw new Error('Name is required');
+      throw new Error('Full Name is required (minimum 3, maximum 100 characters)');
     }
-    if (!phone || phone.length !== 10) {
+
+    const cleanPhone = phone ? phone.toString().replace(/\D/g, '') : '';
+    if (!cleanPhone || !/^[6-9]\d{9}$/.test(cleanPhone)) {
       res.status(400);
-      throw new Error('Valid 10-digit mobile number is required');
+      throw new Error('Valid 10-digit mobile number starting with 6-9 is required');
     }
-    if (!email || !email.includes('@')) {
+
+    const cleanEmail = email ? email.trim().toLowerCase() : '';
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       res.status(400);
       throw new Error('Valid email address is required');
     }
-    if (!password) {
+
+    if (!password || password.length < 6) {
       res.status(400);
-      throw new Error('Password is required');
+      throw new Error('Password is required (minimum 6 characters)');
     }
-    const aadhaarClean = req.body.aadhaarNumber ? req.body.aadhaarNumber.toString().replace(/\s/g, '') : '';
+
+    const aadhaarClean = req.body.aadhaarNumber ? req.body.aadhaarNumber.toString().replace(/\D/g, '') : '';
     if (!aadhaarClean || aadhaarClean.length !== 12) {
       res.status(400);
-      throw new Error('Valid 12-digit Aadhaar Number is required');
+      throw new Error('Valid 12-digit numeric Aadhaar Number is required');
     }
-    if (!homeAddressVill) {
+
+    if (pin && !/^\d{6}$/.test(pin.toString())) {
       res.status(400);
-      throw new Error('Home Address is required');
+      throw new Error('Valid 6-digit Pincode is required');
     }
+
+    if (!homeAddressVill || homeAddressVill.trim().length < 3) {
+      res.status(400);
+      throw new Error('Home Address is required (minimum 3 characters)');
+    }
+
     if (!district) {
       res.status(400);
-      throw new Error('District is required');
+      throw new Error('District selection is required');
     }
+
     if (declarationAccepted !== true && declarationAccepted !== 'true') {
       res.status(400);
       throw new Error('Declaration acceptance is required');
     }
+
     if (!hasPhoto) {
       res.status(400);
-      throw new Error('Passport Photograph attachment is mandatory');
-    }
-    if (!hasAadhaar) {
-      res.status(400);
-      throw new Error('Aadhaar Card attachment is mandatory');
-    }
-    if (!hasPan) {
-      res.status(400);
-      throw new Error('PAN Card attachment is mandatory');
-    }
-    if (!hasBank) {
-      res.status(400);
-      throw new Error('Bank BC Certificate attachment is mandatory');
+      throw new Error('Passport Size Photo (सदस्य का फोटो) is mandatory');
     }
 
-    // Step 2: Check whether Email or Mobile already exists
-    const userExists = await User.findOne({ $or: [{ email }, { phone }] });
-    if (userExists) {
-      logRegistration(`Duplicate registration attempt blocked. Email: ${email}, Phone: ${phone}`);
+    if (!hasAadhaarFront) {
       res.status(400);
-      throw new Error('Member already registered.');
+      throw new Error('Aadhaar Card (Front Side) upload is mandatory');
+    }
+
+    if (!hasAadhaarBack) {
+      res.status(400);
+      throw new Error('Aadhaar Card (Back Side) upload is mandatory');
+    }
+
+    // Step 2: Individual Unique Checks for Aadhaar, Phone, and Email
+    const aadhaarExists = await User.findOne({ aadhaarNumber: aadhaarClean }).lean();
+    if (aadhaarExists) {
+      logRegistration(`Duplicate Aadhaar registration attempt blocked. Aadhaar: ${aadhaarClean}`);
+      res.status(400);
+      throw new Error('This Aadhaar Number is already registered.');
+    }
+
+    const phoneExists = await User.findOne({ phone: cleanPhone }).lean();
+    if (phoneExists) {
+      logRegistration(`Duplicate Phone registration attempt blocked. Phone: ${cleanPhone}`);
+      res.status(400);
+      throw new Error('This Mobile Number is already registered.');
+    }
+
+    const emailExists = await User.findOne({ email: cleanEmail }).lean();
+    if (emailExists) {
+      logRegistration(`Duplicate Email registration attempt blocked. Email: ${cleanEmail}`);
+      res.status(400);
+      throw new Error('This Email address is already registered.');
     }
 
     // Step 3: Setup asynchronous S3 upload tasks
     const profileImageFile = getFileBuffer('profileImage', profileImage);
     const photoFile = getFileBuffer('photograph', photograph || profilePhoto);
-    const aadhaarFile = getFileBuffer('aadhaarCard', aadhaarCard || aadhaarFront);
+    const aadhaarFile = getFileBuffer('aadhaarFront', aadhaarFront || aadhaarCard) || getFileBuffer('aadhaarCard', aadhaarCard);
+    const aadhaarBackFile = getFileBuffer('aadhaarBack', aadhaarBack);
     const panFile = getFileBuffer('panCard', panCard);
     const bankFile = getFileBuffer('bankBcCertificate', bankBcCertificate || bankPassbook);
-    const aadhaarBackFile = getFileBuffer('aadhaarBack', aadhaarBack);
     const signatureFile = getFileBuffer('signature', signature);
     const otherFile = getFileBuffer('otherDocuments', otherDocuments);
 
-    // Validate Profile Image (Formats: JPG, JPEG, PNG; Size: Max 300 KB)
+    // Validate Profile Image & Passport Photo (Formats: JPG, JPEG, PNG; Size: Max 5 MB / 5120 KB)
     if (profileImageFile) {
-      validateDocument(profileImageFile, ['jpg', 'jpeg', 'png'], 300, 'Profile Image');
+      validateDocument(profileImageFile, ['jpg', 'jpeg', 'png'], 5120, 'Profile Image');
     }
-
-    // Validate Photograph (Formats: JPG, JPEG, PNG; Size: Max 300 KB)
     if (photoFile) {
-      validateDocument(photoFile, ['jpg', 'jpeg', 'png'], 300, 'Passport Photograph');
+      validateDocument(photoFile, ['jpg', 'jpeg', 'png'], 5120, 'Passport Size Photo');
     }
 
-    // Validate Documents (Formats: PDF, JPG, JPEG, PNG; Size: Max 2 MB)
+    // Validate Mandatory Documents (Formats: PDF, JPG, JPEG, PNG; Size: Max 5 MB / 5120 KB)
     const docExts = ['pdf', 'jpg', 'jpeg', 'png'];
-    if (aadhaarFile) validateDocument(aadhaarFile, docExts, 2048, 'Aadhaar Card');
-    if (panFile) validateDocument(panFile, docExts, 2048, 'PAN Card');
-    if (bankFile) validateDocument(bankFile, docExts, 2048, 'Bank BC Certificate');
-    if (aadhaarBackFile) validateDocument(aadhaarBackFile, docExts, 2048, 'Aadhaar Card Back');
-    if (signatureFile) validateDocument(signatureFile, docExts, 2048, 'Signature');
-    if (otherFile) validateDocument(otherFile, docExts, 2048, 'Other Documents');
+    if (aadhaarFile) validateDocument(aadhaarFile, docExts, 5120, 'Aadhaar Card Front');
+    if (aadhaarBackFile) validateDocument(aadhaarBackFile, docExts, 5120, 'Aadhaar Card Back');
+    if (panFile) validateDocument(panFile, docExts, 5120, 'PAN Card');
+    if (bankFile) validateDocument(bankFile, docExts, 5120, 'Bank BC Certificate');
+    if (signatureFile) validateDocument(signatureFile, docExts, 5120, 'Signature');
+    if (otherFile) validateDocument(otherFile, docExts, 5120, 'Other Documents');
 
     const uploadTasks = [];
     const uploadKeys = [];
@@ -288,24 +333,21 @@ const registerUser = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
+      message: 'Registration submitted successfully. Your application is pending admin approval.',
       registrationNumber: user.registrationNumber,
       receiptNumber: user.receiptNumber,
       emailSent,
       receiptGenerated,
-      message: 'Registration successful. Waiting for admin approval.',
-      status: user.status,
-      
-      // File urls for frontend previews
-      photograph: user.photograph ? user.photograph.secure_url || user.photograph.url : '',
-      aadhaarCard: user.aadhaarCard ? user.aadhaarCard.secure_url || user.aadhaarCard.url : '',
-      panCard: user.panCard ? user.panCard.secure_url || user.panCard.url : '',
-      bankBcCertificate: user.bankBcCertificate ? user.bankBcCertificate.secure_url || user.bankBcCertificate.url : '',
-      
-      // Legacy compliance keys
-      Success: true,
-      'Registration Number': user.registrationNumber,
-      Message: 'Registration successful. Waiting for admin approval.',
-      Status: user.status
+      data: {
+        registrationNumber: user.registrationNumber,
+        receiptNumber: user.receiptNumber,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        status: user.status,
+        emailSent,
+        receiptGenerated
+      }
     });
 
   } catch (error) {
@@ -410,21 +452,37 @@ const updateMemberDocuments = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const cleanEmail = email ? email.trim().toLowerCase() : '';
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: cleanEmail });
 
     if (user && (await user.matchPassword(password))) {
-      if (user.status !== 'active') {
+      // Check member status (admins / coordinators bypass pending check)
+      if (user.role === 'member' && !['active', 'Approved'].includes(user.status)) {
         res.status(403);
         throw new Error(`Your account status is currently: ${user.status}. Please contact an administrator.`);
       }
 
+      const token = generateToken(user._id, user.role);
+
       res.json({
+        success: true,
+        message: 'Login successful',
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        token: generateToken(user._id, user.role),
+        status: user.status,
+        district: user.district,
+        token,
+        data: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+          token
+        }
       });
     } else {
       res.status(401);

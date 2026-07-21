@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   childrenDaughter: String,
   educationalQualification: String,
   bloodGroup: String,
-  aadhaarNumber: String,
+  aadhaarNumber: { type: String, unique: true, sparse: true, trim: true },
   subDistrict: String,
 
   // Contact Info
@@ -184,6 +184,28 @@ const userSchema = new mongoose.Schema({
   emailVerified: { type: Boolean, default: false },
   createdBy: { type: String, default: 'Self Registration' }
 }, { timestamps: true });
+
+// ── 100K+ MongoDB Performance Indexes ──────────────────────────────────────
+userSchema.index({ district: 1 });
+userSchema.index({ status: 1 });
+userSchema.index({ createdAt: -1 });
+userSchema.index({ bcCspIdNo: 1 });
+userSchema.index({ membershipNo: 1 });
+
+// Compound Indexes for Server-Side Filtering & Admin Dashboards
+userSchema.index({ status: 1, district: 1, createdAt: -1 });
+userSchema.index({ status: 1, createdAt: -1 });
+userSchema.index({ district: 1, name: 1 });
+
+// Text Search Index for Rapid Server-Side Member Lookup
+userSchema.index({
+  name: 'text',
+  phone: 'text',
+  membershipNo: 'text',
+  registrationNumber: 'text',
+  bcCspIdNo: 'text',
+  aadhaarNumber: 'text'
+});
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {

@@ -8,13 +8,13 @@
 .panel-title h2 {
   font-family: 'Poppins', sans-serif;
   font-size: 24px;
-  font-weight: 700;
-  color: #0B2D5C;
+  font-weight: 800;
+  color: #0D47A1;
   margin: 0;
 }
 .panel-title p {
   font-size: 14px;
-  color: #64748B;
+  color: #4B5563;
   margin: 4px 0 0;
 }
 
@@ -22,20 +22,20 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #0B2D5C;
-  color: #D4AF37;
-  border: 1px solid #0b2d5c;
+  background: #1E88E5;
+  color: #ffffff;
+  border: 1px solid #1E88E5;
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 10px rgba(11,45,92,0.15);
+  box-shadow: 0 4px 10px rgba(30, 136, 229, 0.25);
 }
 .action-btn-primary:hover {
-  background: #0d3a6e;
-  border-color: #0d3a6e;
+  background: #0D47A1;
+  border-color: #0D47A1;
   transform: translateY(-1px);
 }
 

@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { Dialog } from 'primeng/dialog';
 import { Select } from 'primeng/select';
 import { InputText } from 'primeng/inputtext';
-import { Textarea } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { Tag } from 'primeng/tag';
 import { ConfirmationService } from 'primeng/api';
@@ -25,7 +24,6 @@ import { ToastService } from '../../services/toast.service';
     Dialog,
     Select,
     InputText,
-    Textarea,
     TooltipModule,
     Tag
   ],

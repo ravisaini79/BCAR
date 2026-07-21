@@ -13,8 +13,8 @@ export class DashboardService {
   }
 
   // ── Members ────────────────────────────────────────────────────────
-  getMembers(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/dashboard/members`);
+  getMembers(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/dashboard/members`);
   }
 
   updateMemberStatus(id: string, status: string): Observable<any> {
@@ -30,8 +30,8 @@ export class DashboardService {
   }
 
   // ── Notices ────────────────────────────────────────────────────────
-  getNotices(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/dashboard/notices`);
+  getNotices(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/dashboard/notices`);
   }
 
   createNotice(notice: { title: string; body: string; category: string }): Observable<any> {
@@ -48,13 +48,13 @@ export class DashboardService {
 
   // ── Grievances ─────────────────────────────────────────────────────
   /** Member's own grievances */
-  getMyGrievances(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/dashboard/grievances`);
+  getMyGrievances(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/dashboard/grievances`);
   }
 
   /** All grievances (admin only) */
-  getAllGrievances(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/dashboard/all-grievances`);
+  getAllGrievances(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/dashboard/all-grievances`);
   }
 
   createGrievance(g: { subject: string; description: string; category: string }): Observable<any> {

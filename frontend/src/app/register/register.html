@@ -402,9 +402,10 @@
 
               <!-- Aadhaar Card (Back Side) -->
               <div class="doc-upload-item">
-                <label class="doc-label">Aadhaar Card (Back Side)</label>
+                <label class="doc-label">Aadhaar Card (Back Side) <span class="required">*</span></label>
                 <div class="upload-zone"
                      [class.drag-over]="srv.dragOverField() === 'aadhaarBack'"
+                     [class.invalid-control]="hasError('aadhaarBack')"
                      (dragover)="onDragOver($event, 'aadhaarBack')"
                      (dragleave)="onDragLeave($event)"
                      (drop)="onDrop($event, 'aadhaarBack')"
@@ -442,6 +443,9 @@
                     </div>
                   }
                 </div>
+                @if (hasError('aadhaarBack', 'required')) {
+                  <small class="p-error-text">Aadhaar Card (Back Side) attachment is mandatory</small>
+                }
               </div>
 
               <!-- PAN Card -->
@@ -492,9 +496,9 @@
                 }
               </div>
 
-              <!-- Passport Photograph -->
+              <!-- Passport Size Photo -->
               <div class="doc-upload-item">
-                <label class="doc-label">Passport Photograph <span class="required">*</span></label>
+                <label class="doc-label">Passport Size Photo (पासपोर्ट साइज़ फोटो) <span class="required">*</span></label>
                 <div class="upload-zone"
                      [class.drag-over]="srv.dragOverField() === 'photograph'"
                      [class.invalid-control]="hasError('photograph')"
@@ -511,7 +515,7 @@
                     <div class="upload-zone-inner">
                       <i class="pi pi-camera upload-icon"></i>
                       <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
-                      <p class="upload-hint">JPG, PNG · Max 5 MB</p>
+                      <p class="upload-hint">Applicant Photo · JPG, PNG · Max 5 MB</p>
                     </div>
                   } @else {
                     <div class="upload-preview" (click)="$event.stopPropagation()">
@@ -528,7 +532,7 @@
                       </button>
                       <button type="button" class="view-file-btn"
                               pTooltip="View photo" tooltipPosition="top"
-                              (click)="viewUploadedFile('photograph', 'Passport Photograph')">
+                              (click)="viewUploadedFile('photograph', 'Passport Size Photo')">
                         <i class="pi pi-eye"></i>
                       </button>
                       <button type="button" class="remove-file-btn"
@@ -540,7 +544,7 @@
                   }
                 </div>
                 @if (hasError('photograph', 'required')) {
-                  <small class="validation-error" style="margin-top:6px;display:block;"><i class="pi pi-exclamation-circle"></i> Passport Photograph attachment is mandatory.</small>
+                  <small class="validation-error" style="margin-top:6px;display:block;"><i class="pi pi-exclamation-circle"></i> Passport Size Photo is mandatory.</small>
                 }
               </div>
 

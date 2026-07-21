@@ -92,13 +92,95 @@ const getStats = async (req, res, next) => {
 };
 
 
-// @desc    Get all members
+// @desc    Get all members (Server-Side Pagination, Filtering & Search for 100K+ Scale)
 // @route   GET /api/dashboard/members
 // @access  Private (Admin/Super Admin/Coordinator)
 const getMembers = async (req, res, next) => {
   try {
-    const members = await User.find({ role: 'member' }).select('-password').sort({ joinedAt: -1 });
-    res.json(members);
+    const { 
+      page = 1, 
+      limit = 50, 
+      search = '', 
+      district = '', 
+      status = '', 
+      sortBy = 'joinedAt', 
+      sortOrder = 'desc',
+      all = 'false'
+    } = req.query;
+
+    const query = { role: 'member' };
+
+    // District filter
+    if (district && district !== 'All') {
+      query.district = district;
+    }
+
+    // Status filter
+    if (status && status !== 'All') {
+      if (status === 'Approved' || status === 'active') {
+        query.status = { $in: ['active', 'Approved'] };
+      } else if (status === 'pending' || status === 'Pending Approval') {
+        query.status = { $in: ['pending', 'Pending Approval'] };
+      } else {
+        query.status = status;
+      }
+    }
+
+    // Server-side Search across indexed fields
+    if (search && search.trim() !== '') {
+      const searchRegex = new RegExp(search.trim(), 'i');
+      query.$or = [
+        { name: searchRegex },
+        { phone: searchRegex },
+        { email: searchRegex },
+        { registrationNumber: searchRegex },
+        { membershipNo: searchRegex },
+        { bcCspIdNo: searchRegex },
+        { aadhaarNumber: searchRegex },
+        { district: searchRegex }
+      ];
+    }
+
+    // Backward compatibility: If explicitly requested all=true (for export reports)
+    if (all === 'true') {
+      const members = await User.find(query)
+        .select('-password')
+        .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+        .lean();
+      return res.json(members);
+    }
+
+    const pageNum = Math.max(1, parseInt(page, 10));
+    const limitNum = Math.min(200, Math.max(1, parseInt(limit, 10)));
+    const skip = (pageNum - 1) * limitNum;
+
+    const [members, totalCount] = await Promise.all([
+      User.find(query)
+        .select('-password')
+        .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .lean(),
+      User.countDocuments(query)
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limitNum);
+
+    res.json({
+      success: true,
+      data: {
+        members,
+        totalCount,
+        page: pageNum,
+        limit: limitNum,
+        totalPages
+      },
+      // Array top-level property for backward compatibility with Angular array iterations
+      members,
+      totalCount,
+      page: pageNum,
+      totalPages
+    });
   } catch (error) {
     next(error);
   }

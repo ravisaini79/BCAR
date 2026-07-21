@@ -13,9 +13,15 @@ const upload = multer({
 const cpUpload = upload.fields([
   { name: 'profileImage', maxCount: 1 },
   { name: 'photograph', maxCount: 1 },
+  { name: 'profilePhoto', maxCount: 1 },
   { name: 'aadhaarCard', maxCount: 1 },
+  { name: 'aadhaarFront', maxCount: 1 },
+  { name: 'aadhaarBack', maxCount: 1 },
   { name: 'panCard', maxCount: 1 },
-  { name: 'bankBcCertificate', maxCount: 1 }
+  { name: 'bankBcCertificate', maxCount: 1 },
+  { name: 'bankPassbook', maxCount: 1 },
+  { name: 'signature', maxCount: 1 },
+  { name: 'otherDocuments', maxCount: 1 }
 ]);
 
 router.post('/register', cpUpload, registerUser);

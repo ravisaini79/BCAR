@@ -6,12 +6,11 @@ import { FooterComponent } from '../../layout/footer/footer';
 import { GalleryService } from '../../core/services/gallery.service';
 import { Image } from 'primeng/image';
 import { Skeleton } from 'primeng/skeleton';
-import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [CommonModule, DatePipe, RouterModule, HeaderComponent, FooterComponent, Image, Skeleton, ProgressSpinner],
+  imports: [CommonModule, DatePipe, RouterModule, HeaderComponent, FooterComponent, Image, Skeleton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './gallery.html',
   styleUrls: ['./gallery.css']

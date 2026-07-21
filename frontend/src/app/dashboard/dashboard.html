@@ -420,6 +420,12 @@
                     </button>
                     <button class="action-btn card"
                             *ngIf="m.membershipNo"
+                            (click)="previewCard(m)" pTooltip="Preview Card" tooltipPosition="top"
+                            style="background-color: #0b5ed7; color: white;">
+                      <i class="pi pi-eye"></i>
+                    </button>
+                    <button class="action-btn card"
+                            *ngIf="m.membershipNo"
                             (click)="generateCard(m)" pTooltip="Generate Card" tooltipPosition="top">
                       <i class="pi pi-id-card"></i>
                     </button>
@@ -660,6 +666,11 @@
               (click)="confirmReject(selectedMember); showViewDialog = false">
         <i class="pi pi-times"></i> Reject
       </button>
+      <button class="btn-primary"
+              *ngIf="selectedMember.membershipNo"
+              (click)="previewCard(selectedMember)">
+        <i class="pi pi-eye"></i> Preview Card
+      </button>
       <button class="btn-outline"
               *ngIf="selectedMember.membershipNo"
               (click)="generateCard(selectedMember)">
@@ -885,4 +896,168 @@
     </div>
 
   </div>
+</p-dialog>
+
+
+<!-- ══════════════════════ MEMBERSHIP CARD PREVIEW DIALOG ══════════════════════ -->
+<p-dialog
+  header="BCAR Official Membership Card"
+  [visible]="showCardPreviewDialog"
+  (visibleChange)="showCardPreviewDialog = $event"
+  [modal]="true"
+  [style]="{width: '940px', maxWidth: '95vw'}">
+
+  <div class="card-preview-modal-body" *ngIf="cardPreviewMember">
+    <div class="card-preview-actions-top">
+      <div class="theme-pill"><i class="pi pi-shield"></i> Premium Light Blue Corporate Theme</div>
+      <div class="action-btns">
+        <button class="btn-primary" (click)="generateCard(cardPreviewMember)"><i class="pi pi-download"></i> Download PNG</button>
+        <button class="btn-outline" (click)="printCard(cardPreviewMember)"><i class="pi pi-print"></i> Print / PDF</button>
+        <button class="btn-success" (click)="emailCard(cardPreviewMember)"><i class="pi pi-envelope"></i> Email Card</button>
+      </div>
+    </div>
+
+    <!-- Live Responsive HTML Card Preview -->
+    <div class="bcar-card-wrapper">
+      <!-- FRONT SIDE -->
+      <div class="bcar-card-container bcar-card-front">
+        <div class="card-watermark-logo"></div>
+        <div class="card-top-accent-bar"></div>
+        <div class="bcar-card-header">
+          <div class="bcar-header-left">
+            <img src="/images/bcar-logo-official.jpg" alt="BCAR Logo" class="bcar-header-logo" />
+            <div class="bcar-header-titles">
+              <h2 class="bcar-main-title">BCAR</h2>
+              <p class="bcar-sub-title">BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN</p>
+              <p class="bcar-meta-subtitle">Trade Union Reg. No: TU/2026/14/132549 · Govt. of Rajasthan</p>
+            </div>
+          </div>
+          <div class="bcar-header-badge"><i class="pi pi-shield"></i> OFFICIAL MEMBERSHIP CARD</div>
+        </div>
+
+        <div class="bcar-card-profile-section">
+          <div class="bcar-photo-box">
+            <img [src]="cardPreviewMember.profilePhoto?.secure_url || cardPreviewMember.photograph?.secure_url || cardPreviewMember.profilePhoto || '/images/default-avatar.png'" alt="Member Photo" class="bcar-member-photo" />
+          </div>
+          <div class="bcar-profile-details">
+            <h3 class="bcar-member-name">{{ (cardPreviewMember.name || 'MEMBER NAME') | uppercase }}</h3>
+            <div class="bcar-mem-no">{{ cardPreviewMember.membershipNo || 'BCAR/RJ/0000' }}</div>
+            <div class="bcar-reg-no">Reg Number: {{ cardPreviewMember.registrationNumber || '—' }}</div>
+            <div class="bcar-bm-badge"><i class="pi pi-verified"></i> BANK MITRA / CSP</div>
+          </div>
+          <div class="bcar-profile-right-badges">
+            <div class="bcar-seal-badge">
+              <div class="seal-icon-circle"><i class="pi pi-check"></i></div>
+              <span class="seal-text-1">VERIFIED</span>
+              <span class="seal-text-2">BCAR MEMBER</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Info Grid with Icons & Dynamic Text Wrapping -->
+        <div class="bcar-card-grid">
+          <!-- Left Card Column: Personal Details -->
+          <div class="bcar-grid-col card-section-box">
+            <div class="section-box-title"><i class="pi pi-user"></i> Personal &amp; Location Details</div>
+            <div class="bcar-grid-item address-item">
+              <span class="bcar-grid-label"><i class="pi pi-map-marker icon-accent"></i> Address :</span>
+              <span class="bcar-grid-val text-wrap">{{ getFormattedAddress(cardPreviewMember) }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-compass icon-accent"></i> Sub District :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.subDistrict || cardPreviewMember.devBlock || cardPreviewMember.district || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-building icon-accent"></i> District :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.district || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-hashtag icon-accent"></i> Pin Code :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.pin || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-envelope icon-accent"></i> Email :</span>
+              <span class="bcar-grid-val text-wrap">{{ cardPreviewMember.email || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-sitemap icon-accent"></i> Link Branch :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.linkBranchName || '—' }}</span>
+            </div>
+          </div>
+
+          <!-- Right Card Column: Identity & Bank Details -->
+          <div class="bcar-grid-col card-section-box">
+            <div class="section-box-title"><i class="pi pi-id-card"></i> Identity &amp; Banking Details</div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-phone icon-accent"></i> Mobile No. :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.phone || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-lock icon-accent"></i> Aadhaar No. :</span>
+              <span class="bcar-grid-val monospace-val">{{ maskAadhaar(cardPreviewMember.aadhaarNumber) }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-credit-card icon-accent"></i> Bank Name :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.bankName || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-heart-fill icon-accent" style="color:#ef4444"></i> Blood Group :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.bloodGroup || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-calendar icon-accent"></i> DOB :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.dob || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-key icon-accent"></i> SSA Code :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.ssa || '—' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bcar-card-footer">
+          <div class="bcar-footer-meta">
+            <span>ISSUE DATE: {{ (cardPreviewMember.joinedAt || cardPreviewMember.createdAt) | date:'dd-MM-yyyy' }}</span>
+            <span>VALID UPTO: {{ (cardPreviewMember.joinedAt || cardPreviewMember.createdAt) | date:'dd-MM-yyyy' }}</span>
+            <span>MEMBER SINCE: {{ cardPreviewMember.createdAt | date:'yyyy' }}</span>
+          </div>
+          <div class="bcar-footer-sig">
+            <div class="sig-script">BCAR Authority</div>
+            <div class="sig-title">Authorized Signatory</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BACK SIDE -->
+      <div class="bcar-card-container bcar-card-back">
+        <div class="card-watermark-logo"></div>
+        <div class="bcar-back-header">
+          <h2>BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN</h2>
+          <h3>TERMS &amp; CONDITIONS FOR CSP MEMBERSHIP</h3>
+        </div>
+
+        <ul class="bcar-tc-list">
+          <li><span>✦</span> CSP is an independent entrepreneur having a franchise contract with Business Correspondent Association Rajasthan (BCAR).</li>
+          <li><span>✦</span> CSP is NOT an employee of BCAR or the Bank.</li>
+          <li><span>✦</span> CSP is authorized to serve Bank customers as per Bank specified BC services in his / her specific location only.</li>
+          <li><span>✦</span> This card is NOT transferable and must be produced by the CSP on demand.</li>
+          <li><span>✦</span> This card must be carried by the CSP at all times during operating hours.</li>
+          <li><span>✦</span> CSP Must Maintain safe keep of this card and return the card on termination of franchise contract to BCAR.</li>
+          <li><span>✦</span> BCAR is NOT liable for any misuse of this card.</li>
+        </ul>
+
+        <div class="bcar-back-footer-box">
+          <h4>If found, please return to:</h4>
+          <b>Business Correspondent Association Rajasthan</b>
+          <p>Reg. No. TU/2026/14/132549 · Helpline: +91 98297 15474 · Rajasthan, India</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button class="btn-secondary" (click)="showCardPreviewDialog = false">
+      <i class="pi pi-times"></i> Close Preview
+    </button>
+  </ng-template>
 </p-dialog>

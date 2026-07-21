@@ -1,6 +1,6 @@
 /* ================================================================
-   BCAR ADMIN PORTAL — Premium Government + Banking Theme
-   Navy Blue (#0B2D5C) + Gold (#D4AF37) on #F5F7FA
+   BCAR ADMIN PORTAL — Premium Light Blue Corporate Theme
+   Primary (#1E88E5) + Secondary (#42A5F5) + Accent (#0D47A1) on #F5FAFF
    ================================================================ */
 
 /* ── Layout Shell ─────────────────────────────────────────────── */
@@ -9,7 +9,7 @@
 .admin-shell {
   display: flex;
   min-height: 100vh;
-  background: #F5F7FA;
+  background: #F5FAFF;
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
@@ -17,14 +17,14 @@
 .admin-sidebar {
   width: 260px;
   min-height: 100vh;
-  background: #041a3d;
+  background: #0D47A1;
   display: flex;
   flex-direction: column;
   position: fixed;
   top: 0; left: 0; bottom: 0;
   z-index: 1000;
   transition: width 0.28s cubic-bezier(.4,0,.2,1);
-  border-right: 1px solid rgba(212,175,55,0.12);
+  border-right: 1px solid rgba(144, 202, 249, 0.25);
   overflow: hidden;
 }
 
@@ -36,7 +36,7 @@
   align-items: center;
   gap: 12px;
   padding: 18px 16px 18px;
-  border-bottom: 1px solid rgba(212,175,55,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
   min-height: 72px;
   flex-shrink: 0;
 }
@@ -48,7 +48,7 @@
   background: #ffffff;
   padding: 4px;
   flex-shrink: 0;
-  border: 1.5px solid rgba(212,175,55,0.3);
+  border: 2px solid #1E88E5;
 }
 
 .sb-brand-text { overflow: hidden; white-space: nowrap; }
@@ -56,14 +56,14 @@
   display: block;
   font-size: 18px;
   font-weight: 800;
-  color: #D4AF37;
+  color: #ffffff;
   font-family: 'Poppins', sans-serif;
   line-height: 1.1;
 }
 .sb-brand-sub {
   display: block;
   font-size: 9px;
-  color: rgba(255,255,255,0.4);
+  color: #90CAF9;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-top: 2px;
@@ -75,7 +75,7 @@
   align-items: center;
   gap: 10px;
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -92,7 +92,7 @@
 .sb-user-role {
   display: block;
   font-size: 10px;
-  color: rgba(255,255,255,0.45);
+  color: #90CAF9;
   text-transform: capitalize;
   margin-top: 2px;
 }
@@ -114,7 +114,7 @@
 .sb-section-label {
   font-size: 9px;
   font-weight: 700;
-  color: rgba(255,255,255,0.25);
+  color: #90CAF9;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 12px 10px 4px;
@@ -131,7 +131,7 @@
   justify-content: flex-start !important;
   gap: 12px;
   padding: 10px 12px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.75);
   border: none;
   background: none;
   width: 100%;
@@ -148,13 +148,14 @@
 
 .sb-item:hover {
   color: #ffffff;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.12);
 }
 
 .sb-item.active {
-  color: #D4AF37;
-  background: rgba(212,175,55,0.12);
-  border-left-color: #D4AF37;
+  color: #ffffff;
+  background: #1E88E5;
+  border-left-color: #90CAF9;
+  box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
 }
 
 .sb-icon {
@@ -191,11 +192,11 @@
   transition: opacity 0.2s;
 }
 .sb-badge.danger { background: #ef4444; }
-.sb-badge.success { background: #22c55e; }
+.sb-badge.success { background: #2E7D32; }
 
 .sb-divider {
   height: 1px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.12);
   margin: 8px 10px;
 }
 
@@ -221,7 +222,7 @@
 .admin-topbar {
   height: 64px;
   background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1.5px solid #90CAF9;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -229,7 +230,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(30, 136, 229, 0.06);
   flex-shrink: 0;
 }
 
@@ -242,24 +243,24 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
-  color: #64748b;
+  color: #4B5563;
   font-size: 18px;
   transition: background 0.15s, color 0.15s;
   display: flex;
   align-items: center;
 }
-.topbar-toggle:hover { background: #f1f5f9; color: #0B2D5C; }
+.topbar-toggle:hover { background: #EAF6FF; color: #1E88E5; }
 
 .topbar-breadcrumb {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #64748b;
+  color: #4B5563;
 }
 .topbar-breadcrumb .active {
-  color: #0B2D5C;
-  font-weight: 600;
+  color: #0D47A1;
+  font-weight: 700;
 }
 .topbar-breadcrumb i { font-size: 11px; }
 
@@ -269,13 +270,13 @@
   cursor: pointer;
   padding: 8px 10px;
   border-radius: 8px;
-  color: #64748b;
+  color: #4B5563;
   font-size: 15px;
   transition: background 0.15s, color 0.15s;
   display: flex;
   align-items: center;
 }
-.topbar-btn:hover { background: #f1f5f9; color: #0B2D5C; }
+.topbar-btn:hover { background: #EAF6FF; color: #1E88E5; }
 
 .topbar-user {
   display: flex;
@@ -283,8 +284,8 @@
   gap: 10px;
 }
 .topbar-user-info { display: flex; flex-direction: column; }
-.topbar-user-info span { font-size: 13px; font-weight: 600; color: #0B2D5C; line-height: 1; }
-.topbar-user-info small { font-size: 11px; color: #64748b; text-transform: capitalize; margin-top: 2px; }
+.topbar-user-info span { font-size: 13px; font-weight: 700; color: #0D47A1; line-height: 1; }
+.topbar-user-info small { font-size: 11px; color: #4B5563; text-transform: capitalize; margin-top: 2px; }
 
 /* ── Content ──────────────────────────────────────────────────── */
 .admin-content {
@@ -305,15 +306,15 @@
 .page-title {
   font-family: 'Poppins', sans-serif;
   font-size: 26px;
-  font-weight: 700;
-  color: #0B2D5C;
+  font-weight: 800;
+  color: #0D47A1;
   margin: 0;
   line-height: 1.2;
 }
 
 .page-subtitle {
   font-size: 13px;
-  color: #64748b;
+  color: #4B5563;
   margin: 6px 0 0;
 }
 
@@ -330,7 +331,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: linear-gradient(135deg, #0B2D5C, #1e40af);
+  background: linear-gradient(135deg, #1E88E5, #0D47A1);
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -338,19 +339,19 @@
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(11,45,92,0.25);
+  box-shadow: 0 3px 10px rgba(30, 136, 229, 0.25);
 }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(11,45,92,0.35); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(13, 71, 161, 0.35); }
 .btn-primary:disabled { opacity: 0.55; transform: none; cursor: not-allowed; }
 
 .btn-success {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 10px 20px;
-  background: linear-gradient(135deg, #059669, #10b981);
+  background: linear-gradient(135deg, #2E7D32, #1b5e20);
   color: #ffffff; border: none; border-radius: 10px;
   font-size: 13px; font-weight: 600; cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.25);
 }
 .btn-success:hover { transform: translateY(-1px); }
 .btn-success:disabled { opacity: 0.55; transform: none; cursor: not-allowed; }
@@ -370,30 +371,30 @@
 .btn-outline {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 10px 20px;
-  background: transparent;
-  color: #0B2D5C; border: 1.5px solid #0B2D5C; border-radius: 10px;
+  background: #EAF6FF;
+  color: #1E88E5; border: 1.5px solid #1E88E5; border-radius: 10px;
   font-size: 13px; font-weight: 600; cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
-.btn-outline:hover { background: #0B2D5C; color: #ffffff; }
+.btn-outline:hover { background: #1E88E5; color: #ffffff; }
 
 .btn-secondary {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 10px 20px;
-  background: #f1f5f9; color: #475569;
-  border: 1.5px solid #e2e8f0; border-radius: 10px;
+  background: #F5FAFF; color: #1F2937;
+  border: 1.5px solid #90CAF9; border-radius: 10px;
   font-size: 13px; font-weight: 600; cursor: pointer;
   transition: background 0.15s;
 }
-.btn-secondary:hover { background: #e2e8f0; }
+.btn-secondary:hover { background: #EAF6FF; }
 
 .btn-link {
   background: none; border: none;
-  color: #D4AF37; font-size: 13px; font-weight: 600;
+  color: #1E88E5; font-size: 13px; font-weight: 700;
   cursor: pointer; padding: 4px 0;
   transition: color 0.15s;
 }
-.btn-link:hover { color: #b8942a; }
+.btn-link:hover { color: #0D47A1; }
 
 /* ── Stat Cards ───────────────────────────────────────────────── */
 .stat-cards-grid {
@@ -1138,6 +1139,537 @@
 
 @media (max-width: 640px) {
   .form-grid-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   BCAR MEMBERSHIP CARD — LIGHT BLUE CORPORATE THEME STYLES
+   Palette: Background (#EAF6FF / #F0F8FF / #D6ECFF), Primary Text (#0A2540),
+            Highlight Labels (#1E88E5), Corporate Accent (#0B5ED7),
+            Borders (#4A90E2)
+   ════════════════════════════════════════════════════════════════ */
+
+.card-preview-modal-body {
+  padding: 10px 4px;
+}
+
+.card-preview-actions-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.theme-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #EAF6FF;
+  color: #0B5ED7;
+  border: 1px solid #4A90E2;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card-preview-actions-top .action-btns {
+  display: flex;
+  gap: 10px;
+}
+
+/* Card Wrapper & Containers */
+.bcar-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  align-items: center;
+  justify-content: center;
+}
+
+.bcar-card-container {
+  width: 100%;
+  max-width: 880px;
+  background: linear-gradient(135deg, #F8FBFF 0%, #EAF5FF 50%, #D0E8FF 100%);
+  border: 3px solid #0284C7;
+  border-radius: 20px;
+  box-shadow: 0 12px 36px rgba(2, 132, 199, 0.18);
+  padding: 24px 28px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  color: #0F172A;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+}
+
+.card-watermark-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  height: 380px;
+  background: url('/images/bcar-logo-official.jpg') no-repeat center center / contain;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-top-accent-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #0284C7 0%, #0369A1 50%, #0284C7 100%);
+}
+
+/* Front Card Header */
+.bcar-card-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid rgba(2, 132, 199, 0.25);
+}
+
+.bcar-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bcar-header-logo {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 3px solid #0284C7;
+  object-fit: contain;
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.2);
+}
+
+.bcar-main-title {
+  font-family: Georgia, serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: #0C4A6E;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.bcar-sub-title {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #0284C7;
+  margin: 4px 0 2px;
+  letter-spacing: 0.03em;
+}
+
+.bcar-meta-subtitle {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #475569;
+  margin: 0;
+}
+
+.bcar-header-badge {
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Front Card Profile Section */
+.bcar-card-profile-section {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.bcar-photo-box {
+  width: 140px;
+  height: 180px;
+  border: 2.5px solid #0284C7;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.18);
+}
+
+.bcar-member-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background-color: #f3f4f6;
+}
+
+.bcar-profile-details {
+  flex: 1;
+}
+
+.bcar-member-name {
+  font-size: 28px;
+  font-weight: 900;
+  color: #0C4A6E;
+  margin: 0 0 6px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.bcar-mem-no {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0284C7;
+  margin-bottom: 4px;
+  letter-spacing: 0.04em;
+}
+
+.bcar-reg-no {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 14px;
+}
+
+.bcar-bm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1.5px solid #0284C7;
+  padding: 5px 16px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.1);
+}
+
+.bcar-profile-right-badges {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+
+.bcar-seal-badge {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  border: 3px solid #BAE6FD;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.25);
+}
+
+.seal-icon-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0284C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  margin-bottom: 2px;
+}
+
+.seal-text-1 {
+  font-size: 8.5px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+.seal-text-2 {
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #E0F2FE;
+}
+
+.bcar-qr-box {
+  background: #ffffff;
+  border: 2px solid #38BDF8;
+  border-radius: 12px;
+  padding: 8px 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
+}
+
+.bcar-qr-img {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+}
+
+.qr-label {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #0369A1;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 2-Column Section Boxes */
+.bcar-card-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.card-section-box {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(4px);
+  border: 1.5px solid #BAE6FD;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.section-box-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0369A1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 6px;
+  margin-bottom: 2px;
+  border-bottom: 1.5px solid #E0F2FE;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bcar-grid-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.bcar-grid-item.address-item {
+  align-items: flex-start;
+}
+
+.bcar-grid-label {
+  font-weight: 700;
+  color: #0284C7;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-accent {
+  color: #0284C7;
+  font-size: 11px;
+}
+
+.bcar-grid-val {
+  font-weight: 600;
+  color: #0F172A;
+  flex: 1;
+}
+
+.monospace-val {
+  font-family: 'Consolas', 'Courier New', monospace;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: #0369A1;
+}
+
+.bcar-grid-val.text-wrap {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.35;
+}
+
+/* Footer Section */
+.bcar-card-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 12px;
+  border-top: 2px solid rgba(2, 132, 199, 0.25);
+  font-size: 11px;
+}
+
+.bcar-footer-meta {
+  display: flex;
+  gap: 16px;
+  color: #475569;
+  font-weight: 700;
+  flex-wrap: wrap;
+}
+
+.bcar-footer-sig {
+  text-align: center;
+  border-top: 1.5px solid #0284C7;
+  padding-top: 4px;
+  min-width: 140px;
+}
+
+.sig-script {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-weight: 800;
+  color: #0284C7;
+  font-size: 13.5px;
+}
+
+.sig-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #0C4A6E;
+}
+
+/* Back Side Card */
+.bcar-back-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #0284C7;
+  padding-bottom: 8px;
+}
+
+.bcar-back-header h2 {
+  font-size: 16px;
+  font-weight: 900;
+  color: #0C4A6E;
+  margin: 0 0 4px;
+}
+
+.bcar-back-header h3 {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0284C7;
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+
+.bcar-tc-list {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bcar-tc-list li {
+  font-size: 12px;
+  color: #0F172A;
+  line-height: 1.45;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.bcar-tc-list li span {
+  color: #0284C7;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.bcar-back-footer-box {
+  position: relative;
+  z-index: 1;
+  background: #E0F2FE;
+  border: 1.5px solid #38BDF8;
+  border-radius: 12px;
+  padding: 12px 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.1);
+}
+
+.bcar-back-footer-box h4 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: #0284C7;
+  font-weight: 800;
+}
+
+.bcar-back-footer-box b {
+  display: block;
+  font-size: 13px;
+  color: #0C4A6E;
+}
+
+.bcar-back-footer-box p {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: #475569;
+}
+
+/* Responsive adjustments for mobile preview */
+@media (max-width: 680px) {
+  .bcar-card-container {
+    padding: 16px 18px;
+  }
+  .bcar-card-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .bcar-card-profile-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .bcar-profile-right-badges {
+    margin-top: 10px;
+  }
+  .bcar-card-grid {
     grid-template-columns: 1fr;
   }
 }

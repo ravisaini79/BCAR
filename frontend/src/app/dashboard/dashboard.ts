@@ -53,6 +53,12 @@ type User = {
   bankName?: string;
   linkBranchName?: string;
   dateOfStartingCsp?: string;
+  profilePhoto?: any;
+  photograph?: any;
+  subDistrict?: string;
+  aadhaarNumber?: string;
+  bloodGroup?: string;
+  [key: string]: any;
 };
 
 @Component({
@@ -134,6 +140,8 @@ export class DashboardComponent implements OnInit {
   showGrievanceDialog = false;
   showViewDialog = false;
   selectedMember: User | null = null;
+  showCardPreviewDialog = false;
+  cardPreviewMember: User | null = null;
 
   // Edit Profile Dialog state
   showEditProfileDialog = false;
@@ -258,34 +266,37 @@ export class DashboardComponent implements OnInit {
   }
 
   get displayedMembers(): User[] {
-    const filter = this.memberFilter.toLowerCase().trim();
+    if (!Array.isArray(this.members)) return [];
+    const filter = (this.memberFilter || '').toLowerCase().trim();
     let list = this.members;
 
     // Filter by category state if not "all members"
     if (this.activeView === 'pending') {
-      list = this.members.filter(m => m.status === 'pending' || m.status === 'Pending Approval');
+      list = this.members.filter(m => m && (m.status === 'pending' || m.status === 'Pending Approval'));
     } else if (this.activeView === 'approved') {
-      list = this.members.filter(m => m.status === 'active' || m.status === 'Approved');
+      list = this.members.filter(m => m && (m.status === 'active' || m.status === 'Approved'));
     } else if (this.activeView === 'rejected') {
-      list = this.members.filter(m => m.status === 'rejected');
+      list = this.members.filter(m => m && m.status === 'rejected');
     }
 
     if (!filter) return list;
 
     return list.filter(
-      m =>
+      m => m && (
         (m.name && m.name.toLowerCase().includes(filter)) ||
-        (m.phone && m.phone.includes(filter)) ||
+        (m.phone && String(m.phone).includes(filter)) ||
         (m.email && m.email.toLowerCase().includes(filter)) ||
         (m.district && m.district.toLowerCase().includes(filter)) ||
         (m.registrationNumber && m.registrationNumber.toLowerCase().includes(filter)) ||
         (m.membershipNo && m.membershipNo.toLowerCase().includes(filter))
+      )
     );
   }
 
   get filteredGrievances(): any[] {
+    if (!Array.isArray(this.grievances)) return [];
     if (this.grievanceFilter === 'all') return this.grievances;
-    return this.grievances.filter(g => g.status === this.grievanceFilter);
+    return this.grievances.filter(g => g && g.status === this.grievanceFilter);
   }
 
   // Navigation
@@ -319,7 +330,7 @@ export class DashboardComponent implements OnInit {
     // Always fetch notices
     this.dashboardService.getNotices().subscribe({
       next: n => {
-        this.notices = n;
+        this.notices = Array.isArray(n) ? n : (n?.notices || n?.data || []);
         this.checkLoadingState();
       },
       error: () => this.checkLoadingState()
@@ -329,8 +340,9 @@ export class DashboardComponent implements OnInit {
     if (this.isMember) {
       this.dashboardService.getMyGrievances().subscribe({
         next: g => {
-          this.grievances = g;
-          this.openGrievancesCount = g.filter(item => item.status === 'open').length;
+          const list = Array.isArray(g) ? g : (g?.grievances || g?.data || []);
+          this.grievances = list;
+          this.openGrievancesCount = list.filter((item: any) => item && item.status === 'open').length;
           this.checkLoadingState();
         },
         error: () => this.checkLoadingState()
@@ -339,17 +351,20 @@ export class DashboardComponent implements OnInit {
       // Admin / coordinator flow
       this.dashboardService.getStats().subscribe({
         next: s => {
-          this.stats = s;
+          if (s) {
+            this.stats = s.data || s;
+          }
           this.checkLoadingState();
         },
         error: () => this.checkLoadingState()
       });
 
       this.dashboardService.getMembers().subscribe({
-        next: m => {
-          this.members = m;
-          this.recentMembers = m.slice(0, 5);
-          this.pendingCount = m.filter(item => item.status === 'pending' || item.status === 'Pending Approval').length;
+        next: res => {
+          const memberList = Array.isArray(res) ? res : (res?.members || res?.data?.members || []);
+          this.members = memberList;
+          this.recentMembers = memberList.slice(0, 5);
+          this.pendingCount = memberList.filter((item: any) => item && (item.status === 'pending' || item.status === 'Pending Approval')).length;
           this.generateCharts();
           this.checkLoadingState();
         },
@@ -357,9 +372,10 @@ export class DashboardComponent implements OnInit {
       });
 
       this.dashboardService.getAllGrievances().subscribe({
-        next: g => {
-          this.grievances = g;
-          this.openGrievancesCount = g.filter(item => item.status === 'open').length;
+        next: res => {
+          const list = Array.isArray(res) ? res : (res?.grievances || res?.data || []);
+          this.grievances = list;
+          this.openGrievancesCount = list.filter((item: any) => item && item.status === 'open').length;
           this.checkLoadingState();
         },
         error: () => this.checkLoadingState()
@@ -368,12 +384,8 @@ export class DashboardComponent implements OnInit {
   }
 
   private checkLoadingState() {
-    this.cdr.detectChanges();
-    // Basic debounce check for loading finish
-    setTimeout(() => {
-      this.loading = false;
-      this.cdr.detectChanges();
-    }, 100);
+    this.loading = false;
+    this.cdr.markForCheck();
   }
 
   // Status mapping helpers
@@ -573,6 +585,28 @@ export class DashboardComponent implements OnInit {
       console.error('Card rendering failed:', err);
       this.toastService.error('Failed to render card for emailing.');
     }
+  }
+
+  previewCard(m: User) {
+    this.cardPreviewMember = m;
+    this.showCardPreviewDialog = true;
+  }
+
+  async printCard(m: User) {
+    this.toastService.info(`Preparing print view for ${m.name}...`);
+    try {
+      await this.cardService.printCard(m);
+    } catch (err) {
+      console.error('Print card failed:', err);
+      this.toastService.error('Failed to open print view.');
+    }
+  }
+
+  getFormattedAddress(m: any): string {
+    if (!m) return '—';
+    const parts = [m.homeAddressVill, m.gramPanchayat, m.devBlock, m.district].filter(Boolean);
+    const addr = parts.join(', ');
+    return m.pin ? `${addr} - ${m.pin}` : (addr || '—');
   }
 
   // Dialog handling
@@ -867,5 +901,15 @@ export class DashboardComponent implements OnInit {
         }
       ]
     };
+  }
+
+  maskAadhaar(aadhaar: string | undefined): string {
+    if (!aadhaar) return '—';
+    const clean = aadhaar.toString().replace(/\D/g, '');
+    if (clean.length >= 4) {
+      const last4 = clean.slice(-4);
+      return `XXXX XXXX ${last4}`;
+    }
+    return aadhaar;
   }
 }

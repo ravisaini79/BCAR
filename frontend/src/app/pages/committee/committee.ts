@@ -72,7 +72,7 @@ export class CommitteeComponent {
       photo: '/images/suraj_karan_bairwa.png',
       role: 'बैंक ऑफ बड़ौदा (BC)',
       roleEn: 'Bank of Baroda BC Coordinator',
-      location: 'राजस्थान',
+      location: 'मछवा, जयपुर ग्रामीण, राजस्थान',
       quote: 'बैंक मित्रों के सशक्तिकरण और एकता के लिए समर्पित प्रयास।'
     },
     {
@@ -81,7 +81,7 @@ export class CommitteeComponent {
       photo: '/images/rakesh_kumar_sharma.jpg',
       role: 'स्टेट बैंक ऑफ इंडिया (BC)',
       roleEn: 'State Bank of India BC Coordinator',
-      location: 'राजस्थान',
+      location: 'बहरोड़, अलवर, राजस्थान',
       quote: 'बैंक मित्रों की समस्याओं का त्वरित समाधान और संगठन का सुदृढ़ीकरण ही हमारा संकल्प है।'
     },
     {
@@ -90,7 +90,7 @@ export class CommitteeComponent {
       photo: '/images/babu_lal_saini.jpg',
       role: 'स्टेट बैंक ऑफ इंडिया (BC)',
       roleEn: 'State Bank of India BC Coordinator',
-      location: 'राजस्थान',
+      location: 'जयपुर, राजस्थान',
       quote: 'बैंक मित्रों के कल्याण और अधिकारों के संरक्षण के लिए निरंतर संघर्षरत।'
     },
     {
@@ -99,7 +99,7 @@ export class CommitteeComponent {
       photo: '/images/pawan_kumar_verma.png',
       role: 'स्टेट बैंक ऑफ इंडिया (CSP)',
       roleEn: 'State Bank of India CSP Coordinator',
-      location: 'राजस्थान',
+      location: 'जूनिया (केकड़ी, अजमेर) ',
       quote: 'सभी बैंक मित्रों को संगठित कर उनके उज्ज्वल भविष्य का मार्ग प्रशस्त करना।'
     },
     {
@@ -108,7 +108,7 @@ export class CommitteeComponent {
       photo: '/images/rajesh_kumar_saini.png',
       role: 'बैंक ऑफ बड़ौदा (CSP)',
       roleEn: 'Bank of Baroda CSP Coordinator',
-      location: 'राजस्थान',
+      location: 'अलवर, राजस्थान',
       quote: 'सच्ची कर्तव्यनिष्ठा और सामूहिक प्रयास से ही हम अपने अधिकारों को प्राप्त कर सकते हैं।'
     },
     {
@@ -117,7 +117,7 @@ export class CommitteeComponent {
       photo: '/images/jitendra_kumar_teli.png',
       role: 'बैंक ऑफ बड़ौदा (BC)',
       roleEn: 'Bank of Baroda BC Coordinator',
-      location: 'राजस्थान',
+      location: 'चकुंडा प्रतापगढ़ , राजस्थान',
       quote: 'संगठन में ही शक्ति है और हमारा लक्ष्य बैंक मित्रों के हितों को सुरक्षित रखना है।'
     },
     {
@@ -126,7 +126,7 @@ export class CommitteeComponent {
       photo: '/images/birdhi_chand_raidas.png',
       role: 'राजस्थान ग्रामीण बैंक (BC)',
       roleEn: 'Rajasthan Gramin Bank BC Coordinator',
-      location: 'राजस्थान',
+      location: 'सेमलोप प्रतापगढ़ , राजस्थान',
       quote: 'ग्रामीण क्षेत्रों में वित्तीय समावेशन को मजबूत करने के साथ बैंक मित्रों की उन्नति के लिए संकल्पित।'
     },
     {
@@ -135,7 +135,7 @@ export class CommitteeComponent {
       photo: '/images/shimbhu_dayal_sharma.png',
       role: 'बैंक ऑफ बड़ौदा (CSP)',
       roleEn: 'Bank of Baroda CSP Coordinator',
-      location: 'राजस्थान',
+      location: 'सीकर, राजस्थान',
       quote: 'पारदर्शिता और निष्पक्षता ही सेवा का मुख्य आधार है।'
     },
     {
@@ -144,7 +144,7 @@ export class CommitteeComponent {
       photo: '/images/lunaram_khileri.jpg',
       role: 'पंजाब नेशनल बैंक (BC)',
       roleEn: 'Punjab National Bank BC Coordinator',
-      location: 'राजस्थान',
+      location: 'लूणकरणसर बीकानेर',
       quote: 'एकता और सेवा भाव से ही संगठन सुदृढ़ होता है और बैंक मित्रों की समस्याओं का समाधान संभव है।'
     },
     {
@@ -153,7 +153,7 @@ export class CommitteeComponent {
       photo: '/images/reena_garg.jpg',
       role: 'स्टेट बैंक ऑफ इंडिया (CSP)',
       roleEn: 'State Bank of India CSP Coordinator',
-      location: 'राजस्थान',
+      location: 'पीलीबंगा, हनुमानगढ़, राजस्थान',
       quote: 'ईमानदारी और लगन से की गई सेवा ही समाज में सम्मान और अधिकार दिलाती है।'
     },
     {
@@ -162,7 +162,7 @@ export class CommitteeComponent {
       photo: '/images/kamal_rajak.png',
       role: 'स्टेट बैंक ऑफ इंडिया (CSP)',
       roleEn: 'State Bank of India CSP Coordinator',
-      location: 'राजस्थान',
+      location: 'सांगानेर, जयपुर',
       quote: 'सामूहिक शक्ति और संगठित आवाज़ ही हमारी समस्याओं के समाधान की कुंजी है।'
     },
     {
@@ -171,7 +171,7 @@ export class CommitteeComponent {
       photo: '/images/nasrin_bano.png',
       role: 'स्टेट बैंक ऑफ इंडिया (CSP)',
       roleEn: 'State Bank of India CSP Coordinator',
-      location: 'राजस्थान',
+      location: 'अलवर, राजस्थान',
       quote: 'बैंक मित्रों की उन्नति और उनके अधिकारों की रक्षा के प्रति सदैव तत्पर।'
     }
   ];

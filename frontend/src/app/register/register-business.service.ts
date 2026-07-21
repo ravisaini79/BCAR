@@ -82,7 +82,7 @@ export class RegisterBusinessService {
       profileImage:      [null, Validators.required],
       photograph:        [null, Validators.required],
       aadhaarCard:       [null, Validators.required],
-      aadhaarBack:       [null],
+      aadhaarBack:       [null, Validators.required],
       panCard:           [null, Validators.required],
       bankBcCertificate: [null, Validators.required],
     });

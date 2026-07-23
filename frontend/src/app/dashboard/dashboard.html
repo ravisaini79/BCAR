@@ -17,7 +17,7 @@
 
     <!-- User Card -->
     <div class="sb-user">
-      <p-avatar [label]="userInitial" shape="circle" size="normal" />
+      <p-avatar [image]="getMemberPhoto(user)" [label]="userInitial" shape="circle" size="normal" />
       <div class="sb-user-info">
         <span class="sb-user-name">{{ user.name }}</span>
         <span class="sb-user-role">{{ user.role | titlecase }}</span>
@@ -76,6 +76,21 @@
         <span class="sb-badge danger" *ngIf="openGrievancesCount > 0">{{ openGrievancesCount }}</span>
       </button>
 
+      <div class="sb-divider"></div>
+
+      <!-- Account Settings -->
+      <div class="sb-section-label">My Account</div>
+
+      <button class="sb-item" (click)="viewMember(user)">
+        <i class="pi pi-user sb-icon"></i>
+        <span class="sb-label">View Profile</span>
+      </button>
+
+      <button class="sb-item" (click)="openEditProfile()">
+        <i class="pi pi-user-edit sb-icon"></i>
+        <span class="sb-label">Edit Profile</span>
+      </button>
+
       <!-- Gallery & News (Admin only) -->
       <ng-container *ngIf="isAdmin">
         <div class="sb-section-label">Content Management</div>
@@ -123,7 +138,7 @@
           <i class="pi pi-refresh"></i>
         </button>
         <div class="topbar-user" (click)="openEditProfile()" style="cursor:pointer;" pTooltip="Click to edit profile" tooltipPosition="bottom">
-          <p-avatar [label]="userInitial" shape="circle" />
+          <p-avatar [image]="getMemberPhoto(user)" [label]="userInitial" shape="circle" />
           <div class="topbar-user-info">
             <span>{{ user.name }} <i class="pi pi-user-edit" style="font-size:12px;margin-left:4px;color:#d4af37"></i></span>
             <small>{{ user.role | titlecase }}</small>
@@ -273,7 +288,7 @@
               <tr>
                 <td>
                   <div class="member-cell">
-                    <p-avatar [label]="m.name.charAt(0).toUpperCase()" shape="circle" size="normal" />
+                    <p-avatar [image]="getMemberPhoto(m)" [label]="getInitial(m.name)" shape="circle" size="normal" />
                     <div><b>{{ m.name }}</b><small>{{ m.email }}</small></div>
                   </div>
                 </td>
@@ -389,7 +404,7 @@
                 <td><span class="row-num">{{ i + 1 }}</span></td>
                 <td>
                   <div class="member-cell">
-                    <p-avatar [label]="m.name.charAt(0).toUpperCase()" shape="circle" />
+                    <p-avatar [image]="getMemberPhoto(m)" [label]="getInitial(m.name)" shape="circle" />
                     <div>
                       <b>{{ m.name }}</b>
                       <small>{{ m.email }}</small>
@@ -407,6 +422,12 @@
                   <div class="row-actions">
                     <button class="action-btn view" (click)="viewMember(m)" pTooltip="View Profile" tooltipPosition="top">
                       <i class="pi pi-eye"></i>
+                    </button>
+                    <button class="action-btn edit"
+                            *ngIf="isAdmin"
+                            (click)="openEditProfile(m)" pTooltip="Edit Profile" tooltipPosition="top"
+                            style="background-color: #fef08a; color: #854d0e;">
+                      <i class="pi pi-pencil"></i>
                     </button>
                     <button class="action-btn approve"
                             *ngIf="m.status === 'pending' || m.status === 'Pending Approval'"
@@ -596,7 +617,7 @@
 
   <div class="member-profile" *ngIf="selectedMember">
     <div class="profile-header">
-      <p-avatar [label]="selectedMember.name.charAt(0).toUpperCase()" shape="circle" size="xlarge" />
+      <p-avatar [image]="getMemberPhoto(selectedMember)" [label]="getInitial(selectedMember.name)" shape="circle" size="xlarge" />
       <div>
         <h2>{{ selectedMember.name }}</h2>
         <p>{{ selectedMember.email }} &bull; {{ selectedMember.phone }}</p>
@@ -778,6 +799,17 @@
 
   <div class="dialog-form" *ngIf="editMemberData">
     
+    <!-- Profile Photo Upload -->
+    <h4 class="form-section-title"><i class="pi pi-image"></i> Profile Photo</h4>
+    <div class="form-field mb-4" style="padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 20px;">
+      <p-avatar [image]="getMemberPhoto(editMemberData)" [label]="getInitial(editMemberData.name)" shape="circle" size="xlarge" style="box-shadow: 0 4px 10px rgba(0,0,0,0.06); border: 2px solid #0B5ED7;" />
+      <div style="flex: 1;">
+        <label class="d-block mb-2" style="font-weight: 700; color: #1e293b; font-size: 13px;">Change Profile Photograph</label>
+        <input type="file" accept="image/*" (change)="onProfilePhotoSelected($event)" class="form-control" style="font-size: 12.5px; padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;" />
+        <small class="text-muted d-block mt-1" style="font-size: 11px;">Upload passport-size image (Max size: 2MB). Resizes automatically for the card.</small>
+      </div>
+    </div>
+    
     <!-- Personal Details -->
     <h4 class="form-section-title"><i class="pi pi-user"></i> Personal Information</h4>
     <div class="form-grid-2col">
@@ -923,90 +955,103 @@
       <div class="bcar-card-container bcar-card-front">
         <div class="card-watermark-logo"></div>
         <div class="card-top-accent-bar"></div>
+        
+        <!-- Header -->
         <div class="bcar-card-header">
           <div class="bcar-header-left">
             <img src="/images/bcar-logo-official.jpg" alt="BCAR Logo" class="bcar-header-logo" />
             <div class="bcar-header-titles">
               <h2 class="bcar-main-title">BCAR</h2>
               <p class="bcar-sub-title">BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN</p>
-              <p class="bcar-meta-subtitle">Trade Union Reg. No: TU/2026/14/132549 · Govt. of Rajasthan</p>
+              <p class="bcar-meta-subtitle">राजस्थान के बैंक मित्रों का सशक्त संगठन</p>
             </div>
           </div>
-          <div class="bcar-header-badge"><i class="pi pi-shield"></i> OFFICIAL MEMBERSHIP CARD</div>
+          <div class="bcar-header-badge">OFFICIAL MEMBERSHIP CARD</div>
         </div>
 
+        <!-- Profile Section -->
         <div class="bcar-card-profile-section">
-          <div class="bcar-photo-box">
-            <img [src]="cardPreviewMember.profilePhoto?.secure_url || cardPreviewMember.photograph?.secure_url || cardPreviewMember.profilePhoto || '/images/default-avatar.png'" alt="Member Photo" class="bcar-member-photo" />
+          <div class="bcar-photo-box-wrapper">
+            <div class="bcar-photo-box">
+              <img [src]="cardPreviewMember.profilePhoto?.secure_url || cardPreviewMember.photograph?.secure_url || cardPreviewMember.profilePhoto || '/images/default-avatar.png'" alt="Member Photo" class="bcar-member-photo" />
+            </div>
+            <div class="bcar-mem-no-badge">{{ cardPreviewMember.membershipNo || 'BCAR/RJ/00001' }}</div>
           </div>
+          
           <div class="bcar-profile-details">
             <h3 class="bcar-member-name">{{ (cardPreviewMember.name || 'MEMBER NAME') | uppercase }}</h3>
-            <div class="bcar-mem-no">{{ cardPreviewMember.membershipNo || 'BCAR/RJ/0000' }}</div>
-            <div class="bcar-reg-no">Reg Number: {{ cardPreviewMember.registrationNumber || '—' }}</div>
-            <div class="bcar-bm-badge"><i class="pi pi-verified"></i> BANK MITRA / CSP</div>
+            <div class="bcar-membership-type">Membership Type : <span class="type-highlight">BANK MITRA (CSP)</span></div>
+            
+            <!-- Issue Date Block -->
+            <div class="bcar-dates-row">
+              <div class="date-block">
+                <i class="pi pi-calendar date-icon"></i>
+                <div class="date-texts">
+                  <span class="date-lbl">ISSUE DATE</span>
+                  <span class="date-val">{{ (cardPreviewMember.joinedAt || cardPreviewMember.createdAt) | date:'dd-MM-yyyy' }}</span>
+                </div>
+              </div>
+            </div>
           </div>
+
           <div class="bcar-profile-right-badges">
             <div class="bcar-seal-badge">
               <div class="seal-icon-circle"><i class="pi pi-check"></i></div>
               <span class="seal-text-1">VERIFIED</span>
-              <span class="seal-text-2">BCAR MEMBER</span>
+              <span class="seal-text-2">MEMBER</span>
             </div>
           </div>
         </div>
 
-        <!-- 2-Column Info Grid with Icons & Dynamic Text Wrapping -->
+        <!-- 2-Column Info Grid -->
         <div class="bcar-card-grid">
-          <!-- Left Card Column: Personal Details -->
+          <!-- Left Column -->
           <div class="bcar-grid-col card-section-box">
-            <div class="section-box-title"><i class="pi pi-user"></i> Personal &amp; Location Details</div>
+            <div class="section-box-title">PERSONAL & LOCATION DETAILS</div>
             <div class="bcar-grid-item address-item">
               <span class="bcar-grid-label"><i class="pi pi-map-marker icon-accent"></i> Address :</span>
               <span class="bcar-grid-val text-wrap">{{ getFormattedAddress(cardPreviewMember) }}</span>
             </div>
             <div class="bcar-grid-item">
               <span class="bcar-grid-label"><i class="pi pi-compass icon-accent"></i> Sub District :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.subDistrict || cardPreviewMember.devBlock || cardPreviewMember.district || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-building icon-accent"></i> District :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.district || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-hashtag icon-accent"></i> Pin Code :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.pin || '—' }}</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.subDistrict || cardPreviewMember.devBlock || '—' }}</span>
             </div>
             <div class="bcar-grid-item">
               <span class="bcar-grid-label"><i class="pi pi-envelope icon-accent"></i> Email :</span>
               <span class="bcar-grid-val text-wrap">{{ cardPreviewMember.email || '—' }}</span>
             </div>
             <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-sitemap icon-accent"></i> Link Branch :</span>
+              <span class="bcar-grid-label"><i class="pi pi-phone icon-accent"></i> Contact :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.phone || '—' }}</span>
+            </div>
+            <div class="bcar-grid-item">
+              <span class="bcar-grid-label"><i class="pi pi-link icon-accent"></i> Link Branch :</span>
               <span class="bcar-grid-val">{{ cardPreviewMember.linkBranchName || '—' }}</span>
             </div>
           </div>
 
-          <!-- Right Card Column: Identity & Bank Details -->
+          <!-- Right Column -->
           <div class="bcar-grid-col card-section-box">
-            <div class="section-box-title"><i class="pi pi-id-card"></i> Identity &amp; Banking Details</div>
+            <div class="section-box-title">IDENTITY & BANKING DETAILS</div>
             <div class="bcar-grid-item">
               <span class="bcar-grid-label"><i class="pi pi-phone icon-accent"></i> Mobile No. :</span>
               <span class="bcar-grid-val">{{ cardPreviewMember.phone || '—' }}</span>
             </div>
             <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-lock icon-accent"></i> Aadhaar No. :</span>
+              <span class="bcar-grid-label"><i class="pi pi-id-card icon-accent"></i> Aadhaar No. :</span>
               <span class="bcar-grid-val monospace-val">{{ maskAadhaar(cardPreviewMember.aadhaarNumber) }}</span>
             </div>
             <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-credit-card icon-accent"></i> Bank Name :</span>
+              <span class="bcar-grid-label"><i class="pi pi-building icon-accent"></i> Bank Name :</span>
               <span class="bcar-grid-val">{{ cardPreviewMember.bankName || '—' }}</span>
             </div>
             <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-heart-fill icon-accent" style="color:#ef4444"></i> Blood Group :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.bloodGroup || '—' }}</span>
+              <span class="bcar-grid-label"><i class="pi pi-wallet icon-accent"></i> Bank Account No. :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.bankAccountNumber || cardPreviewMember.accountNo || '—' }}</span>
             </div>
             <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-calendar icon-accent"></i> DOB :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.dob || '—' }}</span>
+              <span class="bcar-grid-label"><i class="pi pi-credit-card icon-accent"></i> IFSC Code :</span>
+              <span class="bcar-grid-val">{{ cardPreviewMember.ifsc || '—' }}</span>
             </div>
             <div class="bcar-grid-item">
               <span class="bcar-grid-label"><i class="pi pi-key icon-accent"></i> SSA Code :</span>
@@ -1017,13 +1062,7 @@
 
         <div class="bcar-card-footer">
           <div class="bcar-footer-meta">
-            <span>ISSUE DATE: {{ (cardPreviewMember.joinedAt || cardPreviewMember.createdAt) | date:'dd-MM-yyyy' }}</span>
-            <span>VALID UPTO: {{ (cardPreviewMember.joinedAt || cardPreviewMember.createdAt) | date:'dd-MM-yyyy' }}</span>
-            <span>MEMBER SINCE: {{ cardPreviewMember.createdAt | date:'yyyy' }}</span>
-          </div>
-          <div class="bcar-footer-sig">
-            <div class="sig-script">BCAR Authority</div>
-            <div class="sig-title">Authorized Signatory</div>
+            BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN
           </div>
         </div>
       </div>
@@ -1033,23 +1072,55 @@
         <div class="card-watermark-logo"></div>
         <div class="bcar-back-header">
           <h2>BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN</h2>
-          <h3>TERMS &amp; CONDITIONS FOR CSP MEMBERSHIP</h3>
+          <div class="bcar-tc-badge">TERMS & CONDITIONS</div>
         </div>
 
-        <ul class="bcar-tc-list">
-          <li><span>✦</span> CSP is an independent entrepreneur having a franchise contract with Business Correspondent Association Rajasthan (BCAR).</li>
-          <li><span>✦</span> CSP is NOT an employee of BCAR or the Bank.</li>
-          <li><span>✦</span> CSP is authorized to serve Bank customers as per Bank specified BC services in his / her specific location only.</li>
-          <li><span>✦</span> This card is NOT transferable and must be produced by the CSP on demand.</li>
-          <li><span>✦</span> This card must be carried by the CSP at all times during operating hours.</li>
-          <li><span>✦</span> CSP Must Maintain safe keep of this card and return the card on termination of franchise contract to BCAR.</li>
-          <li><span>✦</span> BCAR is NOT liable for any misuse of this card.</li>
-        </ul>
+        <!-- Double-Column Terms List -->
+        <div class="bcar-tc-container">
+          <div class="bcar-tc-col">
+            <div class="tc-item">
+              <i class="pi pi-check tc-bullet"></i>
+              <p>CSP is an independent entrepreneur having a franchise contract with <b>BCAR</b>.</p>
+            </div>
+            <div class="tc-item">
+              <i class="pi pi-check tc-bullet"></i>
+              <p>CSP is <b>NOT</b> an employee of BCAR or the Bank.</p>
+            </div>
+            <div class="tc-item">
+              <i class="pi pi-check tc-bullet"></i>
+              <p>CSP is authorized to serve Bank customers as per Bank specified BC services in <b>his / her specific</b> location only.</p>
+            </div>
+            <div class="tc-item">
+              <i class="pi pi-check tc-bullet"></i>
+              <p>This card is <b>NOT</b> transferable and must be produced by the CSP on <b>demand</b>.</p>
+            </div>
+          </div>
+          <div class="bcar-tc-col">
+            <div class="tc-item">
+              <i class="pi pi-check tc-bullet"></i>
+              <p>This card must be carried by the CSP at all times during operating <b>hours</b>.</p>
+            </div>
+            <div class="tc-item">
+              <i class="pi pi-check tc-bullet"></i>
+              <p>CSP must maintain safe keep of this card and return the card on termination of <b>franchise</b> contract to <b>BCAR</b>.</p>
+            </div>
+            <div class="tc-item">
+              <i class="pi pi-check tc-bullet"></i>
+              <p>BCAR is <b>NOT liable</b> for any misuse of this card.</p>
+            </div>
+          </div>
+        </div>
 
+        <!-- Return Box -->
         <div class="bcar-back-footer-box">
-          <h4>If found, please return to:</h4>
-          <b>Business Correspondent Association Rajasthan</b>
-          <p>Reg. No. TU/2026/14/132549 · Helpline: +91 98297 15474 · Rajasthan, India</p>
+          <div class="return-logo">
+            <i class="pi pi-map-marker"></i>
+          </div>
+          <div class="return-texts">
+            <h4>If found, please return to:</h4>
+            <h5>Business Correspondent Association Rajasthan</h5>
+            <p>Reg. No.: TU/2026/14/132549   |   Helpline: +91 98291 15474   |   Rajasthan, India</p>
+          </div>
         </div>
       </div>
     </div>

@@ -34,6 +34,106 @@ export class NewsDetailsComponent implements OnInit {
   loading  = signal<boolean>(true);
   error    = signal<boolean>(false);
   copied   = signal<boolean>(false);
+  isImageZoomed = signal<boolean>(false);
+
+  isBankMitra = computed(() => {
+    return this.article()?.slug === 'bcar-bank-mitra';
+  });
+
+  hasPdf = computed(() => {
+    const art = this.article();
+    return art && (art.pdfUrl || art.pdf || art.category === 'circular');
+  });
+
+  // Stable random/pseudo-mock metadata generated from the article ID
+  circularMeta = computed(() => {
+    const art = this.article();
+    if (!art) return null;
+    
+    // Simple hash from string to get consistent seed
+    let seed = 0;
+    const str = art._id || art.slug || 'seed';
+    for (let i = 0; i < str.length; i++) {
+      seed += str.charCodeAt(i);
+    }
+    
+    // Stable calculations
+    const viewsCount = (seed * 11) % 930 + 245;
+    const cirNum = `BCAR/2026/DIR/${(seed % 300 + 100)}`;
+    
+    let docType = 'Circular';
+    let deptName = 'Secretariat Office';
+    if (art.category === 'policy') {
+      docType = 'Policy Directive';
+      deptName = 'Regulatory Compliance Desk';
+    } else if (art.category === 'event') {
+      docType = 'Assembly Notification';
+      deptName = 'State Executive Committee';
+    } else if (art.category === 'alert') {
+      docType = 'Urgent Notice';
+      deptName = 'IT Operations Board';
+    }
+
+    return {
+      views: viewsCount,
+      documentNumber: cirNum,
+      documentType: docType,
+      department: deptName
+    };
+  });
+
+  zoomImage(): void {
+    this.isImageZoomed.set(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeZoom(): void {
+    this.isImageZoomed.set(false);
+    document.body.style.overflow = '';
+  }
+
+  printArticle(): void {
+    window.print();
+  }
+
+  downloadCircular(): void {
+    const art = this.article();
+    if (!art) return;
+    const imageUrl = this.getImageUrl(art);
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.target = '_blank';
+    link.download = `${art.slug}-circular.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  shareArticle(platform: string): void {
+    const url = window.location.href;
+    const title = this.displayTitle();
+
+    if (platform === 'native') {
+      if (navigator.share) {
+        navigator.share({
+          title: title,
+          text: this.article()?.shortDescription || title,
+          url: url
+        }).catch(err => console.error('Share failed:', err));
+        return;
+      } else {
+        platform = 'copy';
+      }
+    }
+
+    if (platform === 'copy') {
+      this.copyLink();
+      return;
+    }
+
+    const shareLink = this.getShareLink(platform as any);
+    window.open(shareLink, '_blank', 'width=600,height=450');
+  }
 
   // Clean HTML description: sanitizes &nbsp;, wraps tables for responsive scroll, and demotes inner h1 tags
   cleanFullDescription = computed(() => {
@@ -47,6 +147,10 @@ export class NewsDetailsComponent implements OnInit {
     if (raw.includes('<table') && !raw.includes('table-responsive')) {
       raw = raw.replace(/<table([^>]*)>/gi, '<div class="table-responsive"><table class="news-content-table"$1>').replace(/<\/table>/gi, '</table></div>');
     }
+    // Clean inline styles from common text elements to match the site theme perfectly
+    raw = raw.replace(/<(span|p|strong|em|h[1-6])\b[^>]*>/gi, (match: string) => {
+      return match.replace(/\s*style="[^"]*"/gi, '').replace(/\s*style='[^']*'/gi, '');
+    });
     return raw;
   });
 
@@ -56,30 +160,58 @@ export class NewsDetailsComponent implements OnInit {
     return art ? (art.title || 'Official Announcement') : 'BCAR News & Circulars';
   });
 
-  // Related articles (up to 3-4 items of same category or latest)
+  // Related articles (3-6 items)
   relatedArticles = computed(() => {
     const current = this.article();
     if (!current) return [];
     const all = this.articles();
     let sameCat = all.filter(a => a._id !== current._id && a.category === current.category);
-    if (sameCat.length < 3) {
+    if (sameCat.length < 4) {
       const remaining = all.filter(a => a._id !== current._id && a.category !== current.category);
       sameCat = [...sameCat, ...remaining];
     }
-    return sameCat.slice(0, 4);
+    return sameCat.slice(0, 6);
   });
 
-  // Recent Posts for Right Sidebar (top 4 latest articles)
+  // Recent Posts (top 4 latest articles)
   recentPosts = computed(() => {
     const current = this.article();
     const all = this.articles();
     return all.filter(a => !current || a._id !== current._id).slice(0, 4);
   });
 
+  // Popular News: sort by computed mock views
+  popularNews = computed(() => {
+    const all = this.articles();
+    const current = this.article();
+    return all
+      .filter(a => !current || a._id !== current._id)
+      .map(a => {
+        let seed = 0;
+        const str = a._id || a.slug || 'seed';
+        for (let i = 0; i < str.length; i++) {
+          seed += str.charCodeAt(i);
+        }
+        const viewsCount = (seed * 11) % 930 + 245;
+        return { ...a, views: viewsCount };
+      })
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 4);
+  });
+
+  // Latest Circulars in Sidebar
+  latestCirculars = computed(() => {
+    const all = this.articles();
+    const current = this.article();
+    return all
+      .filter(a => (!current || a._id !== current._id) && a.category === 'circular')
+      .slice(0, 4);
+  });
+
   // Categories Widget (unique categories with counts)
   categories = computed(() => {
     const all = this.articles();
-    const counts: { [key: string]: number } = { circular: 0, policy: 0, event: 0 };
+    const counts: { [key: string]: number } = { circular: 0, policy: 0, event: 0, alert: 0 };
     all.forEach(a => {
       const cat = a.category || 'circular';
       counts[cat] = (counts[cat] || 0) + 1;
@@ -87,7 +219,8 @@ export class NewsDetailsComponent implements OnInit {
     return [
       { name: 'Circulars', key: 'circular', count: counts['circular'] || 0, icon: 'pi-file' },
       { name: 'Policy Updates', key: 'policy', count: counts['policy'] || 0, icon: 'pi-shield' },
-      { name: 'Events & Assemblies', key: 'event', count: counts['event'] || 0, icon: 'pi-calendar' }
+      { name: 'Events & Assemblies', key: 'event', count: counts['event'] || 0, icon: 'pi-calendar' },
+      { name: 'Alerts & Advisories', key: 'alert', count: counts['alert'] || 0, icon: 'pi-bell' }
     ];
   });
 
@@ -206,6 +339,7 @@ export class NewsDetailsComponent implements OnInit {
     if (category === 'policy')   return 'Policy Update';
     if (category === 'circular') return 'Circular';
     if (category === 'event')    return 'Event';
+    if (category === 'alert')    return 'Advisory';
     return 'Announcement';
   }
 

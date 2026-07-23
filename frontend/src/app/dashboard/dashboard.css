@@ -1185,24 +1185,28 @@
 .bcar-card-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 30px;
   align-items: center;
   justify-content: center;
 }
 
 .bcar-card-container {
   width: 100%;
-  max-width: 880px;
-  background: linear-gradient(135deg, #F8FBFF 0%, #EAF5FF 50%, #D0E8FF 100%);
-  border: 3px solid #0284C7;
-  border-radius: 20px;
-  box-shadow: 0 12px 36px rgba(2, 132, 199, 0.18);
-  padding: 24px 28px;
+  max-width: 1012px;
+  height: 638px;
+  background: #F5FAFE;
+  border: 4px solid #0B5ED7;
+  border-radius: 30px;
+  box-shadow: 0 15px 40px rgba(11, 45, 92, 0.08);
+  padding: 26px 45px;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
-  color: #0F172A;
-  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  color: #334155;
+  font-family: 'Inter', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .card-watermark-logo {
@@ -1210,21 +1214,12 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 380px;
-  height: 380px;
+  width: 350px;
+  height: 350px;
   background: url('/images/bcar-logo-official.jpg') no-repeat center center / contain;
   opacity: 0.04;
   pointer-events: none;
   z-index: 0;
-}
-
-.card-top-accent-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, #0284C7 0%, #0369A1 50%, #0284C7 100%);
 }
 
 /* Front Card Header */
@@ -1233,66 +1228,60 @@
   z-index: 1;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 4px;
+  align-items: flex-start;
+  margin-top: 0;
   margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 2px solid rgba(2, 132, 199, 0.25);
 }
 
 .bcar-header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
 }
 
 .bcar-header-logo {
-  width: 68px;
-  height: 68px;
+  width: 78px;
+  height: 78px;
   border-radius: 50%;
-  border: 3px solid #0284C7;
+  border: 2.5px solid #0B5ED7;
   object-fit: contain;
   background: #ffffff;
-  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.2);
 }
 
 .bcar-main-title {
-  font-family: Georgia, serif;
-  font-size: 32px;
-  font-weight: 900;
-  color: #0C4A6E;
+  font-size: 38px;
+  font-weight: 800;
+  color: #0b2d5c;
   margin: 0;
   line-height: 1;
-  letter-spacing: -0.02em;
 }
 
 .bcar-sub-title {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 800;
-  color: #0284C7;
+  color: #0B5ED7;
   margin: 4px 0 2px;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
 .bcar-meta-subtitle {
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #475569;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0b2d5c;
   margin: 0;
+  font-family: 'Noto Sans Devanagari', sans-serif;
 }
 
 .bcar-header-badge {
-  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  background-color: #0B5ED7;
   color: #ffffff;
-  padding: 8px 18px;
+  padding: 8px 20px;
   border-radius: 8px;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.04em;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  letter-spacing: 0.03em;
+  display: inline-block;
+  margin-top: 10px;
 }
 
 /* Front Card Profile Section */
@@ -1300,28 +1289,46 @@
   position: relative;
   z-index: 1;
   display: flex;
-  align-items: flex-start;
-  gap: 22px;
-  margin-bottom: 22px;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.bcar-photo-box-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 .bcar-photo-box {
-  width: 140px;
-  height: 180px;
-  border: 2.5px solid #0284C7;
-  border-radius: 10px;
-  overflow: hidden;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 4px solid #0B5ED7;
+  padding: 2px;
   background: #ffffff;
-  flex-shrink: 0;
-  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.18);
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(11, 45, 92, 0.05);
 }
 
 .bcar-member-photo {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
-  background-color: #f3f4f6;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.bcar-mem-no-badge {
+  background-color: #0B5ED7;
+  color: #ffffff;
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 20px;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .bcar-profile-details {
@@ -1329,58 +1336,77 @@
 }
 
 .bcar-member-name {
-  font-size: 28px;
-  font-weight: 900;
-  color: #0C4A6E;
-  margin: 0 0 6px;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-}
-
-.bcar-mem-no {
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 20px;
+  font-size: 30px;
   font-weight: 800;
-  color: #0284C7;
-  margin-bottom: 4px;
-  letter-spacing: 0.04em;
+  color: #0b2d5c;
+  margin: 0 0 6px;
+  line-height: 1.2;
 }
 
-.bcar-reg-no {
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 13.5px;
+.bcar-membership-type {
+  font-size: 17px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+.bcar-membership-type .type-highlight {
+  font-weight: 800;
+  color: #0B5ED7;
+}
+
+/* Date blocks */
+.bcar-dates-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.date-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.date-icon {
+  font-size: 24px;
+  color: #0B5ED7;
+}
+
+.date-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.date-lbl {
+  font-size: 10.5px;
   font-weight: 700;
   color: #475569;
-  margin-bottom: 14px;
 }
 
-.bcar-bm-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #E0F2FE;
-  color: #0369A1;
-  border: 1.5px solid #0284C7;
-  padding: 5px 16px;
-  border-radius: 6px;
-  font-size: 11.5px;
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.1);
+.date-val {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: monospace;
+  color: #1e293b;
+}
+
+.dates-divider {
+  width: 1.5px;
+  height: 35px;
+  background-color: #cbd5e1;
 }
 
 .bcar-profile-right-badges {
-  display: flex;
-  align-items: center;
-  gap: 18px;
   flex-shrink: 0;
 }
 
 .bcar-seal-badge {
-  width: 84px;
-  height: 84px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
-  border: 3px solid #BAE6FD;
+  background: #0B5ED7;
+  border: 2.5px solid #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1388,15 +1414,14 @@
   text-align: center;
   padding: 4px;
   color: #ffffff;
-  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.25);
 }
 
 .seal-icon-circle {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: #ffffff;
-  color: #0284C7;
+  color: #0B5ED7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1406,44 +1431,16 @@
 }
 
 .seal-text-1 {
-  font-size: 8.5px;
-  font-weight: 900;
+  font-size: 9px;
+  font-weight: 800;
   letter-spacing: 0.05em;
   color: #ffffff;
 }
 
 .seal-text-2 {
-  font-size: 7.5px;
-  font-weight: 700;
-  color: #E0F2FE;
-}
-
-.bcar-qr-box {
-  background: #ffffff;
-  border: 2px solid #38BDF8;
-  border-radius: 12px;
-  padding: 8px 10px 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
-}
-
-.bcar-qr-img {
-  width: 88px;
-  height: 88px;
-  object-fit: contain;
-}
-
-.qr-label {
-  font-size: 8.5px;
+  font-size: 9px;
   font-weight: 800;
-  color: #0369A1;
-  margin-top: 4px;
-  letter-spacing: 0.02em;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  color: #ffffff;
 }
 
 /* 2-Column Section Boxes */
@@ -1452,42 +1449,38 @@
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 22px;
+  gap: 36px;
+  margin-bottom: 10px;
 }
 
 .card-section-box {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(4px);
+  background: #ffffff;
   border: 1.5px solid #BAE6FD;
-  border-radius: 12px;
-  padding: 12px 14px;
-  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.06);
+  border-radius: 14px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 12px rgba(11, 45, 92, 0.02);
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
 }
 
 .section-box-title {
   font-size: 11px;
   font-weight: 800;
-  color: #0369A1;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: #0B5ED7;
+  letter-spacing: 0.03em;
   padding-bottom: 6px;
   margin-bottom: 2px;
-  border-bottom: 1.5px solid #E0F2FE;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  border-bottom: 1.5px solid #E2E8F0;
 }
 
 .bcar-grid-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 8px;
+  font-size: 12.5px;
   line-height: 1.35;
+  color: #334155;
 }
 
 .bcar-grid-item.address-item {
@@ -1496,34 +1489,33 @@
 
 .bcar-grid-label {
   font-weight: 700;
-  color: #0284C7;
+  color: #1e293b;
   white-space: nowrap;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .icon-accent {
-  color: #0284C7;
-  font-size: 11px;
+  color: #0B5ED7;
+  font-size: 12px;
 }
 
 .bcar-grid-val {
-  font-weight: 600;
-  color: #0F172A;
+  font-weight: 500;
+  color: #334155;
   flex: 1;
 }
 
 .monospace-val {
-  font-family: 'Consolas', 'Courier New', monospace;
-  letter-spacing: 0.04em;
+  font-family: monospace;
   font-weight: 700;
-  color: #0369A1;
+  color: #334155;
 }
 
 .bcar-grid-val.text-wrap {
-  white-space: normal !important;
+  white-space: pre-line !important;
   word-wrap: break-word !important;
   overflow-wrap: break-word !important;
   line-height: 1.35;
@@ -1534,143 +1526,183 @@
   position: relative;
   z-index: 1;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: center;
   padding-top: 12px;
-  border-top: 2px solid rgba(2, 132, 199, 0.25);
+  border-top: 1.5px solid #BAE6FD;
   font-size: 11px;
 }
 
 .bcar-footer-meta {
-  display: flex;
-  gap: 16px;
-  color: #475569;
+  color: #0B5ED7;
   font-weight: 700;
-  flex-wrap: wrap;
-}
-
-.bcar-footer-sig {
   text-align: center;
-  border-top: 1.5px solid #0284C7;
-  padding-top: 4px;
-  min-width: 140px;
-}
-
-.sig-script {
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-weight: 800;
-  color: #0284C7;
-  font-size: 13.5px;
-}
-
-.sig-title {
-  font-size: 10px;
-  font-weight: 800;
-  color: #0C4A6E;
 }
 
 /* Back Side Card */
+.bcar-card-back {
+  justify-content: flex-start;
+}
+
 .bcar-back-header {
   position: relative;
   z-index: 1;
   text-align: center;
-  margin-bottom: 16px;
-  border-bottom: 2px solid #0284C7;
-  padding-bottom: 8px;
+  margin-bottom: 15px;
 }
 
 .bcar-back-header h2 {
-  font-size: 16px;
-  font-weight: 900;
-  color: #0C4A6E;
-  margin: 0 0 4px;
-}
-
-.bcar-back-header h3 {
-  font-size: 12px;
+  font-size: 22px;
   font-weight: 800;
-  color: #0284C7;
-  margin: 0;
-  letter-spacing: 0.03em;
+  color: #0b2d5c;
+  margin: 0 0 6px;
 }
 
-.bcar-tc-list {
-  position: relative;
-  z-index: 1;
-  list-style: none;
-  padding: 0;
-  margin: 0 0 20px;
+.bcar-tc-badge {
+  background-color: #0B5ED7;
+  color: #ffffff;
+  padding: 6px 20px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-block;
+}
+
+.bcar-tc-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  background: #ffffff;
+  border: 1.5px solid #BAE6FD;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.bcar-tc-col {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
-.bcar-tc-list li {
-  font-size: 12px;
-  color: #0F172A;
-  line-height: 1.45;
+.tc-item {
   display: flex;
-  gap: 8px;
   align-items: flex-start;
+  gap: 10px;
 }
 
-.bcar-tc-list li span {
-  color: #0284C7;
-  font-weight: 800;
+.tc-bullet {
+  background-color: #0B5ED7;
+  color: #ffffff;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3px;
   flex-shrink: 0;
+}
+
+.tc-item p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
 }
 
 .bcar-back-footer-box {
   position: relative;
   z-index: 1;
-  background: #E0F2FE;
-  border: 1.5px solid #38BDF8;
-  border-radius: 12px;
-  padding: 12px 16px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.1);
+  background: #F0F9FF;
+  border: 1.5px solid #BAE6FD;
+  border-radius: 16px;
+  padding: 14px 26px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
 }
 
-.bcar-back-footer-box h4 {
-  margin: 0 0 4px;
-  font-size: 12px;
-  color: #0284C7;
+.return-logo {
+  font-size: 28px;
+  color: #0B5ED7;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #0B5ED7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.return-texts {
+  flex: 1;
+  text-align: left;
+}
+
+.return-texts h4 {
+  margin: 0 0 2px;
+  font-size: 13.5px;
+  color: #0B5ED7;
   font-weight: 800;
 }
 
-.bcar-back-footer-box b {
-  display: block;
-  font-size: 13px;
-  color: #0C4A6E;
+.return-texts h5 {
+  margin: 0 0 2px;
+  font-size: 17px;
+  color: #0b2d5c;
+  font-weight: 800;
 }
 
-.bcar-back-footer-box p {
-  margin: 4px 0 0;
-  font-size: 11px;
+.return-texts p {
+  margin: 0;
+  font-size: 12.5px;
   color: #475569;
+  font-weight: 700;
 }
 
 /* Responsive adjustments for mobile preview */
-@media (max-width: 680px) {
+@media (max-width: 991px) {
   .bcar-card-container {
-    padding: 16px 18px;
+    height: auto;
+    padding: 20px;
   }
-  .bcar-card-header {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
+  .bcar-card-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
+  .bcar-tc-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 680px) {
   .bcar-card-profile-section {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 16px;
   }
-  .bcar-profile-right-badges {
-    margin-top: 10px;
+  .bcar-dates-row {
+    justify-content: center;
   }
-  .bcar-card-grid {
-    grid-template-columns: 1fr;
+  .bcar-header-left {
+    flex-direction: column;
+    text-align: center;
+  }
+  .bcar-back-footer-box {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+  .return-texts {
+    text-align: center;
   }
 }
 

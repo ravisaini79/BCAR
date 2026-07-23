@@ -128,7 +128,7 @@ export class HomeComponent implements OnInit {
     this.galleryService.getItems().subscribe({
       next: (data) => {
         this.galleryItems = (data || [])
-          .filter((item: any) => !item.isDeleted)
+          .filter((item: any) => !item.isDeleted && item.status === 'Published')
           .sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
           .slice(0, 6);
         this.galleryLoading = false;

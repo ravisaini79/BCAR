@@ -969,27 +969,33 @@ body {
   box-shadow: var(--shadow-md);
   cursor: pointer;
   background: #fff;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.gallery-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 .gallery-item img {
   width: 100%;
-  height: auto;
+  aspect-ratio: 3 / 2;
   display: block;
   object-fit: cover;
-  transition: var(--transition-smooth);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .gallery-item:hover img {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 .gallery-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(8, 43, 92, 0.9), transparent);
+  background: linear-gradient(180deg, transparent 40%, rgba(4, 26, 61, 0.9) 100%);
   opacity: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 20px;
-  transition: var(--transition-smooth);
+  transition: opacity 0.3s ease;
+  border-radius: var(--radius-md);
 }
 .gallery-item:hover .gallery-overlay {
   opacity: 1;

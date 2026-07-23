@@ -58,6 +58,9 @@ type User = {
   subDistrict?: string;
   aadhaarNumber?: string;
   bloodGroup?: string;
+  bankAccountNumber?: string;
+  accountNo?: string;
+  ifsc?: string;
   [key: string]: any;
 };
 
@@ -604,9 +607,66 @@ export class DashboardComponent implements OnInit {
 
   getFormattedAddress(m: any): string {
     if (!m) return '—';
-    const parts = [m.homeAddressVill, m.gramPanchayat, m.devBlock, m.district].filter(Boolean);
-    const addr = parts.join(', ');
-    return m.pin ? `${addr} - ${m.pin}` : (addr || '—');
+    const parts = [m.homeAddressVill, m.gramPanchayat, m.devBlock].filter(Boolean);
+    const addr = parts.join(', ') || 'Jagatpura, Jaipur';
+    const districtPin = `${m.district || 'Rajasthan'} - ${m.pin || '302017'}`;
+    return `${addr}\n${districtPin}`;
+  }
+
+  getValidUptoDate(dateVal: any): string {
+    if (!dateVal) return '24-07-2028';
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) return '24-07-2028';
+    d.setFullYear(d.getFullYear() + 3);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    return `${day}-${month}-${d.getFullYear()}`;
+  }
+
+  getInitial(name: string | undefined): string {
+    return name && name.trim() ? name.trim().charAt(0).toUpperCase() : 'U';
+  }
+
+  getMemberPhoto(m: any): string | undefined {
+    if (!m) return undefined;
+    let url = m.profilePhoto?.secure_url || m.photograph?.secure_url
+           || m.profilePhoto?.url || m.photograph?.url
+           || (typeof m.profilePhoto === 'string' && m.profilePhoto.trim() ? m.profilePhoto : null)
+           || (typeof m.photograph === 'string' && m.photograph.trim() ? m.photograph : null)
+           || (typeof m.profileImage === 'string' && m.profileImage.trim() ? m.profileImage : null)
+           || m.profileImage?.secure_url || m.profileImage?.url;
+
+    if (!url) return undefined;
+    if (url.startsWith('data:') || url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return url.startsWith('/') ? url : `/${url}`;
+  }
+
+  onProfilePhotoSelected(event: any) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      this.toastService.error('Image size exceeds 2MB limit.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const base64 = e.target.result;
+      const photoObj = {
+        secure_url: base64,
+        url: base64,
+        uploaded_at: new Date()
+      };
+      
+      if (this.editMemberData) {
+        this.editMemberData.profilePhoto = photoObj;
+        this.editMemberData.photograph = photoObj;
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
   // Dialog handling

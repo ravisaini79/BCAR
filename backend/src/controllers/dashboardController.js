@@ -265,7 +265,7 @@ const updateMemberProfile = async (req, res, next) => {
       'childrenSon', 'childrenDaughter', 'educationalQualification', 'bloodGroup', 'aadhaarNumber',
       'phone', 'email', 'homeAddressVill', 'po', 'ps', 'district', 'pin',
       'gramPanchayat', 'devBlock', 'subDistrict', 'bcCspIdNo', 'ssa', 'bankName',
-      'linkBranchName', 'dateOfStartingCsp'
+      'linkBranchName', 'dateOfStartingCsp', 'photograph', 'profilePhoto'
     ];
 
     fieldsToUpdate.forEach(field => {

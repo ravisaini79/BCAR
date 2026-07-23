@@ -58,7 +58,7 @@
 }
 ::ng-deep .gallery-img {
   width: 100% !important;
-  height: auto !important;
+  aspect-ratio: 3 / 2 !important;
   display: block !important;
   object-fit: cover !important;
   border-radius: 14px;

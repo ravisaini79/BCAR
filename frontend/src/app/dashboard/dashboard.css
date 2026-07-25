@@ -1192,13 +1192,13 @@
 
 .bcar-card-container {
   width: 100%;
-  max-width: 1012px;
-  height: 638px;
+  max-width: 638px;
+  height: 1012px;
   background: #F5FAFE;
   border: 4px solid #0B5ED7;
   border-radius: 30px;
   box-shadow: 0 15px 40px rgba(11, 45, 92, 0.08);
-  padding: 26px 45px;
+  padding: 26px 35px;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
@@ -1227,29 +1227,38 @@
   position: relative;
   z-index: 1;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+  gap: 10px;
 }
 
 .bcar-header-left {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
 }
 
 .bcar-header-logo {
-  width: 78px;
-  height: 78px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   border: 2.5px solid #0B5ED7;
   object-fit: contain;
   background: #ffffff;
 }
 
+.bcar-header-titles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .bcar-main-title {
-  font-size: 38px;
+  font-size: 36px;
   font-weight: 800;
   color: #0b2d5c;
   margin: 0;
@@ -1257,7 +1266,7 @@
 }
 
 .bcar-sub-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   color: #0B5ED7;
   margin: 4px 0 2px;
@@ -1265,7 +1274,7 @@
 }
 
 .bcar-meta-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #0b2d5c;
   margin: 0;
@@ -1275,13 +1284,13 @@
 .bcar-header-badge {
   background-color: #0B5ED7;
   color: #ffffff;
-  padding: 8px 20px;
+  padding: 6px 20px;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.03em;
   display: inline-block;
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 /* Front Card Profile Section */
@@ -1289,12 +1298,14 @@
   position: relative;
   z-index: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 30px;
-  margin-bottom: 15px;
+  gap: 15px;
+  margin-bottom: 12px;
 }
 
 .bcar-photo-box-wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1302,8 +1313,8 @@
 }
 
 .bcar-photo-box {
-  width: 160px;
-  height: 160px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   border: 4px solid #0B5ED7;
   padding: 2px;
@@ -1324,7 +1335,7 @@
   background-color: #0B5ED7;
   color: #ffffff;
   font-family: monospace;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   padding: 6px 20px;
   border-radius: 6px;
@@ -1332,22 +1343,27 @@
 }
 
 .bcar-profile-details {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .bcar-member-name {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 800;
   color: #0b2d5c;
   margin: 0 0 6px;
   line-height: 1.2;
+  text-align: center;
 }
 
 .bcar-membership-type {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 500;
   color: #475569;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+  text-align: center;
 }
 
 .bcar-membership-type .type-highlight {
@@ -1359,17 +1375,18 @@
 .bcar-dates-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 20px;
 }
 
 .date-block {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .date-icon {
-  font-size: 24px;
+  font-size: 22px;
   color: #0B5ED7;
 }
 
@@ -1379,13 +1396,13 @@
 }
 
 .date-lbl {
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 700;
   color: #475569;
 }
 
 .date-val {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   font-family: monospace;
   color: #1e293b;
@@ -1402,66 +1419,76 @@
 }
 
 .bcar-seal-badge {
-  width: 90px;
-  height: 90px;
+  position: absolute;
+  top: -5px;
+  right: -15px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: #0B5ED7;
-  border: 2.5px solid #ffffff;
+  border: 2px solid #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 4px;
+  padding: 2px;
   color: #ffffff;
+  box-shadow: 0 4px 10px rgba(11, 45, 92, 0.15);
 }
-
 .seal-icon-circle {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #ffffff;
   color: #0B5ED7;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 900;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
 }
 
 .seal-text-1 {
-  font-size: 9px;
+  font-size: 7px;
   font-weight: 800;
   letter-spacing: 0.05em;
   color: #ffffff;
 }
 
 .seal-text-2 {
-  font-size: 9px;
+  font-size: 7px;
   font-weight: 800;
   color: #ffffff;
 }
 
 /* 2-Column Section Boxes */
+/* 2-Column Section Boxes */
 .bcar-card-grid {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 36px;
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
 }
 
 .card-section-box {
   background: #ffffff;
   border: 1.5px solid #BAE6FD;
   border-radius: 14px;
-  padding: 14px 20px;
+  padding: 14px 18px;
   box-shadow: 0 4px 12px rgba(11, 45, 92, 0.02);
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.card-grid-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  margin-top: 6px;
 }
 
 .section-box-title {
@@ -1485,6 +1512,9 @@
 
 .bcar-grid-item.address-item {
   align-items: flex-start;
+  grid-column: span 2;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
 }
 
 .bcar-grid-label {
@@ -1552,7 +1582,7 @@
 }
 
 .bcar-back-header h2 {
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 800;
   color: #0b2d5c;
   margin: 0 0 6px;
@@ -1570,12 +1600,12 @@
 
 .bcar-tc-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: 12px;
   background: #ffffff;
   border: 1.5px solid #BAE6FD;
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px;
   margin-bottom: 15px;
   flex: 1;
 }
@@ -1583,7 +1613,7 @@
 .bcar-tc-col {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .tc-item {
@@ -1621,27 +1651,29 @@
   border-radius: 16px;
   padding: 14px 26px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
   width: 100%;
 }
 
 .return-logo {
-  font-size: 28px;
+  font-size: 20px;
   color: #0B5ED7;
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid #0B5ED7;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-bottom: 2px;
 }
 
 .return-texts {
   flex: 1;
-  text-align: left;
+  text-align: center;
 }
 
 .return-texts h4 {
@@ -1704,5 +1736,182 @@
   .return-texts {
     text-align: center;
   }
+}
+
+/* Attachments Section in View Dialog */
+.attachments-section {
+  margin-top: 25px;
+  border-top: 1.5px dashed #cbd5e1;
+  padding-top: 20px;
+}
+
+.attachments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.attachment-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+}
+
+.attachment-card:hover {
+  border-color: #0B5ED7;
+  box-shadow: 0 4px 10px rgba(11, 45, 92, 0.05);
+}
+
+.attachment-icon {
+  font-size: 20px;
+  color: #0B5ED7;
+  background: #E0F2FE;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.attachment-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.attachment-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.attachment-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.attachment-status {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.attachment-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.attachment-btn {
+  background: none;
+  border: none;
+  color: #0B5ED7;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.attachment-btn:hover {
+  background: #F0F9FF;
+}
+
+.attachment-btn.disabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Image Cropper UI Styles */
+.cropper-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.crop-container {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  border: 2px dashed #0B5ED7;
+  cursor: move;
+  background: #f1f5f9;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.cropper-preview-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+.crop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  border: 2px solid #ffffff;
+  box-sizing: border-box;
+}
+
+.cropper-zoom-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 10px;
+}
+
+.zoom-slider {
+  flex: 1;
+  accent-color: #0B5ED7;
+  height: 6px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.cropper-tip {
+  font-size: 11.5px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.table-profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #0B5ED7;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 

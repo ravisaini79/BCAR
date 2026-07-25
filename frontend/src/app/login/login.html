@@ -25,7 +25,6 @@
         <i class="fa-solid fa-circle-notch fa-spin" *ngIf="busy" style="margin-right:8px;"></i>
         {{ busy ? 'Signing in…' : 'Sign in to portal' }} <span>→</span>
       </button>
-      <div class="demo-box"><b>Demo access</b><span>Admin: admin@bcarajasthan.org / Admin@123</span><span>Member: member@bcarajasthan.org / Demo@123</span></div>
       <p class="switch">Not a member yet? <button type="button" (click)="router.navigate(['/register'])">Apply for membership</button></p>
     </form>
   </div>

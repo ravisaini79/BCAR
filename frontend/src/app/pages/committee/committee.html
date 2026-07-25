@@ -42,21 +42,38 @@
     <!-- Committee Grid -->
     <h2 class="committee-heading">Executive <em>Committee</em></h2>
     <div class="committee-grid">
-      <div class="committee-card" *ngFor="let member of committee">
-        <div class="member-img-wrap">
+      <div class="president-card" *ngFor="let member of committee">
+        <!-- Image side (Left) -->
+        <div class="president-img-wrap">
           <img [src]="member.photo" [alt]="member.name">
+          <div class="president-info">
+            <h4>{{ member.name }}</h4>
+            <span>{{ member.role }}</span>
+          </div>
         </div>
-        <div class="member-body">
-          <span class="member-role-badge">{{ member.role }}</span>
-          <h3>{{ member.name }}</h3>
-          <p class="member-role-en">{{ member.roleEn }}</p>
-          <p class="member-location"><i class="fa-solid fa-location-dot"></i> {{ member.location }}</p>
-          <blockquote class="member-quote" *ngIf="!member.isGeneralSecretary">"{{ member.quote }}"</blockquote>
+
+        <!-- Bio side (Right) -->
+        <div class="president-bio">
+          <span class="role-badge"><i class="fa-solid fa-crown"></i> {{ member.roleEn }}</span>
+          <h2>{{ member.name }}</h2>
+          <p class="president-location"><i class="fa-solid fa-location-dot"></i> {{ member.location }}</p>
+          
+          <blockquote *ngIf="!member.isGeneralSecretary">
+            "{{ member.quote }}"
+          </blockquote>
+          
           <div *ngIf="member.isGeneralSecretary">
-            <blockquote class="member-quote">"{{ showFullSecretaryQuote ? member.quote : getTruncatedQuote(member.quote) }}"</blockquote>
-            <button class="read-more-btn" (click)="toggleSecretaryQuote()">
+            <blockquote>
+              "{{ showFullSecretaryQuote ? member.quote : getTruncatedQuote(member.quote) }}"
+            </blockquote>
+            <button class="read-more-btn" (click)="toggleSecretaryQuote()" style="margin-top: -10px; margin-bottom: 15px;">
               {{ showFullSecretaryQuote ? 'Show Less' : 'Read More' }}
             </button>
+          </div>
+
+          <div class="slogans">
+            <span><i class="fa-solid fa-fire"></i> इंकलाब जिंदाबाद!</span>
+            <span><i class="fa-solid fa-users"></i> बैंक मित्र एकता—जिंदाबाद!</span>
           </div>
         </div>
       </div>

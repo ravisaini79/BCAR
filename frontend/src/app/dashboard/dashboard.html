@@ -384,6 +384,7 @@
                   <p-tableHeaderCheckbox />
                 </th>
                 <th>#</th>
+                <th>Photo</th>
                 <th pSortableColumn="name">Member <p-sortIcon field="name" /></th>
                 <th pSortableColumn="registrationNumber">Reg No <p-sortIcon field="registrationNumber" /></th>
                 <th>Membership No.</th>
@@ -403,12 +404,12 @@
                 </td>
                 <td><span class="row-num">{{ i + 1 }}</span></td>
                 <td>
-                  <div class="member-cell">
-                    <p-avatar [image]="getMemberPhoto(m)" [label]="getInitial(m.name)" shape="circle" />
-                    <div>
-                      <b>{{ m.name }}</b>
-                      <small>{{ m.email }}</small>
-                    </div>
+                  <img [src]="getMemberPhoto(m) || '/images/default-avatar.png'" class="table-profile-pic" />
+                </td>
+                <td>
+                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <b>{{ m.name }}</b>
+                    <small style="color: #64748b; font-size: 11px; display: block; margin-top: 1px;">{{ m.email }}</small>
                   </div>
                 </td>
                 <td><span class="reg-no">{{ m.registrationNumber || '—' }}</span></td>
@@ -617,7 +618,7 @@
 
   <div class="member-profile" *ngIf="selectedMember">
     <div class="profile-header">
-      <p-avatar [image]="getMemberPhoto(selectedMember)" [label]="getInitial(selectedMember.name)" shape="circle" size="xlarge" />
+      <img [src]="getMemberPhoto(selectedMember) || '/images/default-avatar.png'" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #0B5ED7; box-shadow: 0 4px 12px rgba(11, 45, 92, 0.1);" />
       <div>
         <h2>{{ selectedMember.name }}</h2>
         <p>{{ selectedMember.email }} &bull; {{ selectedMember.phone }}</p>
@@ -631,7 +632,7 @@
     <p-divider />
 
     <div class="detail-sections">
-      <!-- Personal -->
+      <!-- Personal Details -->
       <div class="detail-section">
         <h4 class="section-title"><i class="pi pi-user"></i> Personal Details</h4>
         <div class="detail-grid">
@@ -641,14 +642,28 @@
           <div class="detail-item"><span>Date of Birth</span><b>{{ selectedMember.dob || '—' }}</b></div>
           <div class="detail-item"><span>Gender</span><b>{{ selectedMember.gender || '—' }}</b></div>
           <div class="detail-item"><span>Marital Status</span><b>{{ selectedMember.maritalStatus || '—' }}</b></div>
+          <div class="detail-item" *ngIf="selectedMember.wifeHusbandName"><span>Spouse Name</span><b>{{ selectedMember.wifeHusbandName }}</b></div>
+          <div class="detail-item" *ngIf="selectedMember.childrenSon"><span>Children (Son)</span><b>{{ selectedMember.childrenSon }}</b></div>
+          <div class="detail-item" *ngIf="selectedMember.childrenDaughter"><span>Children (Daughter)</span><b>{{ selectedMember.childrenDaughter }}</b></div>
           <div class="detail-item"><span>Education</span><b>{{ selectedMember.educationalQualification || '—' }}</b></div>
+          <div class="detail-item"><span>Blood Group</span><b>{{ selectedMember.bloodGroup || '—' }}</b></div>
+          <div class="detail-item"><span>Aadhaar Number</span><b>{{ selectedMember.aadhaarNumber || '—' }}</b></div>
           <div class="detail-item"><span>Joined At</span><b>{{ selectedMember.createdAt | date:'dd MMM yyyy' }}</b></div>
         </div>
       </div>
 
-      <!-- Address -->
+      <!-- Contact Details -->
       <div class="detail-section">
-        <h4 class="section-title"><i class="pi pi-map-marker"></i> Address</h4>
+        <h4 class="section-title"><i class="pi pi-envelope"></i> Contact Information</h4>
+        <div class="detail-grid">
+          <div class="detail-item"><span>Email Address</span><b>{{ selectedMember.email || '—' }}</b></div>
+          <div class="detail-item"><span>Mobile Number</span><b>{{ selectedMember.phone || '—' }}</b></div>
+        </div>
+      </div>
+
+      <!-- Address Details -->
+      <div class="detail-section">
+        <h4 class="section-title"><i class="pi pi-map-marker"></i> Address Details</h4>
         <div class="detail-grid">
           <div class="detail-item"><span>Village / House No.</span><b>{{ selectedMember.homeAddressVill || '—' }}</b></div>
           <div class="detail-item"><span>P.O.</span><b>{{ selectedMember.po || '—' }}</b></div>
@@ -657,23 +672,71 @@
           <div class="detail-item"><span>PIN Code</span><b>{{ selectedMember.pin || '—' }}</b></div>
           <div class="detail-item"><span>Gram Panchayat</span><b>{{ selectedMember.gramPanchayat || '—' }}</b></div>
           <div class="detail-item"><span>Dev Block</span><b>{{ selectedMember.devBlock || '—' }}</b></div>
+          <div class="detail-item"><span>Sub District</span><b>{{ selectedMember.subDistrict || '—' }}</b></div>
         </div>
       </div>
 
-      <!-- Professional -->
+      <!-- Professional Details -->
       <div class="detail-section">
         <h4 class="section-title"><i class="pi pi-briefcase"></i> Professional Details</h4>
         <div class="detail-grid">
           <div class="detail-item"><span>BC / CSP ID No.</span><b>{{ selectedMember.bcCspIdNo || '—' }}</b></div>
-          <div class="detail-item"><span>SSA</span><b>{{ selectedMember.ssa || '—' }}</b></div>
+          <div class="detail-item"><span>SSA Code</span><b>{{ selectedMember.ssa || '—' }}</b></div>
           <div class="detail-item"><span>Bank Name</span><b>{{ selectedMember.bankName || '—' }}</b></div>
           <div class="detail-item"><span>Link Branch</span><b>{{ selectedMember.linkBranchName || '—' }}</b></div>
           <div class="detail-item"><span>CSP Start Date</span><b>{{ selectedMember.dateOfStartingCsp || '—' }}</b></div>
         </div>
       </div>
+
+      <!-- Association Details -->
+      <div class="detail-section">
+        <h4 class="section-title"><i class="pi pi-shield"></i> Association Details</h4>
+        <div class="detail-grid">
+          <div class="detail-item"><span>Interested to Join</span><b>{{ selectedMember.interestedToJoin || 'YES' }}</b></div>
+          <div class="detail-item"><span>Admission Fee</span><b>{{ selectedMember.admissionFee || '—' }}</b></div>
+          <div class="detail-item"><span>Monthly Membership Fee</span><b>{{ selectedMember.perMonthMembershipFee || '—' }}</b></div>
+        </div>
+      </div>
+
+      <!-- Payment & System Details -->
+      <div class="detail-section">
+        <h4 class="section-title"><i class="pi pi-cog"></i> Payment & System Details</h4>
+        <div class="detail-grid">
+          <div class="detail-item"><span>Receipt Number</span><b>{{ selectedMember.receiptNumber || '—' }}</b></div>
+          <div class="detail-item"><span>Registration Fee</span><b>₹{{ selectedMember.registrationFee || 600 }}</b></div>
+          <div class="detail-item"><span>Payment Status</span><b>{{ selectedMember.paymentStatus || 'Paid' }}</b></div>
+          <div class="detail-item"><span>Payment Mode</span><b>{{ selectedMember.paymentMode || 'Online / UPI' }}</b></div>
+          <div class="detail-item"><span>Transaction ID</span><b>{{ selectedMember.transactionId || '—' }}</b></div>
+          <div class="detail-item"><span>Account Role</span><b>{{ selectedMember.role | titlecase }}</b></div>
+          <div class="detail-item"><span>Created By</span><b>{{ selectedMember.createdBy || 'Self Registration' }}</b></div>
+          <div class="detail-item"><span>Email Verified</span><b>{{ selectedMember.emailVerified ? 'YES' : 'NO' }}</b></div>
+        </div>
+      </div>
     </div>
 
-    <div class="dialog-actions">
+    <!-- Uploaded Documents / Attachments -->
+    <div class="attachments-section">
+      <h4 class="section-title" style="color: #0b2d5c; font-size: 15px; margin-bottom: 5px;"><i class="pi pi-file"></i> Uploaded Documents & Attachments</h4>
+      <div class="attachments-grid">
+        <div class="attachment-card" *ngFor="let doc of getAttachments(selectedMember)">
+          <div class="attachment-icon">
+            <img *ngIf="doc.exists && isImageFile(doc.url)" [src]="doc.url" alt="doc preview" />
+            <i *ngIf="!doc.exists || !isImageFile(doc.url)" class="pi" [ngClass]="doc.icon"></i>
+          </div>
+          <div class="attachment-info">
+            <span class="attachment-name">{{ doc.label }}</span>
+            <span class="attachment-status">{{ doc.exists ? doc.filename : 'Not Uploaded' }}</span>
+          </div>
+          <div class="attachment-actions">
+            <button class="attachment-btn" [disabled]="!doc.exists" [class.disabled]="!doc.exists" (click)="viewDocument(doc.url)" pTooltip="Open Document" tooltipPosition="top">
+              <i class="pi pi-external-link"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dialog-actions" style="margin-top: 25px;">
       <button class="btn-primary" (click)="openEditProfile(selectedMember)">
         <i class="pi pi-user-edit"></i> Edit Profile
       </button>
@@ -802,11 +865,18 @@
     <!-- Profile Photo Upload -->
     <h4 class="form-section-title"><i class="pi pi-image"></i> Profile Photo</h4>
     <div class="form-field mb-4" style="padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 20px;">
-      <p-avatar [image]="getMemberPhoto(editMemberData)" [label]="getInitial(editMemberData.name)" shape="circle" size="xlarge" style="box-shadow: 0 4px 10px rgba(0,0,0,0.06); border: 2px solid #0B5ED7;" />
-      <div style="flex: 1;">
-        <label class="d-block mb-2" style="font-weight: 700; color: #1e293b; font-size: 13px;">Change Profile Photograph</label>
-        <input type="file" accept="image/*" (change)="onProfilePhotoSelected($event)" class="form-control" style="font-size: 12.5px; padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1;" />
-        <small class="text-muted d-block mt-1" style="font-size: 11px;">Upload passport-size image (Max size: 2MB). Resizes automatically for the card.</small>
+      <div style="position: relative;">
+        <p-avatar [image]="getMemberPhoto(editMemberData)" [label]="getInitial(editMemberData.name)" shape="circle" size="xlarge" style="box-shadow: 0 4px 10px rgba(0,0,0,0.06); border: 2px solid #0B5ED7;" />
+      </div>
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+        <label style="font-weight: 700; color: #1e293b; font-size: 13px; margin: 0; display: block;">Change Profile Photograph</label>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <input type="file" accept="image/*" (change)="onProfilePhotoSelected($event)" class="form-control" style="font-size: 12.5px; padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; flex: 1;" />
+          <button type="button" class="btn-outline btn-sm" [disabled]="!getMemberPhoto(editMemberData)" (click)="openCropperForCurrentPhoto()" style="white-space: nowrap; font-size: 12.5px; padding: 7px 14px; border-radius: 6px; height: 36px; display: inline-flex; align-items: center; gap: 5px;">
+            <i class="pi pi-clone"></i> Crop Current Photo
+          </button>
+        </div>
+        <small class="text-muted" style="font-size: 11px; display: block; margin: 0;">Upload passport-size image (Max size: 2MB). Resizes automatically for the card.</small>
       </div>
     </div>
     
@@ -937,7 +1007,7 @@
   [visible]="showCardPreviewDialog"
   (visibleChange)="showCardPreviewDialog = $event"
   [modal]="true"
-  [style]="{width: '940px', maxWidth: '95vw'}">
+  [style]="{width: '710px', maxWidth: '95vw'}">
 
   <div class="card-preview-modal-body" *ngIf="cardPreviewMember">
     <div class="card-preview-actions-top">
@@ -973,7 +1043,12 @@
         <div class="bcar-card-profile-section">
           <div class="bcar-photo-box-wrapper">
             <div class="bcar-photo-box">
-              <img [src]="cardPreviewMember.profilePhoto?.secure_url || cardPreviewMember.photograph?.secure_url || cardPreviewMember.profilePhoto || '/images/default-avatar.png'" alt="Member Photo" class="bcar-member-photo" />
+              <img [src]="getMemberPhoto(cardPreviewMember) || '/images/default-avatar.png'" alt="Member Photo" class="bcar-member-photo" />
+            </div>
+            <div class="bcar-seal-badge">
+              <div class="seal-icon-circle"><i class="pi pi-check"></i></div>
+              <span class="seal-text-1">VERIFIED</span>
+              <span class="seal-text-2">MEMBER</span>
             </div>
             <div class="bcar-mem-no-badge">{{ cardPreviewMember.membershipNo || 'BCAR/RJ/00001' }}</div>
           </div>
@@ -993,69 +1068,53 @@
               </div>
             </div>
           </div>
-
-          <div class="bcar-profile-right-badges">
-            <div class="bcar-seal-badge">
-              <div class="seal-icon-circle"><i class="pi pi-check"></i></div>
-              <span class="seal-text-1">VERIFIED</span>
-              <span class="seal-text-2">MEMBER</span>
-            </div>
-          </div>
         </div>
 
-        <!-- 2-Column Info Grid -->
+        <!-- Details Grid -->
         <div class="bcar-card-grid">
-          <!-- Left Column -->
-          <div class="bcar-grid-col card-section-box">
-            <div class="section-box-title">PERSONAL & LOCATION DETAILS</div>
+          <div class="card-section-box">
             <div class="bcar-grid-item address-item">
               <span class="bcar-grid-label"><i class="pi pi-map-marker icon-accent"></i> Address :</span>
               <span class="bcar-grid-val text-wrap">{{ getFormattedAddress(cardPreviewMember) }}</span>
             </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-compass icon-accent"></i> Sub District :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.subDistrict || cardPreviewMember.devBlock || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-envelope icon-accent"></i> Email :</span>
-              <span class="bcar-grid-val text-wrap">{{ cardPreviewMember.email || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-phone icon-accent"></i> Contact :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.phone || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-link icon-accent"></i> Link Branch :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.linkBranchName || '—' }}</span>
-            </div>
-          </div>
-
-          <!-- Right Column -->
-          <div class="bcar-grid-col card-section-box">
-            <div class="section-box-title">IDENTITY & BANKING DETAILS</div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-phone icon-accent"></i> Mobile No. :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.phone || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-id-card icon-accent"></i> Aadhaar No. :</span>
-              <span class="bcar-grid-val monospace-val">{{ maskAadhaar(cardPreviewMember.aadhaarNumber) }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-building icon-accent"></i> Bank Name :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.bankName || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-wallet icon-accent"></i> Bank Account No. :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.bankAccountNumber || cardPreviewMember.accountNo || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-credit-card icon-accent"></i> IFSC Code :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.ifsc || '—' }}</span>
-            </div>
-            <div class="bcar-grid-item">
-              <span class="bcar-grid-label"><i class="pi pi-key icon-accent"></i> SSA Code :</span>
-              <span class="bcar-grid-val">{{ cardPreviewMember.ssa || '—' }}</span>
+            
+            <div class="card-grid-inner">
+              <div class="bcar-grid-item">
+                <span class="bcar-grid-label"><i class="pi pi-compass icon-accent"></i> Sub District :</span>
+                <span class="bcar-grid-val">{{ cardPreviewMember.subDistrict || cardPreviewMember.devBlock || '—' }}</span>
+              </div>
+              <div class="bcar-grid-item">
+                <span class="bcar-grid-label"><i class="pi pi-id-card icon-accent"></i> Aadhaar No. :</span>
+                <span class="bcar-grid-val monospace-val">{{ maskAadhaar(cardPreviewMember.aadhaarNumber) }}</span>
+              </div>
+              <div class="bcar-grid-item">
+                <span class="bcar-grid-label"><i class="pi pi-envelope icon-accent"></i> Email :</span>
+                <span class="bcar-grid-val text-wrap">{{ cardPreviewMember.email || '—' }}</span>
+              </div>
+              <div class="bcar-grid-item">
+                <span class="bcar-grid-label"><i class="pi pi-building icon-accent"></i> Bank Name :</span>
+                <span class="bcar-grid-val">{{ cardPreviewMember.bankName || '—' }}</span>
+              </div>
+              <div class="bcar-grid-item">
+                <span class="bcar-grid-label"><i class="pi pi-phone icon-accent"></i> Contact :</span>
+                <span class="bcar-grid-val">{{ cardPreviewMember.phone || '—' }}</span>
+              </div>
+              <div class="bcar-grid-item">
+                <span class="bcar-grid-label"><i class="pi pi-wallet icon-accent"></i> Account No. :</span>
+                <span class="bcar-grid-val">{{ cardPreviewMember.bankAccountNumber || cardPreviewMember.accountNo || '—' }}</span>
+              </div>
+              <div class="bcar-grid-item">
+                <span class="bcar-grid-label"><i class="pi pi-link icon-accent"></i> Link Branch :</span>
+                <span class="bcar-grid-val">{{ cardPreviewMember.linkBranchName || '—' }}</span>
+              </div>
+              <div class="bcar-grid-item">
+                <span class="bcar-grid-label"><i class="pi pi-credit-card icon-accent"></i> IFSC Code :</span>
+                <span class="bcar-grid-val">{{ cardPreviewMember.ifsc || '—' }}</span>
+              </div>
+              <div class="bcar-grid-item" style="grid-column: 2;">
+                <span class="bcar-grid-label"><i class="pi pi-key icon-accent"></i> SSA Code :</span>
+                <span class="bcar-grid-val">{{ cardPreviewMember.ssa || '—' }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1075,7 +1134,7 @@
           <div class="bcar-tc-badge">TERMS & CONDITIONS</div>
         </div>
 
-        <!-- Double-Column Terms List -->
+        <!-- Single-Column Terms List -->
         <div class="bcar-tc-container">
           <div class="bcar-tc-col">
             <div class="tc-item">
@@ -1094,8 +1153,6 @@
               <i class="pi pi-check tc-bullet"></i>
               <p>This card is <b>NOT</b> transferable and must be produced by the CSP on <b>demand</b>.</p>
             </div>
-          </div>
-          <div class="bcar-tc-col">
             <div class="tc-item">
               <i class="pi pi-check tc-bullet"></i>
               <p>This card must be carried by the CSP at all times during operating <b>hours</b>.</p>
@@ -1130,5 +1187,47 @@
     <button class="btn-secondary" (click)="showCardPreviewDialog = false">
       <i class="pi pi-times"></i> Close Preview
     </button>
+  </ng-template>
+</p-dialog>
+
+<!-- ═══════════════════════ IMAGE CROPPER DIALOG ═══════════════════════ -->
+<p-dialog
+  header="Crop Profile Photo"
+  [visible]="showCropperDialog"
+  (visibleChange)="showCropperDialog = $event"
+  [modal]="true"
+  [style]="{width: '450px', maxWidth: '95vw'}"
+  [closable]="true">
+  
+  <div class="cropper-wrapper" *ngIf="cropperImageSrc">
+    <div class="crop-container" 
+         (mousedown)="startPan($event)" 
+         (mousemove)="panImage($event)" 
+         (mouseup)="endPan()" 
+         (mouseleave)="endPan()"
+         (touchstart)="startPan($event)" 
+         (touchmove)="panImage($event)" 
+         (touchend)="endPan()">
+      <img [src]="cropperImageSrc" 
+           [style.transform]="getCropperTransform()" 
+           class="cropper-preview-image" 
+           (load)="onCropperImageLoaded($event)" />
+      <div class="crop-overlay"></div>
+    </div>
+    
+    <div class="cropper-zoom-control">
+      <i class="pi pi-minus"></i>
+      <input type="range" min="1" max="4" step="0.05" [(ngModel)]="cropperZoom" class="zoom-slider" />
+      <i class="pi pi-plus"></i>
+    </div>
+    
+    <div class="cropper-tip">
+      <i class="pi pi-info-circle"></i> Drag image to position inside the circle.
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <button class="btn-secondary" (click)="showCropperDialog = false">Cancel</button>
+    <button class="btn-primary" (click)="applyCroppedImage()"><i class="pi pi-check"></i> Apply Crop</button>
   </ng-template>
 </p-dialog>

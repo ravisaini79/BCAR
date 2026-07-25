@@ -61,6 +61,19 @@ type User = {
   bankAccountNumber?: string;
   accountNo?: string;
   ifsc?: string;
+  wifeHusbandName?: string;
+  childrenSon?: number | string;
+  childrenDaughter?: number | string;
+  interestedToJoin?: string;
+  admissionFee?: string;
+  perMonthMembershipFee?: string;
+  receiptNumber?: string;
+  registrationFee?: number;
+  paymentStatus?: string;
+  paymentMode?: string;
+  transactionId?: string;
+  createdBy?: string;
+  emailVerified?: boolean;
   [key: string]: any;
 };
 
@@ -655,18 +668,157 @@ export class DashboardComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const base64 = e.target.result;
+      this.cropperImageSrc = base64;
+      this.showCropperDialog = true;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Attachment & Document helpers
+  isImageFile(url: string | undefined): boolean {
+    if (!url) return false;
+    return /\.(jpg|jpeg|png|webp|gif|svg)($|\?)/i.test(url) || url.startsWith('data:image/');
+  }
+
+  viewDocument(url: string | undefined) {
+    if (!url) return;
+    window.open(url, '_blank');
+  }
+
+  getAttachments(m: any): any[] {
+    if (!m) return [];
+    
+    const docs = [
+      { field: 'profilePhoto', label: 'Profile Photo', icon: 'pi-user' },
+      { field: 'photograph', label: 'Photograph', icon: 'pi-image' },
+      { field: 'aadhaarFront', label: 'Aadhaar Card (Front)', icon: 'pi-id-card' },
+      { field: 'aadhaarBack', label: 'Aadhaar Card (Back)', icon: 'pi-id-card' },
+      { field: 'panCard', label: 'PAN Card', icon: 'pi-id-card' },
+      { field: 'bankBcCertificate', label: 'Bank BC Certificate', icon: 'pi-file-pdf' },
+      { field: 'bankPassbook', label: 'Bank Passbook', icon: 'pi-book' },
+      { field: 'signature', label: 'Signature', icon: 'pi-pencil' },
+      { field: 'otherDocuments', label: 'Other Documents', icon: 'pi-folder-open' }
+    ];
+
+    return docs.map(d => {
+      const fileData = m[d.field];
+      const url = fileData?.secure_url || fileData?.url || (typeof fileData === 'string' && fileData.trim() ? fileData : null);
+      const filename = fileData?.original_filename || (url ? url.split('/').pop() : '');
+      return {
+        label: d.label,
+        icon: d.icon,
+        exists: !!url,
+        url: url || undefined,
+        filename: filename || 'document'
+      };
+    });
+  }
+
+  // Image Cropper State & Helpers
+  showCropperDialog = false;
+  cropperImageSrc: string | null = null;
+  cropperZoom = 1.0;
+  cropperX = 0;
+  cropperY = 0;
+  isDragging = false;
+  startX = 0;
+  startY = 0;
+  cropperDisplayW = 250;
+  cropperDisplayH = 250;
+  cropperNaturalW = 0;
+  cropperNaturalH = 0;
+
+  openCropperForCurrentPhoto() {
+    if (!this.editMemberData) return;
+    const url = this.getMemberPhoto(this.editMemberData);
+    if (url) {
+      this.cropperImageSrc = url;
+      this.showCropperDialog = true;
+    }
+  }
+
+  startPan(event: MouseEvent | TouchEvent) {
+    event.preventDefault();
+    this.isDragging = true;
+    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+    const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+    this.startX = clientX - this.cropperX;
+    this.startY = clientY - this.cropperY;
+  }
+
+  panImage(event: MouseEvent | TouchEvent) {
+    if (!this.isDragging) return;
+    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+    const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+    this.cropperX = clientX - this.startX;
+    this.cropperY = clientY - this.startY;
+  }
+
+  endPan() {
+    this.isDragging = false;
+  }
+
+  getCropperTransform(): string {
+    return `translate(-50%, -50%) translate(${this.cropperX}px, ${this.cropperY}px) scale(${this.cropperZoom})`;
+  }
+
+  onCropperImageLoaded(event: any) {
+    const img = event.target;
+    this.cropperNaturalW = img.naturalWidth;
+    this.cropperNaturalH = img.naturalHeight;
+
+    if (this.cropperNaturalW > this.cropperNaturalH) {
+      this.cropperDisplayH = 250;
+      this.cropperDisplayW = 250 * (this.cropperNaturalW / this.cropperNaturalH);
+    } else {
+      this.cropperDisplayW = 250;
+      this.cropperDisplayH = 250 * (this.cropperNaturalH / this.cropperNaturalW);
+    }
+
+    this.cropperX = 0;
+    this.cropperY = 0;
+    this.cropperZoom = 1.0;
+  }
+
+  applyCroppedImage() {
+    if (!this.cropperImageSrc) return;
+    
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 250;
+      canvas.height = 250;
+      const ctx = canvas.getContext('2d')!;
+
+      // Clear with white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 250, 250);
+
+      // Apply zoom & translation relative to center
+      ctx.translate(125 + this.cropperX, 125 + this.cropperY);
+      ctx.scale(this.cropperZoom, this.cropperZoom);
+
+      // Draw centered
+      ctx.drawImage(img, -this.cropperDisplayW / 2, -this.cropperDisplayH / 2, this.cropperDisplayW, this.cropperDisplayH);
+
+      const croppedBase64 = canvas.toDataURL('image/jpeg', 0.9);
+
       const photoObj = {
-        secure_url: base64,
-        url: base64,
+        secure_url: croppedBase64,
+        url: croppedBase64,
         uploaded_at: new Date()
       };
-      
+
       if (this.editMemberData) {
         this.editMemberData.profilePhoto = photoObj;
         this.editMemberData.photograph = photoObj;
       }
+
+      this.showCropperDialog = false;
+      this.toastService.success('Profile photo cropped successfully.');
     };
-    reader.readAsDataURL(file);
+    img.src = this.cropperImageSrc;
   }
 
   // Dialog handling

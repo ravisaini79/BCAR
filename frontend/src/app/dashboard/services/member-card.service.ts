@@ -57,8 +57,8 @@ export class MemberCardService {
   }
 
   private async drawCardCanvas(member: any): Promise<HTMLCanvasElement> {
-    const W = 1012;
-    const H = 638;
+    const W = 638;
+    const H = 1012;
     const GAP = 30;
 
     const canvas = document.createElement('canvas');
@@ -73,7 +73,7 @@ export class MemberCardService {
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // FRONT SIDE (Horizontal Premium Light Blue Corporate Card)
+  // FRONT SIDE (Vertical Premium Light Blue Corporate Card)
   // ════════════════════════════════════════════════════════════════════
 
   private async drawFrontSide(ctx: CanvasRenderingContext2D, member: any, w: number, h: number): Promise<void> {
@@ -100,9 +100,9 @@ export class MemberCardService {
     ctx.stroke();
 
     // ── Header (Logo + Title) ──
-    const logoX = 50;
-    const logoY = 25;
-    const logoSize = 80;
+    const logoSize = 90;
+    const logoX = w / 2 - logoSize / 2;
+    const logoY = 35;
 
     let logoLoaded = false;
     try {
@@ -127,28 +127,27 @@ export class MemberCardService {
       logoLoaded = false;
     }
 
-    const textStartX = logoLoaded ? logoX + logoSize + 20 : logoX;
-
     // "BCAR"
     ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 38px Arial, Helvetica, sans-serif';
-    ctx.fillText('BCAR', textStartX, logoY + 36);
+    ctx.font = 'bold 36px Arial, Helvetica, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('BCAR', w / 2, 160);
 
     // "BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN"
     ctx.fillStyle = '#0B5ED7';
-    ctx.font = 'bold 12px Arial, Helvetica, sans-serif';
-    ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', textStartX, logoY + 54);
+    ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
+    ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', w / 2, 185);
 
     // Hindi tagline "राजस्थान के बैंक मित्रों का सशक्त संगठन"
     ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 14px "Noto Sans Devanagari", "Segoe UI", sans-serif';
-    ctx.fillText('राजस्थान के बैंक मित्रों का सशक्त संगठन', textStartX, logoY + 74);
+    ctx.font = 'bold 13px "Noto Sans Devanagari", "Segoe UI", sans-serif';
+    ctx.fillText('राजस्थान के बैंक मित्रों का सशक्त संगठन', w / 2, 206);
 
     // Top-Right Official Membership Card Pill Badge
     const badgeW = 200;
-    const badgeH = 32;
-    const badgeX = w - badgeW - 50;
-    const badgeY = logoY + 12;
+    const badgeH = 28;
+    const badgeX = w / 2 - badgeW / 2;
+    const badgeY = 222;
 
     ctx.fillStyle = '#0B5ED7';
     this.roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 8);
@@ -156,14 +155,13 @@ export class MemberCardService {
 
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('OFFICIAL MEMBERSHIP CARD', badgeX + badgeW / 2, badgeY + 20);
-    ctx.textAlign = 'left';
+    ctx.fillText('OFFICIAL MEMBERSHIP CARD', w / 2, badgeY + 18);
+    ctx.textAlign = 'left'; // Reset
 
     // ── Member Profile Circular Headshot ──
-    const photoCx = 185;
-    const photoCy = 210;
-    const photoRadius = 80;
+    const photoCx = w / 2;
+    const photoCy = 355;
+    const photoRadius = 75;
 
     // Draw blue outer ring
     ctx.beginPath();
@@ -224,11 +222,46 @@ export class MemberCardService {
       ctx.restore();
     }
 
+    // ── Verified Seal Badge ── (Overlapping Profile Photo)
+    const sealCx = w / 2 + 55;
+    const sealCy = 295;
+    const sealRadius = 32;
+
+    ctx.beginPath();
+    ctx.arc(sealCx, sealCy, sealRadius, 0, Math.PI * 2);
+    ctx.fillStyle = '#0B5ED7';
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(sealCx, sealCy - 6, 10, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+
+    ctx.strokeStyle = '#0B5ED7';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(sealCx - 4, sealCy - 6);
+    ctx.lineTo(sealCx - 1, sealCy - 3);
+    ctx.lineTo(sealCx + 4, sealCy - 8);
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 7px Arial, Helvetica, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('VERIFIED', sealCx, sealCy + 13);
+    ctx.fillText('MEMBER', sealCx, sealCy + 21);
+    ctx.textAlign = 'left'; // Reset
+
     // BCAR/RJ/00001 Badge directly below circular photo
-    const mNoBadgeW = 170;
+    const mNoBadgeW = 180;
     const mNoBadgeH = 34;
     const mNoBadgeX = photoCx - mNoBadgeW / 2;
-    const mNoBadgeY = photoCy + photoRadius + 14;
+    const mNoBadgeY = photoCy + photoRadius + 15;
 
     ctx.fillStyle = '#0B5ED7';
     this.roundRect(ctx, mNoBadgeX, mNoBadgeY, mNoBadgeW, mNoBadgeH, 6);
@@ -240,134 +273,97 @@ export class MemberCardService {
     ctx.fillText(member.membershipNo || 'BCAR/RJ/00001', photoCx, mNoBadgeY + 22);
     ctx.textAlign = 'left';
 
-    // ── Member Name & Valid Dates Next to Photo ──
-    const infoStartX = 325;
-
     // Member Name (RAVI KUMAR SAINI)
     ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 31px Arial, Helvetica, sans-serif';
-    ctx.fillText((member.name || 'RAVI KUMAR SAINI').toUpperCase(), infoStartX, 154);
+    ctx.font = 'bold 26px Arial, Helvetica, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText((member.name || 'RAVI KUMAR SAINI').toUpperCase(), w / 2, 515);
 
     // Membership Type: BANK MITRA (CSP)
     ctx.fillStyle = '#475569';
-    ctx.font = '500 17px Arial, Helvetica, sans-serif';
-    ctx.fillText('Membership Type : ', infoStartX, 186);
-    const typeLabelW = ctx.measureText('Membership Type : ').width;
+    ctx.font = '500 15px Arial, Helvetica, sans-serif';
+    const typeText = 'Membership Type : ';
+    const typeVal = 'BANK MITRA (CSP)';
+    ctx.font = '500 15px Arial';
+    const tWidth1 = ctx.measureText(typeText).width;
+    ctx.font = 'bold 15px Arial';
+    const tWidth2 = ctx.measureText(typeVal).width;
+    const typeStartX = w / 2 - (tWidth1 + tWidth2) / 2;
+
+    ctx.fillStyle = '#475569';
+    ctx.font = '500 15px Arial';
+    ctx.fillText(typeText, typeStartX, 542);
     ctx.fillStyle = '#0B5ED7';
-    ctx.font = 'bold 17px Arial, Helvetica, sans-serif';
-    ctx.fillText('BANK MITRA (CSP)', infoStartX + typeLabelW, 186);
+    ctx.font = 'bold 15px Arial';
+    ctx.fillText(typeVal, typeStartX + tWidth1, 542);
+    ctx.textAlign = 'left'; // Reset
 
     // Date block with calendar icon
-    const dateBlockY = 208;
-    
-    // Issue Date
-    this.drawCalendarIcon(ctx, infoStartX, dateBlockY + 12, 30);
+    const dateBlockY = 562;
     const issueDate = this.parseDate(member.joinedAt || member.createdAt);
     const issueDateStr = issueDate ? this.formatDateObj(issueDate) : '24-07-2025';
 
+    ctx.font = 'bold 9.5px Arial';
+    const lblW = ctx.measureText('ISSUE DATE').width;
+    ctx.font = 'bold 15px monospace';
+    const valW = ctx.measureText(issueDateStr).width;
+    const dateContentW = 34 + Math.max(lblW, valW);
+    const dateStartX = w / 2 - dateContentW / 2;
+
+    this.drawCalendarIcon(ctx, dateStartX, dateBlockY + 4, 26);
     ctx.fillStyle = '#475569';
-    ctx.font = 'bold 10.5px Arial, Helvetica, sans-serif';
-    ctx.fillText('ISSUE DATE', infoStartX + 45, dateBlockY + 20);
+    ctx.font = 'bold 9.5px Arial, Helvetica, sans-serif';
+    ctx.fillText('ISSUE DATE', dateStartX + 34, dateBlockY + 12);
     ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 16px monospace';
-    ctx.fillText(issueDateStr, infoStartX + 45, dateBlockY + 38);
+    ctx.font = 'bold 15px monospace';
+    ctx.fillText(issueDateStr, dateStartX + 34, dateBlockY + 28);
 
-    // ── Verified Seal Badge ──
-    const sealX = w - 145;
-    const sealY = 115;
-    const sealRadius = 45;
-    const sealCx = sealX + sealRadius;
-    const sealCy = sealY + sealRadius;
-
-    ctx.beginPath();
-    ctx.arc(sealCx, sealCy, sealRadius, 0, Math.PI * 2);
-    ctx.fillStyle = '#0B5ED7';
-    ctx.fill();
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(sealCx, sealCy - 10, 14, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-
-    ctx.strokeStyle = '#0B5ED7';
-    ctx.lineWidth = 3.5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(sealCx - 6, sealCy - 10);
-    ctx.lineTo(sealCx - 1, sealCy - 5);
-    ctx.lineTo(sealCx + 6, sealCy - 13);
-    ctx.stroke();
+    // ── Details Box ──
+    const boxX = 35;
+    const boxY = 618;
+    const boxW = w - 70; // 568
+    const boxH = 320;
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 9px Arial, Helvetica, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('VERIFIED', sealCx, sealCy + 18);
-    ctx.fillText('MEMBER', sealCx, sealCy + 29);
-    ctx.textAlign = 'left';
-
-    // ── Details Boxes ──
-    const boxLeftX = 45;
-    const boxRightX = 525;
-    const boxW = 442;
-    const boxH = 215;
-    const boxY = 320;
-
-    // Draw Left Box (PERSONAL & LOCATION DETAILS)
-    ctx.fillStyle = '#ffffff';
-    this.roundRect(ctx, boxLeftX, boxY, boxW, boxH, 14);
+    this.roundRect(ctx, boxX, boxY, boxW, boxH, 14);
     ctx.fill();
     ctx.strokeStyle = '#BAE6FD';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    ctx.fillStyle = '#0B5ED7';
-    ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
-    ctx.fillText('PERSONAL & LOCATION DETAILS', boxLeftX + 16, boxY + 24);
-
-    ctx.strokeStyle = '#E2E8F0';
-    ctx.beginPath();
-    ctx.moveTo(boxLeftX + 16, boxY + 32);
-    ctx.lineTo(boxLeftX + boxW - 16, boxY + 32);
-    ctx.stroke();
-
-    // Draw Right Box (IDENTITY & BANKING DETAILS)
-    ctx.fillStyle = '#ffffff';
-    this.roundRect(ctx, boxRightX, boxY, boxW, boxH, 14);
-    ctx.fill();
-    ctx.strokeStyle = '#BAE6FD';
-    ctx.stroke();
-
-    ctx.fillStyle = '#0B5ED7';
-    ctx.fillText('IDENTITY & BANKING DETAILS', boxRightX + 16, boxY + 24);
-
-    ctx.beginPath();
-    ctx.moveTo(boxRightX + 16, boxY + 32);
-    ctx.lineTo(boxRightX + boxW - 16, boxY + 32);
-    ctx.stroke();
-
-    // Populate Left Box Rows
+    // Populate Box Address (Full Width)
     const addrParts = [member.homeAddressVill, member.gramPanchayat, member.devBlock].filter(Boolean);
     const addrLine1 = addrParts.join(', ') || 'Jagatpura, Jaipur';
     const addrLine2 = `${member.district || 'Rajasthan'} - ${member.pin || '302017'}`;
     const addressVal = `${addrLine1}\n${addrLine2}`;
+    this.drawFieldRow(ctx, 'pin', 'Address', addressVal, boxX + 16, boxY + 16, true);
 
-    this.drawFieldRow(ctx, 'pin', 'Address', addressVal, boxLeftX + 16, boxY + 45, true);
-    this.drawFieldRow(ctx, 'building', 'Sub District', member.subDistrict || member.devBlock || '—', boxLeftX + 16, boxY + 88);
-    this.drawFieldRow(ctx, 'envelope', 'Email', member.email || '—', boxLeftX + 16, boxY + 120);
-    this.drawFieldRow(ctx, 'phone', 'Contact', member.phone || '—', boxLeftX + 16, boxY + 152);
-    this.drawFieldRow(ctx, 'link', 'Link Branch', member.linkBranchName || '—', boxLeftX + 16, boxY + 184);
+    // Divider Line inside details box
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(boxX + 16, boxY + 62);
+    ctx.lineTo(boxX + boxW - 16, boxY + 62);
+    ctx.stroke();
 
-    // Populate Right Box Rows
-    this.drawFieldRow(ctx, 'user', 'Mobile No.', member.phone || '—', boxRightX + 16, boxY + 45);
-    this.drawFieldRow(ctx, 'id', 'Aadhaar No.', this.maskAadhaar(member.aadhaarNumber), boxRightX + 16, boxY + 74);
-    this.drawFieldRow(ctx, 'bank', 'Bank Name', member.bankName || '—', boxRightX + 16, boxY + 103);
-    this.drawFieldRow(ctx, 'wallet', 'Bank Account No.', member.bankAccountNumber || member.accountNo || '—', boxRightX + 16, boxY + 132);
-    this.drawFieldRow(ctx, 'card', 'IFSC Code', member.ifsc || '—', boxRightX + 16, boxY + 161);
-    this.drawFieldRow(ctx, 'key', 'SSA Code', member.ssa || '—', boxRightX + 16, boxY + 190);
+    // 2-Column details below address
+    const colLeftX = boxX + 16;
+    const colRightX = w / 2 + 10;
+    const gridY = boxY + 76;
+    const rowH = 42;
+
+    // Left Column
+    this.drawFieldRow(ctx, 'building', 'Sub District', member.subDistrict || member.devBlock || '—', colLeftX, gridY);
+    this.drawFieldRow(ctx, 'envelope', 'Email', member.email || '—', colLeftX, gridY + rowH);
+    this.drawFieldRow(ctx, 'phone', 'Contact', member.phone || '—', colLeftX, gridY + rowH * 2);
+    this.drawFieldRow(ctx, 'link', 'Link Branch', member.linkBranchName || '—', colLeftX, gridY + rowH * 3);
+
+    // Right Column
+    this.drawFieldRow(ctx, 'id', 'Aadhaar No.', this.maskAadhaar(member.aadhaarNumber), colRightX, gridY);
+    this.drawFieldRow(ctx, 'bank', 'Bank Name', member.bankName || '—', colRightX, gridY + rowH);
+    this.drawFieldRow(ctx, 'wallet', 'Account No.', member.bankAccountNumber || member.accountNo || '—', colRightX, gridY + rowH * 2);
+    this.drawFieldRow(ctx, 'card', 'IFSC Code', member.ifsc || '—', colRightX, gridY + rowH * 3);
+    this.drawFieldRow(ctx, 'key', 'SSA Code', member.ssa || '—', colRightX, gridY + rowH * 4);
 
     // Divider Line above copyright footer
     ctx.strokeStyle = '#BAE6FD';
@@ -386,7 +382,7 @@ export class MemberCardService {
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // BACK SIDE (Horizontal Premium Light Blue Corporate Card)
+  // BACK SIDE (Vertical Premium Light Blue Corporate Card)
   // ════════════════════════════════════════════════════════════════════
 
   private async drawBackSide(ctx: CanvasRenderingContext2D, w: number, h: number, yOff: number): Promise<void> {
@@ -414,15 +410,15 @@ export class MemberCardService {
 
     // ── Header Title ──
     ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 22px Arial, Helvetica, sans-serif';
+    ctx.font = 'bold 17px Arial, Helvetica, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', w / 2, yOff + 42);
+    ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', w / 2, yOff + 45);
 
     // Subtitle Terms & Conditions rounded badge
     const tcBadgeW = 180;
     const tcBadgeH = 26;
     const tcBadgeX = w / 2 - tcBadgeW / 2;
-    const tcBadgeY = yOff + 56;
+    const tcBadgeY = yOff + 62;
 
     ctx.fillStyle = '#0B5ED7';
     this.roundRect(ctx, tcBadgeX, tcBadgeY, tcBadgeW, tcBadgeH, 6);
@@ -434,10 +430,10 @@ export class MemberCardService {
     ctx.textAlign = 'left';
 
     // ── Terms Container Box (White Background with Light Blue Border) ──
-    const tcBoxX = 45;
-    const tcBoxY = yOff + 100;
-    const tcBoxW = w - 90;
-    const tcBoxH = 385;
+    const tcBoxX = 35;
+    const tcBoxY = yOff + 115;
+    const tcBoxW = w - 70; // 568
+    const tcBoxH = 680;
 
     ctx.fillStyle = '#ffffff';
     this.roundRect(ctx, tcBoxX, tcBoxY, tcBoxW, tcBoxH, 16);
@@ -446,40 +442,30 @@ export class MemberCardService {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Render terms in two columns
-    const leftColX = tcBoxX + 24;
-    const rightColX = w / 2 + 12;
-    const colW = 430;
+    // Render terms in a single column
+    const colX = tcBoxX + 24;
+    const colW = tcBoxW - 48;
+    let currY = tcBoxY + 28;
 
-    let leftY = tcBoxY + 28;
-    let rightY = tcBoxY + 28;
-
-    const leftTerms = [
+    const terms = [
       'CSP is an independent entrepreneur having a franchise contract with BCAR.',
       'CSP is NOT an employee of BCAR or the Bank.',
       'CSP is authorized to serve Bank customers as per Bank specified BC services in his / her specific location only.',
-      'This card is NOT transferable and must be produced by the CSP on demand.'
-    ];
-
-    const rightTerms = [
+      'This card is NOT transferable and must be produced by the CSP on demand.',
       'This card must be carried by the CSP at all times during operating hours.',
       'CSP must maintain safe keep of this card and return the card on termination of franchise contract to BCAR.',
       'BCAR is NOT liable for any misuse of this card.'
     ];
 
-    leftTerms.forEach(term => {
-      leftY += this.drawTermItem(ctx, term, leftColX, leftY, colW);
-    });
-
-    rightTerms.forEach(term => {
-      rightY += this.drawTermItem(ctx, term, rightColX, rightY, colW);
+    terms.forEach(term => {
+      currY += this.drawTermItem(ctx, term, colX, currY, colW) + 6;
     });
 
     // ── Bottom Return Box ──
-    const returnBoxX = 45;
-    const returnBoxY = yOff + 505;
-    const returnBoxW = w - 90;
-    const returnBoxH = 90;
+    const returnBoxX = 35;
+    const returnBoxY = yOff + 825;
+    const returnBoxW = w - 70; // 568
+    const returnBoxH = 140;
 
     ctx.fillStyle = '#F0F9FF';
     this.roundRect(ctx, returnBoxX, returnBoxY, returnBoxW, returnBoxH, 16);
@@ -488,23 +474,23 @@ export class MemberCardService {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Map pin box logo
-    this.drawLocationBoxLogo(ctx, returnBoxX + 26, returnBoxY + 15, 60);
+    // Map pin box logo (centered)
+    this.drawLocationBoxLogo(ctx, w / 2 - 20, returnBoxY + 15, 40);
 
-    // Text details
-    const textStartX = returnBoxX + 104;
-
+    // Text details (centered)
     ctx.fillStyle = '#0B5ED7';
-    ctx.font = 'bold 13.5px Arial, Helvetica, sans-serif';
-    ctx.fillText('If found, please return to:', textStartX, returnBoxY + 25);
+    ctx.font = 'bold 12.5px Arial, Helvetica, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('If found, please return to:', w / 2, returnBoxY + 74);
 
     ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 17px Arial, Helvetica, sans-serif';
-    ctx.fillText('Business Correspondent Association Rajasthan', textStartX, returnBoxY + 47);
+    ctx.font = 'bold 16px Arial, Helvetica, sans-serif';
+    ctx.fillText('Business Correspondent Association Rajasthan', w / 2, returnBoxY + 96);
 
     ctx.fillStyle = '#475569';
-    ctx.font = 'bold 12.5px Arial, Helvetica, sans-serif';
-    ctx.fillText('Reg. No.: TU/2026/14/132549    |    Helpline: +91 98291 15474    |    Rajasthan, India', textStartX, returnBoxY + 70);
+    ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
+    ctx.fillText('Reg. No.: TU/2026/14/132549    |    Helpline: +91 98291 15474    |    Rajasthan, India', w / 2, returnBoxY + 118);
+    ctx.textAlign = 'left'; // Reset
   }
 
   // ════════════════════════════════════════════════════════════════════

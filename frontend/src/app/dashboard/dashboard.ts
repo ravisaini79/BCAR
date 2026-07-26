@@ -1,7 +1,9 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 // PrimeNG imports
 import { Toast } from 'primeng/toast';
@@ -108,6 +110,7 @@ type User = {
 export class DashboardComponent implements OnInit {
   // Inject dependencies
   private router = inject(Router);
+  private http = inject(HttpClient);
   private dashboardService = inject(DashboardService);
   private toastService = inject(ToastService);
   private cardService = inject(MemberCardService);
@@ -352,6 +355,23 @@ export class DashboardComponent implements OnInit {
   refreshAll() {
     if (!this.user) return;
     this.loading = true;
+
+    // Fetch latest full profile from backend
+    const token = localStorage.getItem('bcar_token');
+    if (token) {
+      this.http.get<any>(`${environment.apiUrl}/auth/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).subscribe({
+        next: (fullUser: any) => {
+          if (fullUser && fullUser._id) {
+            this.user = fullUser;
+            localStorage.setItem('bcar_user', JSON.stringify(fullUser));
+            this.cdr.markForCheck();
+          }
+        },
+        error: (err: any) => console.error('Failed to load profile:', err)
+      });
+    }
 
     // Always fetch notices
     this.dashboardService.getNotices().subscribe({

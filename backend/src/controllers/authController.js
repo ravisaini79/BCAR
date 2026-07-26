@@ -566,22 +566,16 @@ const loginUser = async (req, res, next) => {
 
       const token = generateToken(user._id, user.role);
 
+      const userObj = user.toObject();
+      delete userObj.password;
+
       res.json({
         success: true,
         message: 'Login successful',
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        status: user.status,
-        district: user.district,
+        ...userObj,
         token,
         data: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          status: user.status,
+          ...userObj,
           token
         }
       });

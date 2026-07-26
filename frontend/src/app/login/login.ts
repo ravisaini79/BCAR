@@ -64,14 +64,9 @@ export class LoginComponent {
         this.busy = false;
 
         const token = response.token || response.data?.token;
-        const userObj = {
-          _id: response._id || response.data?._id,
-          name: response.name || response.data?.name,
-          email: response.email || response.data?.email,
-          role: response.role || response.data?.role,
-          status: response.status || response.data?.status,
-          district: response.district || response.data?.district
-        };
+        const userObj = { ...(response.data || {}), ...response };
+        delete userObj.token;
+        delete userObj.data;
 
         if (!token) {
           this.show('Login failed: no token received', 'error');

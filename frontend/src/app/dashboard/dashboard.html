@@ -408,16 +408,16 @@
               <div class="doc-status-list">
                 <div class="doc-status-item">
                   <span><i class="pi pi-image text-primary"></i> Passport Size Photo</span>
-                  <span class="doc-badge" [class.success]="user.photograph || user.profilePhoto" [class.danger]="!user.photograph && !user.profilePhoto">
-                    <i class="pi" [class.pi-check]="user.photograph || user.profilePhoto" [class.pi-times]="!user.photograph && !user.profilePhoto"></i>
-                    {{ (user.photograph || user.profilePhoto) ? 'Uploaded' : 'Pending' }}
+                  <span class="doc-badge" [class.success]="user.photograph || user['profilePhoto']" [class.danger]="!user.photograph && !user['profilePhoto']">
+                    <i class="pi" [class.pi-check]="user.photograph || user['profilePhoto']" [class.pi-times]="!user.photograph && !user['profilePhoto']"></i>
+                    {{ (user.photograph || user['profilePhoto']) ? 'Uploaded' : 'Pending' }}
                   </span>
                 </div>
                 <div class="doc-status-item">
                   <span><i class="pi pi-id-card text-primary"></i> Aadhaar Card Front</span>
-                  <span class="doc-badge" [class.success]="user.aadhaarCard || user.aadhaarFront" [class.danger]="!user.aadhaarCard && !user.aadhaarFront">
-                    <i class="pi" [class.pi-check]="user.aadhaarCard || user.aadhaarFront" [class.pi-times]="!user.aadhaarCard && !user.aadhaarFront"></i>
-                    {{ (user.aadhaarCard || user.aadhaarFront) ? 'Uploaded' : 'Pending' }}
+                  <span class="doc-badge" [class.success]="user.aadhaarCard || user['aadhaarFront']" [class.danger]="!user.aadhaarCard && !user['aadhaarFront']">
+                    <i class="pi" [class.pi-check]="user.aadhaarCard || user['aadhaarFront']" [class.pi-times]="!user.aadhaarCard && !user['aadhaarFront']"></i>
+                    {{ (user.aadhaarCard || user['aadhaarFront']) ? 'Uploaded' : 'Pending' }}
                   </span>
                 </div>
                 <div class="doc-status-item">
@@ -436,9 +436,9 @@
                 </div>
                 <div class="doc-status-item">
                   <span><i class="pi pi-building text-primary"></i> Bank BC Certificate</span>
-                  <span class="doc-badge" [class.success]="user.bankBcCertificate || user.bankPassbook" [class.danger]="!user.bankBcCertificate && !user.bankPassbook">
-                    <i class="pi" [class.pi-check]="user.bankBcCertificate || user.bankPassbook" [class.pi-times]="!user.bankBcCertificate && !user.bankPassbook"></i>
-                    {{ (user.bankBcCertificate || user.bankPassbook) ? 'Uploaded' : 'Pending' }}
+                  <span class="doc-badge" [class.success]="user.bankBcCertificate || user['bankPassbook']" [class.danger]="!user.bankBcCertificate && !user['bankPassbook']">
+                    <i class="pi" [class.pi-check]="user.bankBcCertificate || user['bankPassbook']" [class.pi-times]="!user.bankBcCertificate && !user['bankPassbook']"></i>
+                    {{ (user.bankBcCertificate || user['bankPassbook']) ? 'Uploaded' : 'Pending' }}
                   </span>
                 </div>
               </div>

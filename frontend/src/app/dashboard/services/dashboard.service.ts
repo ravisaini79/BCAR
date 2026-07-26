@@ -68,4 +68,8 @@ export class DashboardService {
   sendCardEmail(payload: { email: string; name: string; membershipNo: string; cardImageBase64: string }): Observable<any> {
     return this.http.post(`${environment.apiUrl}/auth/send-card-email`, payload);
   }
+
+  changePassword(data: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/auth/change-password`, data);
+  }
 }

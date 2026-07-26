@@ -37,7 +37,7 @@ router.get('/test-email', async (req, res) => {
     await verifyTransporterHealth();
 
     // 2. Determine target email (use ADMIN_EMAIL, contact receiver, or SMTP user)
-    const targetEmail = req.query.to || process.env.ADMIN_EMAIL || process.env.SMTP_USER || 'info@bcarajasthan.org';
+    const targetEmail = req.query.to || process.env.ADMIN_EMAIL || process.env.SMTP_USER || 'support@bcarbankmitra.com';
 
     const testSubject = 'BCAR SMTP Test Email';
     const testHtml = `

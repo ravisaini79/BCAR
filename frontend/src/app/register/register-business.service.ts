@@ -25,9 +25,10 @@ export class RegisterBusinessService {
   districtDropdownOpen = signal<boolean>(false);
 
   readonly districts = signal<string[]>([
-    'Ajmer','Alwar','Banswara','Baran','Barmer','Bharatpur','Bhilwara','Bikaner','Bundi','Chittorgarh',
-    'Churu','Dausa','Dholpur','Dungarpur','Hanumangarh','Jaipur','Jaisalmer','Jalore','Jhalawar',
-    'Jhunjhunu','Jodhpur','Karauli','Kota','Nagaur','Pali','Pratapgarh','Rajsamand','Sawai Madhopur',
+    'Ajmer','Alwar','Balotra','Banswara','Baran','Barmer','Beawar','Bharatpur','Bhilwara','Bikaner',
+    'Bundi','Chittorgarh','Churu','Dausa','Deeg','Dholpur','Didwana-Kuchaman','Dungarpur','Hanumangarh',
+    'Jaipur','Jaisalmer','Jalore','Jhalawar','Jhunjhunu','Jodhpur','Karauli','Khairthal-Tijara','Kota',
+    'Kotputli-Behror','Nagaur','Pali','Phalodi','Pratapgarh','Rajsamand','Salumbar','Sawai Madhopur',
     'Sikar','Sirohi','Sri Ganganagar','Tonk','Udaipur'
   ]);
 
@@ -43,14 +44,14 @@ export class RegisterBusinessService {
     const form = this.fb.group({
       // Personal
       name:                     ['', [Validators.required, Validators.minLength(2)]],
-      fatherHusbandName:        [''],
-      dob:                      [''],
+      fatherHusbandName:        ['', Validators.required],
+      dob:                      ['', Validators.required],
       gender:                   [''],
       maritalStatus:            [''],
       wifeHusbandName:          [''],
       childrenSon:              [0,  [Validators.min(0)]],
       childrenDaughter:         [0,  [Validators.min(0)]],
-      educationalQualification: [''],
+      educationalQualification: ['', Validators.required],
       bloodGroup:               [''],
       // Mandatory Aadhaar Number (12 digits)
       aadhaarNumber:            ['', [Validators.required, CustomValidators.aadhaarPattern()]],
@@ -68,10 +69,10 @@ export class RegisterBusinessService {
       devBlock:        [''],
       subDistrict:     [''],
       // Professional
-      bcCspIdNo:          [''],
+      bcCspIdNo:          ['', Validators.required],
       ssa:                [''],
-      bankName:           [''],
-      linkBranchName:     [''],
+      bankName:           ['', Validators.required],
+      linkBranchName:     ['', Validators.required],
       dateOfStartingCsp:  [''],
       // Membership
       interestedToJoin:       ['YES', Validators.required],
@@ -80,7 +81,6 @@ export class RegisterBusinessService {
       
       // Mandatory Document Attachments
       profileImage:      [null, Validators.required],
-      photograph:        [null, Validators.required],
       aadhaarCard:       [null, Validators.required],
       aadhaarBack:       [null, Validators.required],
       panCard:           [null, Validators.required],
@@ -100,7 +100,7 @@ export class RegisterBusinessService {
 
       // Patch text fields
       const textData = { ...parsed };
-      (['profileImage', 'photograph', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(k => {
+      (['profileImage', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(k => {
         delete textData[k];
       });
       form.patchValue(textData, { emitEvent: false });
@@ -108,7 +108,6 @@ export class RegisterBusinessService {
       // Restore base64 previews and display names
       const nameUpdates: Partial<Record<string, string>> = {};
       if (parsed.profileImage)      { form.get('profileImage')?.setValue(parsed.profileImage, { emitEvent: false });           nameUpdates['profileImageName']      = 'Profile_Image_Restored.jpg'; }
-      if (parsed.photograph)        { form.get('photograph')?.setValue(parsed.photograph, { emitEvent: false });               nameUpdates['photographName']        = 'Photograph_Restored.jpg'; }
       if (parsed.aadhaarCard)       { form.get('aadhaarCard')?.setValue(parsed.aadhaarCard, { emitEvent: false });             nameUpdates['aadhaarCardName']       = 'Aadhaar_Restored.pdf'; }
       if (parsed.panCard)           { form.get('panCard')?.setValue(parsed.panCard, { emitEvent: false });                     nameUpdates['panCardName']           = 'PAN_Restored.pdf'; }
       if (parsed.bankBcCertificate) { form.get('bankBcCertificate')?.setValue(parsed.bankBcCertificate, { emitEvent: false }); nameUpdates['bankBcCertificateName'] = 'BC_Certificate_Restored.pdf'; }
@@ -167,14 +166,13 @@ export class RegisterBusinessService {
 
     // Append all text controls
     Object.keys(form.controls).forEach(key => {
-      if (!['profileImage', 'photograph', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'].includes(key)) {
+      if (!['profileImage', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'].includes(key)) {
         formData.append(key, form.get(key)?.value ?? '');
       }
     });
 
     // Append file fields via UploadService
     this.upload.appendFileToFormData(formData, 'profileImage',      form, 'profile_image_draft.jpg', 'image/jpeg');
-    this.upload.appendFileToFormData(formData, 'photograph',        form, 'photograph_draft.jpg',  'image/jpeg');
     this.upload.appendFileToFormData(formData, 'aadhaarCard',       form, 'aadhaar_front_draft.pdf', 'application/pdf');
     this.upload.appendFileToFormData(formData, 'aadhaarBack',       form, 'aadhaar_back_draft.pdf',  'application/pdf');
     this.upload.appendFileToFormData(formData, 'panCard',           form, 'pan_draft.pdf',         'application/pdf');

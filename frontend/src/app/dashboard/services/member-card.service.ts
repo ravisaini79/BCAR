@@ -138,12 +138,12 @@ export class MemberCardService {
     ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
     ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', w / 2, 185);
 
-    // Hindi tagline "राजस्थान के बैंक मित्रों का सशक्त संगठन"
+    // Hindi tagline
     ctx.fillStyle = '#0b2d5c';
     ctx.font = 'bold 13px "Noto Sans Devanagari", "Segoe UI", sans-serif';
     ctx.fillText('राजस्थान के बैंक मित्रों का सशक्त संगठन', w / 2, 206);
 
-    // Top-Right Official Membership Card Pill Badge
+    // Official Membership Card Pill Badge
     const badgeW = 200;
     const badgeH = 28;
     const badgeX = w / 2 - badgeW / 2;
@@ -186,7 +186,7 @@ export class MemberCardService {
         ctx.beginPath();
         ctx.arc(photoCx, photoCy, photoRadius, 0, Math.PI * 2);
         ctx.clip();
-        
+
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(photoCx - photoRadius, photoCy - photoRadius, photoRadius * 2, photoRadius * 2);
 
@@ -222,7 +222,7 @@ export class MemberCardService {
       ctx.restore();
     }
 
-    // ── Verified Seal Badge ── (Overlapping Profile Photo)
+    // ── Verified Seal Badge ──
     const sealCx = w / 2 + 55;
     const sealCy = 295;
     const sealRadius = 32;
@@ -255,9 +255,9 @@ export class MemberCardService {
     ctx.textAlign = 'center';
     ctx.fillText('VERIFIED', sealCx, sealCy + 13);
     ctx.fillText('MEMBER', sealCx, sealCy + 21);
-    ctx.textAlign = 'left'; // Reset
+    ctx.textAlign = 'left';
 
-    // BCAR/RJ/00001 Badge directly below circular photo
+    // Membership No Badge
     const mNoBadgeW = 180;
     const mNoBadgeH = 34;
     const mNoBadgeX = photoCx - mNoBadgeW / 2;
@@ -273,17 +273,17 @@ export class MemberCardService {
     ctx.fillText(member.membershipNo || 'BCAR/RJ/00001', photoCx, mNoBadgeY + 22);
     ctx.textAlign = 'left';
 
-    // Member Name (RAVI KUMAR SAINI)
+    // Member Name
     ctx.fillStyle = '#0b2d5c';
     ctx.font = 'bold 26px Arial, Helvetica, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText((member.name || 'RAVI KUMAR SAINI').toUpperCase(), w / 2, 515);
+    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), w / 2, 515);
 
-    // Membership Type: BANK MITRA (CSP)
+    // Membership Type
     ctx.fillStyle = '#475569';
     ctx.font = '500 15px Arial, Helvetica, sans-serif';
     const typeText = 'Membership Type : ';
-    const typeVal = 'BANK MITRA (CSP)';
+    const typeVal  = 'BANK MITRA (CSP)';
     ctx.font = '500 15px Arial';
     const tWidth1 = ctx.measureText(typeText).width;
     ctx.font = 'bold 15px Arial';
@@ -296,11 +296,11 @@ export class MemberCardService {
     ctx.fillStyle = '#0B5ED7';
     ctx.font = 'bold 15px Arial';
     ctx.fillText(typeVal, typeStartX + tWidth1, 542);
-    ctx.textAlign = 'left'; // Reset
+    ctx.textAlign = 'left';
 
     // Date block with calendar icon
     const dateBlockY = 562;
-    const issueDate = this.parseDate(member.joinedAt || member.createdAt);
+    const issueDate    = this.parseDate(member.joinedAt || member.createdAt);
     const issueDateStr = issueDate ? this.formatDateObj(issueDate) : '24-07-2025';
 
     ctx.font = 'bold 9.5px Arial';
@@ -308,7 +308,7 @@ export class MemberCardService {
     ctx.font = 'bold 15px monospace';
     const valW = ctx.measureText(issueDateStr).width;
     const dateContentW = 34 + Math.max(lblW, valW);
-    const dateStartX = w / 2 - dateContentW / 2;
+    const dateStartX   = w / 2 - dateContentW / 2;
 
     this.drawCalendarIcon(ctx, dateStartX, dateBlockY + 4, 26);
     ctx.fillStyle = '#475569';
@@ -331,14 +331,14 @@ export class MemberCardService {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Populate Box Address (Full Width)
+    // Address (Full Width)
     const addrParts = [member.homeAddressVill, member.gramPanchayat, member.devBlock].filter(Boolean);
-    const addrLine1 = addrParts.join(', ') || 'Jagatpura, Jaipur';
-    const addrLine2 = `${member.district || 'Rajasthan'} - ${member.pin || '302017'}`;
+    const addrLine1  = addrParts.join(', ') || 'Jagatpura, Jaipur';
+    const addrLine2  = `${member.district || 'Rajasthan'} - ${member.pin || ''}`.trim().replace(/ -\s*$/, '');
     const addressVal = `${addrLine1}\n${addrLine2}`;
-    this.drawFieldRow(ctx, 'pin', 'Address', addressVal, boxX + 16, boxY + 16, true);
+    this.drawFieldRow(ctx, 'pin', 'Address', addressVal, boxX + 16, boxY + 16, boxW - 32, true);
 
-    // Divider Line inside details box
+    // Divider
     ctx.strokeStyle = '#E2E8F0';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -346,26 +346,37 @@ export class MemberCardService {
     ctx.lineTo(boxX + boxW - 16, boxY + 62);
     ctx.stroke();
 
-    // 2-Column details below address
-    const colLeftX = boxX + 16;
-    const colRightX = w / 2 + 10;
+    // 2-Column grid
+    const colLeftX  = boxX + 16;          // 51
+    const colRightX = w / 2 + 10;         // 329
+    const colLeftW  = w / 2 - colLeftX - 10;  // ~268px available
+    const colRightW = boxX + boxW - 16 - colRightX; // ~242px available
     const gridY = boxY + 76;
-    const rowH = 42;
+    const rowH  = 42;
 
     // Left Column
-    this.drawFieldRow(ctx, 'building', 'Sub District', member.subDistrict || member.devBlock || '—', colLeftX, gridY);
-    this.drawFieldRow(ctx, 'envelope', 'Email', member.email || '—', colLeftX, gridY + rowH);
-    this.drawFieldRow(ctx, 'phone', 'Contact', member.phone || '—', colLeftX, gridY + rowH * 2);
-    this.drawFieldRow(ctx, 'link', 'Link Branch', member.linkBranchName || '—', colLeftX, gridY + rowH * 3);
+    this.drawFieldRow(ctx, 'building', 'Sub District', member.subDistrict || '—',    colLeftX, gridY,            colLeftW);
+    this.drawFieldRow(ctx, 'building', 'District',     member.district    || '—',    colLeftX, gridY + rowH,     colLeftW);
+    this.drawFieldRow(ctx, 'id',       'Pin Code',     member.pin         || '—',    colLeftX, gridY + rowH * 2, colLeftW);
+    this.drawFieldRow(ctx, 'user',     'Blood Group',  member.bloodGroup  || '—',    colLeftX, gridY + rowH * 3, colLeftW);
+    this.drawFieldRow(ctx, 'envelope', 'DOB',          this.formatDate(member.dob),  colLeftX, gridY + rowH * 4, colLeftW);
 
-    // Right Column
-    this.drawFieldRow(ctx, 'id', 'Aadhaar No.', this.maskAadhaar(member.aadhaarNumber), colRightX, gridY);
-    this.drawFieldRow(ctx, 'bank', 'Bank Name', member.bankName || '—', colRightX, gridY + rowH);
-    this.drawFieldRow(ctx, 'wallet', 'Account No.', member.bankAccountNumber || member.accountNo || '—', colRightX, gridY + rowH * 2);
-    this.drawFieldRow(ctx, 'card', 'IFSC Code', member.ifsc || '—', colRightX, gridY + rowH * 3);
-    this.drawFieldRow(ctx, 'key', 'SSA Code', member.ssa || '—', colRightX, gridY + rowH * 4);
+    // Right Column — labels kept short to leave room for values
+    this.drawFieldRow(ctx, 'key',   'BC/CSP Code',   member.bcCspIdNo       || '—', colRightX, gridY,            colRightW);
+    this.drawFieldRow(ctx, 'link',  'Link Branch',   member.linkBranchName  || '—', colRightX, gridY + rowH,     colRightW);
+    this.drawFieldRow(ctx, 'phone', 'CSP Mobile',    member.phone           || '—', colRightX, gridY + rowH * 2, colRightW);
+    this.drawFieldRow(ctx, 'id',    'Aadhaar No.',   this.maskAadhaar(member.aadhaarNumber), colRightX, gridY + rowH * 3, colRightW);
+    this.drawFieldRow(ctx, 'key',   'Valid Upto',    'Life Time',                   colRightX, gridY + rowH * 4, colRightW);
 
-    // Divider Line above copyright footer
+    // Vertical divider between columns
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(w / 2 + 2, boxY + 66);
+    ctx.lineTo(w / 2 + 2, boxY + boxH - 10);
+    ctx.stroke();
+
+    // Divider above copyright
     ctx.strokeStyle = '#BAE6FD';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -414,7 +425,7 @@ export class MemberCardService {
     ctx.textAlign = 'center';
     ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', w / 2, yOff + 45);
 
-    // Subtitle Terms & Conditions rounded badge
+    // T&C badge
     const tcBadgeW = 180;
     const tcBadgeH = 26;
     const tcBadgeX = w / 2 - tcBadgeW / 2;
@@ -429,10 +440,10 @@ export class MemberCardService {
     ctx.fillText('TERMS & CONDITIONS', w / 2, tcBadgeY + 17);
     ctx.textAlign = 'left';
 
-    // ── Terms Container Box (White Background with Light Blue Border) ──
+    // ── Terms Container Box ──
     const tcBoxX = 35;
     const tcBoxY = yOff + 115;
-    const tcBoxW = w - 70; // 568
+    const tcBoxW = w - 70;
     const tcBoxH = 680;
 
     ctx.fillStyle = '#ffffff';
@@ -442,7 +453,6 @@ export class MemberCardService {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Render terms in a single column
     const colX = tcBoxX + 24;
     const colW = tcBoxW - 48;
     let currY = tcBoxY + 28;
@@ -464,7 +474,7 @@ export class MemberCardService {
     // ── Bottom Return Box ──
     const returnBoxX = 35;
     const returnBoxY = yOff + 825;
-    const returnBoxW = w - 70; // 568
+    const returnBoxW = w - 70;
     const returnBoxH = 140;
 
     ctx.fillStyle = '#F0F9FF';
@@ -474,10 +484,8 @@ export class MemberCardService {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Map pin box logo (centered)
     this.drawLocationBoxLogo(ctx, w / 2 - 20, returnBoxY + 15, 40);
 
-    // Text details (centered)
     ctx.fillStyle = '#0B5ED7';
     ctx.font = 'bold 12.5px Arial, Helvetica, sans-serif';
     ctx.textAlign = 'center';
@@ -490,11 +498,11 @@ export class MemberCardService {
     ctx.fillStyle = '#475569';
     ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
     ctx.fillText('Reg. No.: TU/2026/14/132549    |    Helpline: +91 98291 15474    |    Rajasthan, India', w / 2, returnBoxY + 118);
-    ctx.textAlign = 'left'; // Reset
+    ctx.textAlign = 'left';
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // DYNAMIC GRID FIELD RENDERER WITH MULTI-LINE TEXT WRAPPING
+  // FIELD ROW — with proper text truncation to prevent overflow
   // ════════════════════════════════════════════════════════════════════
 
   private drawFieldRow(
@@ -504,35 +512,48 @@ export class MemberCardService {
     value: string,
     x: number,
     y: number,
+    maxWidth: number,        // total available width for icon + label + value
     isTwoLine: boolean = false
   ) {
     const iconSize = 16;
-    
-    // Draw icon on the left
     this.drawVectorIcon(ctx, iconType, x, y, iconSize);
 
-    // Label styling
+    // Label
     ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 12.5px sans-serif';
+    ctx.font = 'bold 12px Arial, Helvetica, sans-serif';
     const labelText = label + ' : ';
     ctx.fillText(labelText, x + 24, y + 12);
     const lw = ctx.measureText(labelText).width;
 
-    // Value styling
+    // Available pixels remaining for the value
+    const valueAreaX    = x + 24 + lw;
+    const availableForValue = x + maxWidth - valueAreaX - 4;   // 4px safety margin
+
     ctx.fillStyle = '#334155';
-    ctx.font = '500 12.5px sans-serif';
-    
+    ctx.font = '500 12px Arial, Helvetica, sans-serif';
+
     if (isTwoLine) {
-      const parts = value.split('\n');
+      const parts = (value || '—').split('\n');
       if (parts.length > 0) {
-        ctx.fillText(parts[0], x + 24 + lw, y + 12);
+        ctx.fillText(this.truncateText(ctx, parts[0], x + maxWidth - valueAreaX), valueAreaX, y + 12);
       }
       if (parts.length > 1) {
-        ctx.fillText(parts[1], x + 24 + lw, y + 27);
+        ctx.fillText(this.truncateText(ctx, parts[1], x + maxWidth - (x + 24) + 4), x + 24, y + 27);
       }
     } else {
-      ctx.fillText(value || '—', x + 24 + lw, y + 12);
+      ctx.fillText(this.truncateText(ctx, value || '—', availableForValue), valueAreaX, y + 12);
     }
+  }
+
+  /** Truncate text with ellipsis so it fits within maxWidth pixels */
+  private truncateText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
+    if (maxWidth <= 0) return '';
+    if (ctx.measureText(text).width <= maxWidth) return text;
+    let result = text;
+    while (result.length > 1 && ctx.measureText(result + '…').width > maxWidth) {
+      result = result.slice(0, -1);
+    }
+    return result + '…';
   }
 
   private drawTermItem(
@@ -543,19 +564,16 @@ export class MemberCardService {
     width: number
   ): number {
     const bulletSize = 16;
-    
-    // Draw circular checkmark bullet icon
     this.drawCheckmarkIcon(ctx, x, y, bulletSize);
-    
-    // Draw wrapped text
+
     ctx.fillStyle = '#334155';
-    ctx.font = '500 13px sans-serif';
+    ctx.font = '500 13px Arial, Helvetica, sans-serif';
     const textX = x + 24;
     const words = text.split(' ');
     let line = '';
     let currY = y + 12;
     const lineHeight = 19;
-    
+
     for (let i = 0; i < words.length; i++) {
       const test = line ? line + ' ' + words[i] : words[i];
       if (ctx.measureText(test).width > (width - 24)) {
@@ -566,41 +584,26 @@ export class MemberCardService {
         line = test;
       }
     }
-    if (line) {
-      ctx.fillText(line, textX, currY);
-    }
-    
+    if (line) ctx.fillText(line, textX, currY);
     return currY - y + 12;
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // VECTOR DRAW HELPERS (Independent of FontAwesome)
+  // VECTOR DRAW HELPERS
   // ════════════════════════════════════════════════════════════════════
 
   private drawVectorIcon(ctx: CanvasRenderingContext2D, type: string, x: number, y: number, size: number) {
-    if (type === 'pin') {
-      this.drawLocationPinIcon(ctx, x, y, size);
-    } else if (type === 'building') {
-      this.drawBuildingIcon(ctx, x, y, size);
-    } else if (type === 'envelope') {
-      this.drawEnvelopeIcon(ctx, x, y, size);
-    } else if (type === 'phone') {
-      this.drawPhoneIcon(ctx, x, y, size);
-    } else if (type === 'link') {
-      this.drawLinkIcon(ctx, x, y, size);
-    } else if (type === 'user') {
-      this.drawUserIcon(ctx, x, y, size);
-    } else if (type === 'id') {
-      this.drawIdCardIcon(ctx, x, y, size);
-    } else if (type === 'bank') {
-      this.drawBankIcon(ctx, x, y, size);
-    } else if (type === 'wallet') {
-      this.drawWalletIcon(ctx, x, y, size);
-    } else if (type === 'card') {
-      this.drawCreditCardIcon(ctx, x, y, size);
-    } else if (type === 'key') {
-      this.drawKeyIcon(ctx, x, y, size);
-    }
+    if      (type === 'pin')      this.drawLocationPinIcon(ctx, x, y, size);
+    else if (type === 'building') this.drawBuildingIcon(ctx, x, y, size);
+    else if (type === 'envelope') this.drawEnvelopeIcon(ctx, x, y, size);
+    else if (type === 'phone')    this.drawPhoneIcon(ctx, x, y, size);
+    else if (type === 'link')     this.drawLinkIcon(ctx, x, y, size);
+    else if (type === 'user')     this.drawUserIcon(ctx, x, y, size);
+    else if (type === 'id')       this.drawIdCardIcon(ctx, x, y, size);
+    else if (type === 'bank')     this.drawBankIcon(ctx, x, y, size);
+    else if (type === 'wallet')   this.drawWalletIcon(ctx, x, y, size);
+    else if (type === 'card')     this.drawCreditCardIcon(ctx, x, y, size);
+    else if (type === 'key')      this.drawKeyIcon(ctx, x, y, size);
   }
 
   private drawLocationPinIcon(ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
@@ -612,8 +615,6 @@ export class MemberCardService {
     ctx.bezierCurveTo(size * 0.25, -size * 0.15, size * 0.25, size * 0.15, 0, size * 0.45);
     ctx.bezierCurveTo(-size * 0.25, size * 0.15, -size * 0.25, -size * 0.15, -size * 0.25, -size * 0.15);
     ctx.fill();
-    
-    // Hole
     ctx.beginPath();
     ctx.arc(0, -size * 0.15, size * 0.08, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
@@ -625,15 +626,12 @@ export class MemberCardService {
     ctx.save();
     ctx.fillStyle = '#0B5ED7';
     ctx.translate(x, y + 2);
-    // Roof
     ctx.beginPath();
     ctx.moveTo(0, size * 0.3);
     ctx.lineTo(size / 2, 0);
     ctx.lineTo(size, size * 0.3);
     ctx.fill();
-    // Base
     ctx.fillRect(0, size * 0.75, size, size * 0.15);
-    // Pillars
     ctx.fillRect(size * 0.15, size * 0.35, size * 0.1, size * 0.4);
     ctx.fillRect(size * 0.45, size * 0.35, size * 0.1, size * 0.4);
     ctx.fillRect(size * 0.75, size * 0.35, size * 0.1, size * 0.4);
@@ -679,12 +677,9 @@ export class MemberCardService {
     ctx.lineWidth = 2.2;
     ctx.translate(x + size / 2, y + size / 2 + 1);
     ctx.rotate(Math.PI / 4);
-    
-    // Draw interlocking links
     ctx.beginPath();
     this.drawCapsule(ctx, -size * 0.35, -size * 0.15, size * 0.5, size * 0.3);
     ctx.stroke();
-    
     ctx.beginPath();
     this.drawCapsule(ctx, -size * 0.15, -size * 0.35, size * 0.3, size * 0.5);
     ctx.stroke();
@@ -801,10 +796,10 @@ export class MemberCardService {
     ctx.moveTo(x, y + 9);
     ctx.lineTo(x + size, y + 9);
     ctx.stroke();
-    ctx.fillRect(x + 4, y + 13, 3, 3);
+    ctx.fillRect(x + 4,  y + 13, 3, 3);
     ctx.fillRect(x + 10, y + 13, 3, 3);
     ctx.fillRect(x + 16, y + 13, 3, 3);
-    ctx.fillRect(x + 4, y + 19, 3, 3);
+    ctx.fillRect(x + 4,  y + 19, 3, 3);
     ctx.fillRect(x + 10, y + 19, 3, 3);
     ctx.fillRect(x + 16, y + 19, 3, 3);
     ctx.restore();
@@ -834,22 +829,18 @@ export class MemberCardService {
     ctx.save();
     const cx = x + size / 2;
     const cy = y + size / 2;
-    
+
     ctx.strokeStyle = '#0B5ED7';
     ctx.lineWidth = 1.8;
     ctx.beginPath();
     ctx.arc(cx, cy, size * 0.38, 0, Math.PI * 2);
     ctx.stroke();
-    
+
     ctx.beginPath();
-    ctx.moveTo(cx - size * 0.48, cy);
-    ctx.lineTo(cx - size * 0.28, cy);
-    ctx.moveTo(cx + size * 0.28, cy);
-    ctx.lineTo(cx + size * 0.48, cy);
-    ctx.moveTo(cx, cy - size * 0.48);
-    ctx.lineTo(cx, cy - size * 0.28);
-    ctx.moveTo(cx, cy + size * 0.28);
-    ctx.lineTo(cx, cy + size * 0.48);
+    ctx.moveTo(cx - size * 0.48, cy); ctx.lineTo(cx - size * 0.28, cy);
+    ctx.moveTo(cx + size * 0.28, cy); ctx.lineTo(cx + size * 0.48, cy);
+    ctx.moveTo(cx, cy - size * 0.48); ctx.lineTo(cx, cy - size * 0.28);
+    ctx.moveTo(cx, cy + size * 0.28); ctx.lineTo(cx, cy + size * 0.48);
     ctx.stroke();
 
     ctx.fillStyle = '#0B5ED7';
@@ -858,7 +849,7 @@ export class MemberCardService {
     ctx.bezierCurveTo(cx + size * 0.18, cy - size * 0.08, cx + size * 0.18, cy + size * 0.1, cx, cy + size * 0.32);
     ctx.bezierCurveTo(cx - size * 0.18, cy + size * 0.1, cx - size * 0.18, cy - size * 0.08, cx - size * 0.18, cy - size * 0.08);
     ctx.fill();
-    
+
     ctx.beginPath();
     ctx.arc(cx, cy - size * 0.08, size * 0.06, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
@@ -872,17 +863,15 @@ export class MemberCardService {
 
   private getProfilePhotoUrl(member: any): string | null {
     if (!member) return null;
-    let url = member.profilePhoto?.secure_url || member.photograph?.secure_url
-           || member.profilePhoto?.url || member.photograph?.url
-           || (typeof member.profilePhoto === 'string' && member.profilePhoto.trim() ? member.profilePhoto : null)
-           || (typeof member.photograph === 'string' && member.photograph.trim() ? member.photograph : null)
-           || (typeof member.profileImage === 'string' && member.profileImage.trim() ? member.profileImage : null)
-           || member.profileImage?.secure_url || member.profileImage?.url;
+    const url = member.profilePhoto?.secure_url || member.photograph?.secure_url
+      || member.profilePhoto?.url || member.photograph?.url
+      || (typeof member.profilePhoto === 'string' && member.profilePhoto.trim() ? member.profilePhoto : null)
+      || (typeof member.photograph   === 'string' && member.photograph.trim()   ? member.photograph   : null)
+      || (typeof member.profileImage === 'string' && member.profileImage.trim() ? member.profileImage : null)
+      || member.profileImage?.secure_url || member.profileImage?.url;
 
     if (!url) return null;
-    if (url.startsWith('data:') || url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
-    }
+    if (url.startsWith('data:') || url.startsWith('http://') || url.startsWith('https://')) return url;
     return url.startsWith('/') ? url : `/${url}`;
   }
 
@@ -890,7 +879,7 @@ export class MemberCardService {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
+      img.onload  = () => resolve(img);
       img.onerror = (err) => reject(err);
       img.src = src;
     });
@@ -904,17 +893,12 @@ export class MemberCardService {
   private maskAadhaar(num: string | undefined): string {
     if (!num) return '—';
     const clean = num.toString().replace(/\D/g, '');
-    if (clean.length >= 4) {
-      return `XXXX XXXX ${clean.slice(-4)}`;
-    }
-    return num;
+    return clean.length >= 4 ? `XXXX XXXX ${clean.slice(-4)}` : num;
   }
 
   private formatDate(value: any): string {
     if (!value) return 'N/A';
-    if (typeof value === 'string' && /^\d{2}[-/]\d{2}[-/]\d{4}$/.test(value.trim())) {
-      return value.trim();
-    }
+    if (typeof value === 'string' && /^\d{2}[-/]\d{2}[-/]\d{4}$/.test(value.trim())) return value.trim();
     const d = this.parseDate(value);
     return d ? this.formatDateObj(d) : 'N/A';
   }
@@ -932,7 +916,7 @@ export class MemberCardService {
   }
 
   private formatDateObj(d: Date): string {
-    const day = String(d.getDate()).padStart(2, '0');
+    const day   = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     return `${day}-${month}-${d.getFullYear()}`;
   }
@@ -942,7 +926,6 @@ export class MemberCardService {
     ctx.beginPath();
     ctx.arc(cx, cy - 20, 20, 0, Math.PI * 2);
     ctx.fill();
-
     ctx.beginPath();
     ctx.moveTo(cx - 32, cy + 32);
     ctx.quadraticCurveTo(cx - 32, cy + 5, cx, cy + 5);
@@ -950,30 +933,6 @@ export class MemberCardService {
     ctx.lineTo(cx - 32, cy + 32);
     ctx.closePath();
     ctx.fill();
-  }
-
-  private drawFallbackQRCode(ctx: CanvasRenderingContext2D, x: number, y: number, size: number): void {
-    ctx.fillStyle = '#0A2540';
-    ctx.fillRect(x, y, size, size);
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(x + 4, y + 4, size - 8, size - 8);
-
-    ctx.fillStyle = '#0A2540';
-    const s = 18;
-    ctx.fillRect(x + 8, y + 8, s, s);
-    ctx.fillRect(x + size - 8 - s, y + 8, s, s);
-    ctx.fillRect(x + 8, y + size - 8 - s, s, s);
-
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(x + 12, y + 12, s - 8, s - 8);
-    ctx.fillRect(x + size - 8 - s + 4, y + 12, s - 8, s - 8);
-    ctx.fillRect(x + 12, y + size - 8 - s + 4, s - 8, s - 8);
-
-    ctx.fillStyle = '#0B5ED7';
-    ctx.fillRect(x + 15, y + 15, s - 14, s - 14);
-    ctx.fillRect(x + size - 8 - s + 7, y + 15, s - 14, s - 14);
-    ctx.fillRect(x + 15, y + size - 8 - s + 7, s - 14, s - 14);
   }
 
   private roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {

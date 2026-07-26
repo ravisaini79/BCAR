@@ -179,25 +179,114 @@ const registerUser = async (req, res, next) => {
     }
 
     // Step 2: Individual Unique Checks for Aadhaar, Phone, and Email
-    const aadhaarExists = await User.findOne({ aadhaarNumber: aadhaarClean }).lean();
+    // For each field: if a record exists and is NOT deleted → block. If deleted → purge it and carry history forward.
+
+    const collectedHistory = [];
+    const seenIds = new Set(); // avoid duplicates when same account matches multiple fields
+
+    /** Build a full snapshot of any deleted account document */
+    const buildHistorySnapshot = (old, note) => ({
+      // ── Identity & Personal ──
+      previousName:                    old.name,
+      previousFatherHusbandName:       old.fatherHusbandName,
+      previousDob:                     old.dob,
+      previousGender:                  old.gender,
+      previousMaritalStatus:           old.maritalStatus,
+      previousWifeHusbandName:         old.wifeHusbandName,
+      previousBloodGroup:              old.bloodGroup,
+      previousEducationalQualification: old.educationalQualification,
+      previousAadhaar:                 old.aadhaarNumber,
+      // ── Contact ──
+      previousEmail:                   old.email,
+      previousPhone:                   old.phone,
+      // ── Address ──
+      previousHomeAddressVill:         old.homeAddressVill,
+      previousPo:                      old.po,
+      previousPs:                      old.ps,
+      previousDistrict:                old.district,
+      previousPin:                     old.pin,
+      previousGramPanchayat:           old.gramPanchayat,
+      previousDevBlock:                old.devBlock,
+      previousSubDistrict:             old.subDistrict,
+      // ── Professional ──
+      previousBcCspIdNo:               old.bcCspIdNo,
+      previousSsa:                     old.ssa,
+      previousBankName:                old.bankName,
+      previousLinkBranchName:          old.linkBranchName,
+      previousDateOfStartingCsp:       old.dateOfStartingCsp,
+      previousInterestedToJoin:        old.interestedToJoin,
+      // ── Membership / Payment ──
+      previousStatus:                  old.status,
+      previousMembershipNo:            old.membershipNo,
+      previousRegistrationNumber:      old.registrationNumber,
+      previousReceiptNumber:           old.receiptNumber,
+      previousRegistrationFee:         old.registrationFee,
+      previousPaymentStatus:           old.paymentStatus,
+      previousPaymentMode:             old.paymentMode,
+      previousTransactionId:           old.transactionId,
+      previousAdmissionFee:            old.admissionFee,
+      previousPerMonthMembershipFee:   old.perMonthMembershipFee,
+      previousJoinedAt:                old.joinedAt,
+      previousCreatedAt:               old.createdAt,
+      // ── Documents (full S3 metadata objects) ──
+      previousProfilePhoto:            old.photograph || old.profilePhoto || null,
+      previousAadhaarCard:             old.aadhaarCard || old.aadhaarFront || null,
+      previousAadhaarBack:             old.aadhaarBack || null,
+      previousPanCard:                 old.panCard || null,
+      previousBankBcCertificate:       old.bankBcCertificate || old.bankPassbook || null,
+      previousSignature:               old.signature || null,
+      previousOtherDocuments:          old.otherDocuments || null,
+      // ── Deletion Metadata ──
+      deletedAt:                       old.deletedAt,
+      deletedBy:                       old.deletedBy,
+      reRegisteredAt:                  new Date(),
+      note
+    });
+
+    // ── Aadhaar Check ──
+    const aadhaarExists = await User.findOne({ aadhaarNumber: aadhaarClean });
     if (aadhaarExists) {
-      logRegistration(`Duplicate Aadhaar registration attempt blocked. Aadhaar: ${aadhaarClean}`);
-      res.status(400);
-      throw new Error('This Aadhaar Number is already registered.');
+      if (!aadhaarExists.isDeleted) {
+        logRegistration(`Duplicate Aadhaar registration attempt blocked. Aadhaar: ${aadhaarClean}`);
+        res.status(400);
+        throw new Error('This Aadhaar Number is already registered.');
+      }
+      collectedHistory.push(buildHistorySnapshot(aadhaarExists, 'Previous account was soft-deleted; Aadhaar re-registered'));
+      seenIds.add(String(aadhaarExists._id));
+      await User.deleteOne({ _id: aadhaarExists._id });
+      logRegistration(`Purged soft-deleted account for Aadhaar re-registration: ${aadhaarClean}`);
     }
 
-    const phoneExists = await User.findOne({ phone: cleanPhone }).lean();
+    // ── Phone Check ──
+    const phoneExists = await User.findOne({ phone: cleanPhone });
     if (phoneExists) {
-      logRegistration(`Duplicate Phone registration attempt blocked. Phone: ${cleanPhone}`);
-      res.status(400);
-      throw new Error('This Mobile Number is already registered.');
+      if (!phoneExists.isDeleted) {
+        logRegistration(`Duplicate Phone registration attempt blocked. Phone: ${cleanPhone}`);
+        res.status(400);
+        throw new Error('This Mobile Number is already registered.');
+      }
+      if (!seenIds.has(String(phoneExists._id))) {
+        collectedHistory.push(buildHistorySnapshot(phoneExists, 'Previous account was soft-deleted; Phone re-registered'));
+        seenIds.add(String(phoneExists._id));
+        await User.deleteOne({ _id: phoneExists._id });
+        logRegistration(`Purged soft-deleted account for Phone re-registration: ${cleanPhone}`);
+      }
     }
 
-    const emailExists = await User.findOne({ email: cleanEmail }).lean();
+    // ── Email Check ──
+    const emailExists = await User.findOne({ email: cleanEmail });
     if (emailExists) {
-      logRegistration(`Duplicate Email registration attempt blocked. Email: ${cleanEmail}`);
-      res.status(400);
-      throw new Error('This Email address is already registered.');
+      if (!emailExists.isDeleted) {
+        logRegistration(`Duplicate Email registration attempt blocked. Email: ${cleanEmail}`);
+        res.status(400);
+        throw new Error('This Email address is already registered.');
+      }
+      if (!seenIds.has(String(emailExists._id))) {
+        collectedHistory.push(buildHistorySnapshot(emailExists, 'Previous account was soft-deleted; Email re-registered'));
+        seenIds.add(String(emailExists._id));
+        await User.deleteOne({ _id: emailExists._id });
+        logRegistration(`Purged soft-deleted account for Email re-registration: ${cleanEmail}`);
+      }
     }
 
     // Step 3: Setup asynchronous S3 upload tasks
@@ -286,6 +375,7 @@ const registerUser = async (req, res, next) => {
       childrenSon: childrenSon ? parseInt(childrenSon, 10) : 0, 
       childrenDaughter: childrenDaughter ? parseInt(childrenDaughter, 10) : 0, 
       educationalQualification, email, phone, 
+      aadhaarNumber: aadhaarClean,
       homeAddressVill, po, ps, district, pin, gramPanchayat, devBlock, 
       bcCspIdNo, ssa, bankName, linkBranchName, dateOfStartingCsp, 
       interestedToJoin, password,
@@ -296,7 +386,10 @@ const registerUser = async (req, res, next) => {
       status: 'Pending Approval',
       isActive: false,
       emailVerified: false,
-      createdBy: 'Self Registration'
+      createdBy: 'Self Registration',
+
+      // Carry over history from any previously deleted accounts with same phone/email/aadhaar
+      registrationHistory: collectedHistory.length > 0 ? collectedHistory : []
     };
 
     // Assign S3 file metadata matching schema
@@ -454,7 +547,7 @@ const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     const cleanEmail = email ? email.trim().toLowerCase() : '';
 
-    const user = await User.findOne({ email: cleanEmail });
+    const user = await User.findOne({ email: cleanEmail, isDeleted: { $ne: true } });
 
     if (user && (await user.matchPassword(password))) {
       // Check member status (admins / coordinators bypass pending check)
@@ -498,20 +591,149 @@ const loginUser = async (req, res, next) => {
 // @access  Private
 const getUserProfile = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id).select('-password');
 
     if (user) {
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        status: user.status
-      });
+      res.json(user);
     } else {
       res.status(404);
       throw new Error('User not found');
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+const updateUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      // Basic Info
+      user.name = req.body.name || user.name;
+      user.fatherHusbandName = req.body.fatherHusbandName || user.fatherHusbandName;
+      user.dob = req.body.dob || user.dob;
+      user.gender = req.body.gender || user.gender;
+      user.maritalStatus = req.body.maritalStatus || user.maritalStatus;
+      user.wifeHusbandName = req.body.wifeHusbandName || user.wifeHusbandName;
+      if (req.body.childrenSon !== undefined) user.childrenSon = req.body.childrenSon;
+      if (req.body.childrenDaughter !== undefined) user.childrenDaughter = req.body.childrenDaughter;
+      user.educationalQualification = req.body.educationalQualification || user.educationalQualification;
+      user.bloodGroup = req.body.bloodGroup || user.bloodGroup;
+      user.subDistrict = req.body.subDistrict || user.subDistrict;
+
+      // Contact Info
+      user.email = req.body.email || user.email;
+      user.phone = req.body.phone || user.phone;
+
+      // Address Info
+      user.homeAddressVill = req.body.homeAddressVill || user.homeAddressVill;
+      user.po = req.body.po || user.po;
+      user.ps = req.body.ps || user.ps;
+      user.district = req.body.district || user.district;
+      user.pin = req.body.pin || user.pin;
+      user.gramPanchayat = req.body.gramPanchayat || user.gramPanchayat;
+      user.devBlock = req.body.devBlock || user.devBlock;
+
+      // Professional Details
+      user.bcCspIdNo = req.body.bcCspIdNo || user.bcCspIdNo;
+      user.ssa = req.body.ssa || user.ssa;
+      user.bankName = req.body.bankName || user.bankName;
+      user.linkBranchName = req.body.linkBranchName || user.linkBranchName;
+      user.dateOfStartingCsp = req.body.dateOfStartingCsp || user.dateOfStartingCsp;
+
+      const updatedUser = await user.save();
+      const userRes = updatedUser.toObject();
+      delete userRes.password;
+      res.json(userRes);
+    } else {
+      res.status(404);
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Change user password
+// @route   PUT /api/auth/change-password
+// @access  Private
+const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      res.status(400);
+      throw new Error('Please provide current password and new password');
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (user && (await user.matchPassword(currentPassword))) {
+      user.password = newPassword;
+      await user.save();
+      res.json({ message: 'Password changed successfully' });
+    } else {
+      res.status(401);
+      throw new Error('Invalid current password');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Forgot password - send reset password via email
+// @route   POST /api/auth/forgot-password
+// @access  Public
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      res.status(400);
+      throw new Error('Please provide email address');
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase(), isDeleted: { $ne: true } });
+    if (!user) {
+      res.status(404);
+      throw new Error('No account found with this email address');
+    }
+
+    // Generate random 8-character password
+    const tempPassword = Math.random().toString(36).substring(2, 10).toUpperCase() + '@bcar';
+    user.password = tempPassword;
+    await user.save();
+
+    const { sendMail } = require('../services/emailService');
+
+    // Send email
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="color: #0d5c3a; margin-top: 10px;">BCAR Account Password Reset</h2>
+        </div>
+        <p>Dear ${user.name},</p>
+        <p>Your password reset request was successful. We have generated a temporary password for your account.</p>
+        <div style="background-color: #f7f7f7; padding: 15px; border-radius: 4px; text-align: center; margin: 20px 0;">
+          <span style="font-size: 14px; color: #555;">Temporary Password:</span>
+          <br>
+          <strong style="font-size: 22px; color: #0d5c3a; letter-spacing: 1px;">${tempPassword}</strong>
+        </div>
+        <p style="color: #666; font-size: 14px;">Please login using this temporary password and immediately change it from your Profile / Dashboard settings.</p>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <p style="font-size: 12px; color: #999; text-align: center;">This is an automated email. Please do not reply directly to this message. For help, contact support@bcarbankmitra.com.</p>
+      </div>
+    `;
+
+    await sendMail({
+      to: user.email,
+      subject: 'Your Temporary Password - BCAR',
+      html: emailHtml
+    });
+
+    res.json({ message: 'A temporary password has been sent to your email address.' });
   } catch (error) {
     next(error);
   }
@@ -574,6 +796,9 @@ module.exports = {
   updateMemberDocuments,
   loginUser,
   getUserProfile,
+  updateUserProfile,
+  changePassword,
+  forgotPassword,
   downloadReceipt,
   sendCardEmail
 };

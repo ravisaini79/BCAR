@@ -164,6 +164,11 @@ export class DashboardComponent implements OnInit {
   editMemberData: any = {};
   editSubmitting = false;
 
+  // Change Password Dialog state
+  showChangePasswordDialog = false;
+  passwordSubmitting = false;
+  passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
+
   // Options lists
   categoryOptions = [
     { label: 'General Announcement', value: 'General' },
@@ -861,6 +866,43 @@ export class DashboardComponent implements OnInit {
         this.editSubmitting = false;
         console.error('Failed to update profile:', err);
         this.toastService.error(err.error?.message || 'Failed to update profile. Please try again.');
+      }
+    });
+  }
+
+  openChangePasswordDialog() {
+    this.passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
+    this.showChangePasswordDialog = true;
+  }
+
+  submitPasswordChange() {
+    if (!this.passwordForm.currentPassword || !this.passwordForm.newPassword || !this.passwordForm.confirmPassword) {
+      this.toastService.warn('Please fill in all password fields.');
+      return;
+    }
+    if (this.passwordForm.newPassword.length < 6) {
+      this.toastService.warn('New password must be at least 6 characters long.');
+      return;
+    }
+    if (this.passwordForm.newPassword !== this.passwordForm.confirmPassword) {
+      this.toastService.error('New password and confirm password do not match.');
+      return;
+    }
+
+    this.passwordSubmitting = true;
+    this.dashboardService.changePassword({
+      currentPassword: this.passwordForm.currentPassword,
+      newPassword: this.passwordForm.newPassword
+    }).subscribe({
+      next: (res: any) => {
+        this.passwordSubmitting = false;
+        this.showChangePasswordDialog = false;
+        this.showEditProfileDialog = false;
+        this.toastService.success('Password changed successfully.');
+      },
+      error: (err: any) => {
+        this.passwordSubmitting = false;
+        this.toastService.error(err.error?.message || 'Failed to change password. Please try again.');
       }
     });
   }

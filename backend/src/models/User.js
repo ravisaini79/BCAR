@@ -182,7 +182,103 @@ const userSchema = new mongoose.Schema({
   declarationAccepted: { type: Boolean, default: false },
   isActive: { type: Boolean, default: false },
   emailVerified: { type: Boolean, default: false },
-  createdBy: { type: String, default: 'Self Registration' }
+  createdBy: { type: String, default: 'Self Registration' },
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: { type: Date, default: null },
+  deletedBy: { type: String, default: null },
+
+  // Full snapshot of a previously deleted account that shared the same phone/email/aadhaar
+  registrationHistory: [{
+    // ── Identity & Personal ──
+    previousName: String,
+    previousFatherHusbandName: String,
+    previousDob: String,
+    previousGender: String,
+    previousMaritalStatus: String,
+    previousWifeHusbandName: String,
+    previousBloodGroup: String,
+    previousEducationalQualification: String,
+    previousAadhaar: String,
+
+    // ── Contact ──
+    previousEmail: String,
+    previousPhone: String,
+
+    // ── Address ──
+    previousHomeAddressVill: String,
+    previousPo: String,
+    previousPs: String,
+    previousDistrict: String,
+    previousPin: String,
+    previousGramPanchayat: String,
+    previousDevBlock: String,
+    previousSubDistrict: String,
+
+    // ── Professional ──
+    previousBcCspIdNo: String,
+    previousSsa: String,
+    previousBankName: String,
+    previousLinkBranchName: String,
+    previousDateOfStartingCsp: String,
+    previousInterestedToJoin: String,
+
+    // ── Membership / Payment ──
+    previousStatus: String,
+    previousMembershipNo: String,
+    previousRegistrationNumber: String,
+    previousReceiptNumber: String,
+    previousRegistrationFee: Number,
+    previousPaymentStatus: String,
+    previousPaymentMode: String,
+    previousTransactionId: String,
+    previousAdmissionFee: String,
+    previousPerMonthMembershipFee: String,
+    previousJoinedAt: Date,
+    previousCreatedAt: Date,
+
+    // ── Documents (full S3 metadata) ──
+    previousProfilePhoto: {
+      url: String, key: String, bucket: String, public_id: String,
+      secure_url: String, original_filename: String, format: String,
+      file_size: Number, uploaded_at: Date
+    },
+    previousAadhaarCard: {
+      url: String, key: String, bucket: String, public_id: String,
+      secure_url: String, original_filename: String, format: String,
+      file_size: Number, uploaded_at: Date
+    },
+    previousAadhaarBack: {
+      url: String, key: String, bucket: String, public_id: String,
+      secure_url: String, original_filename: String, format: String,
+      file_size: Number, uploaded_at: Date
+    },
+    previousPanCard: {
+      url: String, key: String, bucket: String, public_id: String,
+      secure_url: String, original_filename: String, format: String,
+      file_size: Number, uploaded_at: Date
+    },
+    previousBankBcCertificate: {
+      url: String, key: String, bucket: String, public_id: String,
+      secure_url: String, original_filename: String, format: String,
+      file_size: Number, uploaded_at: Date
+    },
+    previousSignature: {
+      url: String, key: String, bucket: String, public_id: String,
+      secure_url: String, original_filename: String, format: String,
+      file_size: Number, uploaded_at: Date
+    },
+    previousOtherDocuments: {
+      url: String, key: String, bucket: String, public_id: String,
+      secure_url: String, original_filename: String, format: String,
+      file_size: Number, uploaded_at: Date
+    },
+
+    // ── Deletion Metadata ──
+    deletedAt: Date,
+    deletedBy: String,
+    reRegisteredAt: { type: Date, default: Date.now },
+    note: { type: String, default: 'Account was deleted and re-registered' }
+  }]
 }, { timestamps: true });
 
 // ── 100K+ MongoDB Performance Indexes ──────────────────────────────────────
@@ -191,6 +287,7 @@ userSchema.index({ status: 1 });
 userSchema.index({ createdAt: -1 });
 userSchema.index({ bcCspIdNo: 1 });
 userSchema.index({ membershipNo: 1 });
+userSchema.index({ isDeleted: 1 });
 
 // Compound Indexes for Server-Side Filtering & Admin Dashboards
 userSchema.index({ status: 1, district: 1, createdAt: -1 });

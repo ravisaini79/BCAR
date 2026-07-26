@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { registerUser, loginUser, getUserProfile, updateMemberDocuments, downloadReceipt, sendCardEmail } = require('../controllers/authController');
+const { registerUser, loginUser, getUserProfile, updateUserProfile, changePassword, forgotPassword, updateMemberDocuments, downloadReceipt, sendCardEmail } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Setup multer memory storage for multipart uploads
@@ -26,7 +26,10 @@ const cpUpload = upload.fields([
 
 router.post('/register', cpUpload, registerUser);
 router.post('/login', loginUser);
+router.post('/forgot-password', forgotPassword);
 router.get('/profile', protect, getUserProfile);
+router.put('/profile', protect, updateUserProfile);
+router.put('/change-password', protect, changePassword);
 router.put('/profile/documents', protect, updateMemberDocuments);
 router.get('/receipt/:regNum', downloadReceipt);
 router.post('/send-card-email', sendCardEmail);

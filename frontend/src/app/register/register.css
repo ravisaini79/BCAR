@@ -622,41 +622,72 @@
 
 /* ── Responsive media queries ── */
 @media (max-width: 768px) {
+  .register-page-wrapper {
+    padding: 76px 0px 40px !important;
+  }
+  .register-main-container-centered {
+    margin: 0 !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
   .register-content-card {
-    padding: 30px 20px;
-    border-radius: 12px;
+    padding: 20px 8px !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+  .form-card-header {
+    margin-bottom: 20px !important;
   }
   .form-card-header h2 {
-    font-size: 22px;
+    font-size: 20px;
   }
   .form-card-header h3 {
-    font-size: 14.5px;
+    font-size: 13.5px;
   }
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 16px !important;
+  }
+  .form-section-card {
+    margin-bottom: 16px !important;
+    border-radius: 12px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-left: none !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
+    background: #ffffff !important;
+  }
+  .section-card-header {
+    padding: 12px 14px !important;
   }
   .section-card-body {
-    padding: 20px 16px;
+    padding: 18px 12px !important;
   }
   .document-uploads-grid {
     grid-template-columns: 1fr;
+    gap: 16px !important;
   }
   .sticky-footer-action-bar {
-    padding: 12px 16px;
+    padding: 10px 12px;
   }
   .action-bar-inner {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    gap: 8px;
   }
   .btn-save-draft,
   .btn-submit-membership {
-    width: 100%;
+    width: 48%;
+    flex: 1;
     justify-content: center;
-    height: 48px;
-    border-radius: 10px;
+    height: 44px;
+    font-size: 13px;
+    padding: 0 8px;
+    white-space: nowrap;
+    border-radius: 8px;
   }
   .bottom-spacer {
-    height: 140px;
+    height: 75px;
   }
 }
 
@@ -1495,3 +1526,44 @@ p-datepicker {
   border: 1px solid #86EFAC;
 }
 
+/* ── Cropper Mobile Responsive ── */
+@media (max-width: 600px) {
+  .cropper-modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .cropper-modal-card {
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .cropper-viewport-wrap {
+    width: min(85vw, 300px) !important;
+    height: min(85vw, 300px) !important;
+  }
+
+  .cropper-guide-box {
+    width: min(70vw, 260px) !important;
+    height: min(70vw, 260px) !important;
+  }
+
+  .cropper-controls-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .cropper-modal-footer {
+    padding: 14px 16px !important;
+    gap: 10px;
+  }
+
+  .cropper-btn-cancel,
+  .cropper-btn-save {
+    flex: 1;
+    justify-content: center;
+  }
+}

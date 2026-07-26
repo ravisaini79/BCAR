@@ -26,10 +26,10 @@
           <div class="section-card-body">
             <!-- Profile Image Capture / Upload Zone -->
             <div class="profile-image-section">
-              <label class="field-label-centered">Profile Image / User Picture</label>
+              <label class="field-label-centered">Profile Image / User Picture <span class="required">*</span></label>
               
               <!-- Circular Avatar View -->
-              <div class="profile-avatar-container">
+              <div class="profile-avatar-container" [class.p-invalid]="hasError('profileImage')">
                 @if (isCameraActive) {
                   <div class="profile-camera-wrap">
                     <video id="camera-preview-video" autoplay playsinline class="profile-camera-stream"></video>
@@ -78,6 +78,11 @@
                   }
                 }
               </div>
+              @if (hasError('profileImage', 'required')) {
+                <small class="validation-error" style="text-align: center; display: block; margin-top: 8px;">
+                  <i class="pi pi-exclamation-circle"></i> Profile Image is required.
+                </small>
+              }
             </div>
 
             <div class="form-grid">
@@ -94,19 +99,31 @@
               </div>
 
               <div class="input-group">
-                <label class="field-label">Father / Husband Name</label>
-                <input pInputText formControlName="fatherHusbandName" placeholder="Enter father or husband name" class="w-full" />
+                <label class="field-label">Father / Husband Name <span class="required">*</span></label>
+                <input pInputText formControlName="fatherHusbandName" placeholder="Enter father or husband name" 
+                       [class.p-invalid]="hasError('fatherHusbandName')" class="w-full" />
+                @if (hasError('fatherHusbandName', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Father / Husband Name is required.</small>
+                }
               </div>
 
               <div class="input-group">
-                <label class="field-label">Educational Qualification</label>
-                <input pInputText formControlName="educationalQualification" placeholder="E.g., Graduate, Higher Secondary" class="w-full" />
+                <label class="field-label">Educational Qualification <span class="required">*</span></label>
+                <input pInputText formControlName="educationalQualification" placeholder="E.g., Graduate, Higher Secondary" 
+                       [class.p-invalid]="hasError('educationalQualification')" class="w-full" />
+                @if (hasError('educationalQualification', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Educational Qualification is required.</small>
+                }
               </div>
 
               <div class="input-group">
-                <label class="field-label">Date of Birth</label>
+                <label class="field-label">Date of Birth <span class="required">*</span></label>
                 <p-datepicker formControlName="dob" [showIcon]="true" dateFormat="dd/mm/yy"
-                              placeholder="DD/MM/YYYY" [maxDate]="today" styleClass="w-full" />
+                              placeholder="DD/MM/YYYY" [maxDate]="today" styleClass="w-full" 
+                              [class.p-invalid]="hasError('dob')" />
+                @if (hasError('dob', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Date of Birth is required.</small>
+                }
               </div>
 
               <div class="input-group">
@@ -299,20 +316,32 @@
           <div class="section-card-body">
             <div class="form-grid">
               <div class="input-group">
-                <label class="field-label">BC / CSP ID Number</label>
-                <input pInputText formControlName="bcCspIdNo" placeholder="Enter CSP ID number" class="w-full" />
+                <label class="field-label">BC / CSP ID Number <span class="required">*</span></label>
+                <input pInputText formControlName="bcCspIdNo" placeholder="Enter CSP ID number" 
+                       [class.p-invalid]="hasError('bcCspIdNo')" class="w-full" />
+                @if (hasError('bcCspIdNo', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> BC / CSP ID Number is required.</small>
+                }
               </div>
               <div class="input-group">
                 <label class="field-label">Sub Service Agent (SSA)</label>
                 <input pInputText formControlName="ssa" placeholder="SSA code or location" class="w-full" />
               </div>
               <div class="input-group">
-                <label class="field-label">Associated Bank Name</label>
-                <input pInputText formControlName="bankName" placeholder="E.g., SBI, BRKGB, PNB" class="w-full" />
+                <label class="field-label">Associated Bank Name <span class="required">*</span></label>
+                <input pInputText formControlName="bankName" placeholder="E.g., SBI, BRKGB, PNB" 
+                       [class.p-invalid]="hasError('bankName')" class="w-full" />
+                @if (hasError('bankName', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Associated Bank Name is required.</small>
+                }
               </div>
               <div class="input-group">
-                <label class="field-label">Link Branch Name</label>
-                <input pInputText formControlName="linkBranchName" placeholder="Link bank branch" class="w-full" />
+                <label class="field-label">Link Branch Name <span class="required">*</span></label>
+                <input pInputText formControlName="linkBranchName" placeholder="Link bank branch" 
+                       [class.p-invalid]="hasError('linkBranchName')" class="w-full" />
+                @if (hasError('linkBranchName', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Link Branch Name is required.</small>
+                }
               </div>
               <div class="input-group full-width">
                 <label class="field-label">Date of Starting as CSP / Bank Mitra</label>
@@ -346,7 +375,7 @@
           </div>
           <div class="section-card-body">
             <p class="step-guide-text">
-              Upload clear scanned copies of the following mandatory documents. Accepted formats: PDF, JPG, PNG (max 5 MB each).
+              Upload clear scanned copies of the following mandatory documents. Accepted formats: PDF, JPG, PNG (max 1 MB each).
               <p-tag value="Mandatory Attachments" severity="danger" styleClass="ml-2" />
             </p>
 
@@ -371,7 +400,7 @@
                     <div class="upload-zone-inner">
                       <i class="pi pi-id-card upload-icon"></i>
                       <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
-                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 1 MB</p>
                     </div>
                   } @else {
                     <div class="upload-preview" (click)="$event.stopPropagation()">
@@ -419,7 +448,7 @@
                     <div class="upload-zone-inner">
                       <i class="pi pi-id-card upload-icon"></i>
                       <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
-                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 1 MB</p>
                     </div>
                   } @else {
                     <div class="upload-preview" (click)="$event.stopPropagation()">
@@ -467,7 +496,7 @@
                     <div class="upload-zone-inner">
                       <i class="pi pi-credit-card upload-icon"></i>
                       <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
-                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 1 MB</p>
                     </div>
                   } @else {
                     <div class="upload-preview" (click)="$event.stopPropagation()">
@@ -496,57 +525,7 @@
                 }
               </div>
 
-              <!-- Passport Size Photo -->
-              <div class="doc-upload-item">
-                <label class="doc-label">Passport Size Photo (पासपोर्ट साइज़ फोटो) <span class="required">*</span></label>
-                <div class="upload-zone"
-                     [class.drag-over]="srv.dragOverField() === 'photograph'"
-                     [class.invalid-control]="hasError('photograph')"
-                     (dragover)="onDragOver($event, 'photograph')"
-                     (dragleave)="onDragLeave($event)"
-                     (drop)="onDrop($event, 'photograph')"
-                     (click)="openFilePicker('upload-photo')">
-                  <input id="upload-photo" type="file" class="file-input-hidden"
-                         accept=".jpg,.jpeg,.png"
-                         (change)="onFileSelected($event, 'photograph')"
-                         (click)="$event.stopPropagation()">
 
-                  @if (!registerForm.get('photograph')?.value) {
-                    <div class="upload-zone-inner">
-                      <i class="pi pi-camera upload-icon"></i>
-                      <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
-                      <p class="upload-hint">Applicant Photo · JPG, PNG · Max 5 MB</p>
-                    </div>
-                  } @else {
-                    <div class="upload-preview" (click)="$event.stopPropagation()">
-                      <img [src]="registerForm.get('photograph')?.value"
-                           class="photo-preview-image" alt="Photograph preview">
-                      <div class="file-details">
-                        <span class="file-name">{{ upload.fileNames().photographName }}</span>
-                        <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
-                      </div>
-                      <button type="button" class="view-file-btn"
-                              pTooltip="Crop photo" tooltipPosition="top"
-                              (click)="openCropperForField('photograph')">
-                        <i class="pi pi-pencil"></i>
-                      </button>
-                      <button type="button" class="view-file-btn"
-                              pTooltip="View photo" tooltipPosition="top"
-                              (click)="viewUploadedFile('photograph', 'Passport Size Photo')">
-                        <i class="pi pi-eye"></i>
-                      </button>
-                      <button type="button" class="remove-file-btn"
-                              pTooltip="Remove photo" tooltipPosition="top"
-                              (click)="removeFile('photograph')">
-                        <i class="pi pi-trash"></i>
-                      </button>
-                    </div>
-                  }
-                </div>
-                @if (hasError('photograph', 'required')) {
-                  <small class="validation-error" style="margin-top:6px;display:block;"><i class="pi pi-exclamation-circle"></i> Passport Size Photo is mandatory.</small>
-                }
-              </div>
 
               <!-- Bank BC Certificate -->
               <div class="doc-upload-item">
@@ -567,7 +546,7 @@
                     <div class="upload-zone-inner">
                       <i class="pi pi-verified upload-icon"></i>
                       <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
-                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 1 MB</p>
                     </div>
                   } @else {
                     <div class="upload-preview" (click)="$event.stopPropagation()">
@@ -699,8 +678,8 @@
   <footer class="register-footer-minimal">
     <div class="footer-links">
       <a href="tel:+919414008299"><i class="pi pi-phone"></i> Help Desk</a>
-      <a href="mailto:info@bcarajasthan.org"><i class="pi pi-envelope"></i> Email</a>
-      <a href="https://wa.me/919414008299" target="_blank"><i class="pi pi-whatsapp"></i> WhatsApp</a>
+      <a href="mailto:support@bcarbankmitra.com"><i class="pi pi-envelope"></i> Email</a>
+      <a href="https://wa.me/918094826724" target="_blank"><i class="pi pi-whatsapp"></i> WhatsApp</a>
       <span class="separator">|</span>
       <a (click)="router.navigate(['/'])">Privacy Policy</a>
       <a (click)="router.navigate(['/'])">Terms &amp; Conditions</a>
@@ -727,74 +706,74 @@
   </div>
 
   <!-- ── Interactive Image Cropper Modal ── -->
-  @if (isCropping) {
-    <div class="cropper-modal-overlay" (click)="closeCropper()">
-      <div class="cropper-modal-card" (click)="$event.stopPropagation()">
-        
-        <div class="cropper-modal-header">
-          <h4><i class="pi pi-crop"></i> {{ cropperTitle }}</h4>
-          <button type="button" class="close-cropper-btn" (click)="closeCropper()">
-            <i class="pi pi-times"></i>
-          </button>
-        </div>
-
-        <div class="cropper-modal-body">
-          <p class="cropper-instructions"><i class="pi pi-info-circle"></i> Drag image to position &amp; use controls below to scale or rotate</p>
-          
-          <div class="cropper-viewport-wrap"
-               (mousedown)="startCropDrag($event)"
-               (mousemove)="onCropDrag($event)"
-               (mouseup)="endCropDrag()"
-               (mouseleave)="endCropDrag()"
-               (touchstart)="startCropDrag($event)"
-               (touchmove)="onCropDrag($event)"
-               (touchend)="endCropDrag()">
-
-            <!-- Crop Square/Circle Frame Guide -->
-            <div class="cropper-guide-box"></div>
-
-            <!-- Source Image -->
-            <img [src]="cropperImageSrc"
-                 class="cropper-source-img"
-                 [style.transform]="'translate(' + cropOffsetX + 'px, ' + cropOffsetY + 'px) scale(' + cropScale + ') rotate(' + cropRotate + 'deg)'"
-                 alt="Source Image to Crop">
-          </div>
-
-          <!-- Controls Toolbar -->
-          <div class="cropper-controls-toolbar">
-            <div class="cropper-tool-group">
-              <span class="tool-label">Zoom:</span>
-              <button type="button" class="crop-tool-btn" (click)="zoomOutCropper()" pTooltip="Zoom Out" tooltipPosition="top">
-                <i class="pi pi-search-minus"></i>
-              </button>
-              <span class="crop-scale-label">{{ (cropScale * 100).toFixed(0) }}%</span>
-              <button type="button" class="crop-tool-btn" (click)="zoomInCropper()" pTooltip="Zoom In" tooltipPosition="top">
-                <i class="pi pi-search-plus"></i>
-              </button>
-            </div>
-
-            <div class="cropper-tool-group">
-              <button type="button" class="crop-tool-btn" (click)="rotateCropper()" pTooltip="Rotate 90°" tooltipPosition="top">
-                <i class="pi pi-refresh"></i> Rotate
-              </button>
-              <button type="button" class="crop-tool-btn" (click)="resetCropper()" pTooltip="Reset Position" tooltipPosition="top">
-                <i class="pi pi-undo"></i> Reset
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="cropper-modal-footer">
-          <button type="button" class="cropper-btn-cancel" (click)="closeCropper()">
-            Cancel
-          </button>
-          <button type="button" class="cropper-btn-save" (click)="applyCrop()">
-            <i class="pi pi-check"></i> Crop &amp; Save Photo
-          </button>
-        </div>
-
-      </div>
-    </div>
-  }
 
 <app-footer></app-footer>
+
+<!-- ── Interactive Image Cropper Modal (teleported to root) ── -->
+@if (isCropping) {
+  <div class="cropper-modal-overlay" (click)="closeCropper()">
+    <div class="cropper-modal-card" (click)="$event.stopPropagation()">
+      
+      <div class="cropper-modal-header">
+        <h4><i class="pi pi-crop"></i> {{ cropperTitle }}</h4>
+        <button type="button" class="close-cropper-btn" (click)="closeCropper()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+
+      <div class="cropper-modal-body">
+        <p class="cropper-instructions"><i class="pi pi-info-circle"></i> Drag to position &amp; use controls to scale or rotate</p>
+        
+        <div class="cropper-viewport-wrap"
+             (mousedown)="startCropDrag($event)"
+             (mousemove)="onCropDrag($event)"
+             (mouseup)="endCropDrag()"
+             (mouseleave)="endCropDrag()"
+             (touchstart)="startCropDrag($event)"
+             (touchmove)="onCropDrag($event)"
+             (touchend)="endCropDrag()">
+
+          <!-- Crop Circle Frame Guide -->
+          <div class="cropper-guide-box"></div>
+
+          <!-- Source Image -->
+          <img [src]="cropperImageSrc"
+               class="cropper-source-img"
+               [style.transform]="'translate(' + cropOffsetX + 'px, ' + cropOffsetY + 'px) scale(' + cropScale + ') rotate(' + cropRotate + 'deg)'"
+               alt="Source Image to Crop">
+        </div>
+
+        <!-- Controls Toolbar -->
+        <div class="cropper-controls-toolbar">
+          <div class="cropper-tool-group">
+            <span class="tool-label">Zoom:</span>
+            <button type="button" class="crop-tool-btn" (click)="zoomOutCropper()">
+              <i class="pi pi-search-minus"></i>
+            </button>
+            <span class="crop-scale-label">{{ (cropScale * 100).toFixed(0) }}%</span>
+            <button type="button" class="crop-tool-btn" (click)="zoomInCropper()">
+              <i class="pi pi-search-plus"></i>
+            </button>
+          </div>
+
+          <div class="cropper-tool-group">
+            <button type="button" class="crop-tool-btn" (click)="rotateCropper()">
+              <i class="pi pi-refresh"></i> Rotate
+            </button>
+            <button type="button" class="crop-tool-btn" (click)="resetCropper()">
+              <i class="pi pi-undo"></i> Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="cropper-modal-footer">
+        <button type="button" class="cropper-btn-cancel" (click)="closeCropper()">Cancel</button>
+        <button type="button" class="cropper-btn-save" (click)="applyCrop()">
+          <i class="pi pi-check"></i> Crop &amp; Save Photo
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

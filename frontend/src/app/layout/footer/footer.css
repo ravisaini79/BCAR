@@ -94,10 +94,195 @@
   color: #ffffff;
 }
 
+/* Footer Certificate Card */
+.footer-cert-card {
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  border: 2px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+  max-width: 440px;
+  margin: 0;
+}
+
+.cert-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+  width: 200px;
+  height: 200px;
+  background-image: url('/images/rajasthan-emblem.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.cert-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 2px solid #0284c7;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.cert-emblem {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.cert-header-text h4 {
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.cert-header-text h5 {
+  font-family: var(--font-title);
+  font-size: 11px;
+  font-weight: 600;
+  color: #0284c7;
+  margin: 2px 0 0 0;
+}
+
+.cert-body {
+  font-size: 11px;
+}
+
+.cert-title {
+  text-align: center;
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: 1px;
+}
+
+.cert-subtitle {
+  text-align: center;
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.cert-divider {
+  height: 1px;
+  background: #cbd5e1;
+  margin: 10px 0;
+}
+
+.cert-row {
+  display: flex;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.cert-label {
+  font-weight: 700;
+  color: #475569;
+  width: 105px;
+  flex-shrink: 0;
+}
+
+.cert-value {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.cert-value.highlight {
+  color: #0284c7;
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 11.5px;
+}
+
+.cert-value.font-strong {
+  font-weight: 700;
+  font-size: 9.5px;
+}
+
+.cert-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 15px;
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 10px;
+}
+
+.cert-seal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  padding: 3px 6px;
+  border-radius: 5px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.cert-sign-name {
+  font-family: 'Great Vibes', cursive, 'Brush Script MT', sans-serif;
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 600;
+  text-align: right;
+}
+
+.cert-sign-title {
+  font-size: 8.5px;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 2px;
+  text-align: right;
+}
+
+.cert-verify-bar {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 6px 10px;
+  margin: 12px -20px -20px;
+  text-align: center;
+  font-size: 9px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.cert-verify-bar a {
+  color: #0284c7;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.cert-verify-bar a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 991px) {
   .footer-grid-redesign {
     grid-template-columns: 1fr 1fr;
     gap: 30px;
+  }
+  .footer-certificate-section {
+    grid-column: span 2;
+  }
+  .footer-cert-card {
+    max-width: 100%;
   }
 }
 
@@ -105,6 +290,9 @@
   .footer-grid-redesign {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+  .footer-certificate-section {
+    grid-column: span 1;
   }
   .copyright-bar {
     flex-direction: column;

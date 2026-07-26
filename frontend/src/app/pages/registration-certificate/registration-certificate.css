@@ -1,0 +1,267 @@
+/* Registration Certificate Page Layout */
+.certificate-page-container {
+  background-color: #f1f5f9;
+  padding: 40px 20px 80px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Action Bar Styles */
+.action-bar {
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 25px;
+}
+
+.action-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.back-link a {
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease;
+}
+
+.back-link a:hover {
+  color: #0284c7;
+}
+
+.page-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.download-btn:hover {
+  background: #0369a1 !important;
+}
+
+/* PDF Viewer Container (Desktop) */
+.pdf-viewer-container {
+  width: 100%;
+  max-width: 1000px;
+  height: 900px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Mobile Certificate Card Styling (Mobile Default: Hidden) */
+.mobile-cert-card {
+  display: none;
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+  .pdf-viewer-container {
+    display: none;
+  }
+  
+  .action-bar {
+    margin-bottom: 15px;
+  }
+  
+  .action-container {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .back-link {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  .page-title {
+    width: 100%;
+    justify-content: center;
+    font-size: 14.5px;
+  }
+  
+  .download-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mobile-cert-card {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    background: #ffffff;
+    color: #1e293b;
+    border-radius: 12px;
+    padding: 24px 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif, sans-serif;
+  }
+
+  .cert-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+
+  .cert-emblem {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+
+  .cert-header-text h4 {
+    font-size: 13px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .cert-header-text h5 {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0284c7;
+    margin: 2px 0 0 0;
+  }
+
+  .cert-body {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .cert-title {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 1px;
+  }
+
+  .cert-subtitle {
+    text-align: center;
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .cert-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 12px 0;
+  }
+
+  .cert-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+  }
+
+  .cert-label {
+    font-weight: 700;
+    color: #64748b;
+    font-size: 11px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .cert-value {
+    color: #0f172a;
+    font-weight: 600;
+  }
+
+  .cert-value.highlight {
+    color: #0284c7;
+    font-family: monospace;
+    font-size: 13.5px;
+    text-decoration: underline;
+  }
+
+  .cert-value.font-strong {
+    font-weight: 700;
+  }
+
+  .cert-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 14px;
+  }
+
+  .cert-seal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .cert-sign-name {
+    font-family: 'Great Vibes', cursive, 'Brush Script MT', sans-serif;
+    font-size: 14px;
+    color: #0f172a;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .cert-sign-title {
+    font-size: 9px;
+    color: #64748b;
+    font-weight: 600;
+    margin-top: 2px;
+    text-align: right;
+  }
+
+  .download-btn-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #0284c7;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  }
+}

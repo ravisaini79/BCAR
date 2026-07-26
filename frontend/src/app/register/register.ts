@@ -150,19 +150,19 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   openCropper(dataUrl: string, fieldName: UploadFieldName = 'profileImage'): void {
     this.cropperFieldName = fieldName;
-    this.cropperTitle = fieldName === 'photograph' ? 'Crop Passport Photograph' : 'Crop Profile Image';
+    this.cropperTitle = 'Crop Profile Image';
     this.cropperImageSrc = dataUrl;
     this.cropScale = 1;
     this.cropRotate = 0;
     this.cropOffsetX = 0;
     this.cropOffsetY = 0;
     this.isCropping = true;
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   openCropperForField(fieldName: UploadFieldName): void {
     const val = this.registerForm.get(fieldName)?.value;
-    if (val && typeof val === 'string' && val.startsWith('data:image')) {
+    if (val && typeof val === 'string' && val.length > 0) {
       this.openCropper(val, fieldName);
     }
   }
@@ -170,7 +170,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   closeCropper(): void {
     this.isCropping = false;
     this.cropperImageSrc = '';
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   zoomInCropper(): void {
@@ -325,7 +325,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     const file  = input.files?.[0];
     if (file) {
-      if (fieldName === 'profileImage' || fieldName === 'photograph') {
+      if (fieldName === 'profileImage') {
         const reader = new FileReader();
         reader.onload = () => {
           this.openCropper(reader.result as string, fieldName);

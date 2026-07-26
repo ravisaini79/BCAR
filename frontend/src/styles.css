@@ -219,6 +219,7 @@ nav button:hover, .dropdown-btn:hover {
   box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4) !important;
 }
 .menu { display: none; border: 0; background: none; font-size: 22px; color: #0369A1; }
+.drawer-close { display: none; }
 
 /* ── Eyebrow label ── */
 .eyebrow {
@@ -735,7 +736,7 @@ body {
 .ticker-content {
   display: inline-block;
   padding-left: 100%;
-  animation: marquee 25s linear infinite;
+  animation: marquee 50s linear infinite;
   color: #ffffff;
   font-size: 13.5px;
   font-weight: 500;
@@ -1012,42 +1013,144 @@ body {
   text-transform: uppercase;
 }
 
-/* ── Lightbox Overlay ── */
+/* ── Premium Lightbox Overlay ── */
 .lightbox-overlay {
   position: fixed;
   inset: 0;
+  z-index: 20000;
   background: rgba(4, 18, 38, 0.95);
-  display: grid;
-  place-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .lightbox-content {
   position: relative;
-  max-width: 90%;
-  max-height: 85vh;
+  max-width: 900px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.lightbox-content img {
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.lightbox-img-box {
+  background: #041226;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 65vh;
+  overflow: hidden;
+}
+.lightbox-img {
   max-width: 100%;
-  max-height: 80vh;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-xl);
-  border: 4px solid var(--gold);
+  max-height: 65vh;
+  display: block;
+  object-fit: contain;
+  margin: 0 auto;
+}
+.lightbox-caption {
+  padding: 24px 30px;
+  background: #ffffff;
+  text-align: left;
+}
+.caption-tag {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #D4AF37;
+  display: block;
+  margin-bottom: 6px;
+}
+.lightbox-caption h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #082B5C;
+  margin: 0 0 8px;
+}
+.caption-desc {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #475569;
+  margin: 0 0 12px;
+}
+.caption-date {
+  font-size: 12px;
+  color: #94a3b8;
+  display: block;
 }
 .lightbox-close {
   position: absolute;
-  top: -45px;
-  right: 0;
-  background: none;
-  border: 0;
-  color: #fff;
-  font-size: 32px;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(4, 18, 38, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  z-index: 10;
 }
-.lightbox-caption {
-  color: #fff;
-  text-align: center;
-  margin-top: 15px;
-  font-weight: 600;
+.lightbox-close:hover {
+  background: rgba(4, 18, 38, 0.8);
+  transform: scale(1.05);
+}
+.lightbox-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  z-index: 20010;
+  backdrop-filter: blur(4px);
+}
+.lightbox-nav-btn:hover {
+  background: #ffffff;
+  color: #041226;
+  border-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(255,255,255,0.3);
+}
+.prev-btn { left: 40px; }
+.next-btn { right: 40px; }
+@media (max-width: 768px) {
+  .lightbox-nav-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+  .prev-btn { left: 10px; }
+  .next-btn { right: 10px; }
+  .lightbox-content { max-width: 95%; }
+  .lightbox-caption { padding: 16px 20px; }
+  .lightbox-caption h3 { font-size: 17px; }
 }
 /* ── Gallery skeletons & helpers ── */
 .gallery-skeleton {
@@ -1369,13 +1472,23 @@ body {
   text-align: center;
 }
 .president-info h4 {
-  color: var(--gold) !important;
-  margin: 0;
+  color: #F59E0B !important; /* Premium Saffron/Amber Gold */
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 800; /* Bold Size */
+}
+.president-msg-body .signature b {
   font-size: 18px;
+  font-weight: 800; /* Bold Size */
+  color: #B91C1C; /* Premium Crimson Red */
 }
 .president-info span {
-  font-size: 12px;
-  color: #94a3b8;
+  font-size: 13.5px;
+  color: #ffffff;
+  line-height: 1.4;
+  font-weight: 500;
+  display: block;
+  margin-top: 4px;
 }
 .president-msg-body {
   padding: 40px;
@@ -1400,6 +1513,18 @@ body {
   color: var(--navy);
   margin: 20px 0 0;
   font-weight: 500;
+}
+@media (min-width: 768px) {
+  .president-card.reverse {
+    grid-template-columns: 1fr 320px;
+  }
+  .president-card.reverse .president-img-wrap {
+    grid-column: 2;
+  }
+  .president-card.reverse .president-msg-body {
+    grid-column: 1;
+    grid-row: 1;
+  }
 }
 
 /* =====================================================
@@ -1436,8 +1561,27 @@ h3, .notice-grid h3, .benefit-card h3 {
   padding: 0 8px;
 }
 
-/* ── 2. Header & Offcanvas Menu (Tablet & Mobile <= 991px) ── */
-@media (max-width: 991px) {
+.mobile-only {
+  display: none !important;
+}
+
+/* ── 2. Header & Offcanvas Menu (Tablet & Mobile <= 1180px) ── */
+@media (max-width: 1180px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: block !important;
+  }
+  .brand-info {
+    gap: 0px !important;
+  }
+  .nav {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
   .top-strip {
     display: none !important; /* Hide to save top mobile viewport space */
   }
@@ -1461,7 +1605,7 @@ h3, .notice-grid h3, .benefit-card h3 {
     border: 0;
     background: none;
     font-size: 24px;
-    color: #ffffff;
+    color: #0369A1;
     cursor: pointer;
     z-index: 101;
   }

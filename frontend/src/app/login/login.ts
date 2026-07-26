@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -14,16 +14,46 @@ import { environment } from '../../environments/environment';
 export class LoginComponent {
   http = inject(HttpClient);
   router = inject(Router);
+  cdr = inject(ChangeDetectorRef);
 
   busy = false;
   toast = '';
   toastType: 'success'|'error' = 'success';
   login = { email: '', password: '' };
+  mode: 'login' | 'forgot' = 'login';
+  forgotEmail = '';
 
   show(message: string, type: 'success'|'error' = 'success') {
     this.toast = message;
     this.toastType = type;
-    setTimeout(() => this.toast = '', 5000);
+    this.cdr.markForCheck();
+    setTimeout(() => {
+      this.toast = '';
+      this.cdr.markForCheck();
+    }, 5000);
+  }
+
+  submitForgotPassword() {
+    if (!this.forgotEmail) {
+      this.show('Please enter your email address', 'error');
+      return;
+    }
+    this.busy = true;
+    this.http.post<any>(`${environment.apiUrl}/auth/forgot-password`, { email: this.forgotEmail }).subscribe({
+      next: response => {
+        this.busy = false;
+        this.show(response.message || 'A temporary password has been successfully sent to your registered email address.', 'success');
+        this.mode = 'login';
+        this.forgotEmail = '';
+      },
+      error: error => {
+        this.busy = false;
+        const msg = error instanceof HttpErrorResponse
+          ? (error.error?.message || 'No account found with this email address')
+          : (error.message || 'No account found with this email address');
+        this.show(msg, 'error');
+      }
+    });
   }
 
   submitLogin() {

@@ -30,8 +30,8 @@ export class CommitteeComponent {
       name: 'अमर चंद शर्मा',
       nameEn: 'Amar Chand Sharma',
       photo: '/images/secretary.jpg',
-      role: 'बैंक ऑफ बड़ौदा BC',
-      roleEn: 'Bank of Baroda BC',
+      role: 'प्रदेश महामंत्री (बैंक ऑफ बड़ौदा BC)',
+      roleEn: 'State General Secretary, BCAR (Bank of Baroda BC)',
       location: 'कंचनपुर (सीकर), राजस्थान',
       isGeneralSecretary: true,
       quote: `आदरणीय अतिथियों, सम्मानित बैंक मित्रों/निर्णायकों और यहाँ उपस्थित मेरे प्यारे साथियों,
@@ -57,8 +57,8 @@ export class CommitteeComponent {
       name: 'प्रदीप भार्गव',
       nameEn: 'Pradeep Bhargava',
       photo: '/images/pradeep_bhargava.jpg',
-      role: 'बैंक ऑफ बड़ौदा BC',
-      roleEn: 'State Treasurer',
+      role: 'प्रदेश कोषाध्यक्ष (बैंक ऑफ बड़ौदा BC)',
+      roleEn: 'State Treasurer, BCAR (Bank of Baroda BC)',
       location: 'कोटा, राजस्थान',
       isGeneralSecretary: false,
       quote: 'नेतृत्व करने का एक अच्छा उद्देश्य यह है कि जो लोग अच्छा प्रदर्शन नहीं कर रहे हैं, उन्हें अच्छा प्रदर्शन करने में मदद की जाए और जो लोग अच्छा प्रदर्शन कर रहे हैं, उन्हें और भी बेहतर प्रदर्शन करने में मदद की जाए।'
@@ -72,7 +72,7 @@ export class CommitteeComponent {
       photo: '/images/suraj_karan_bairwa.png',
       role: 'बैंक ऑफ बड़ौदा (BC)',
       roleEn: 'Bank of Baroda BC Coordinator',
-      location: 'मछवा, जयपुर ग्रामीण, राजस्थान',
+      location: 'महला, जयपुर ग्रामीण, राजस्थान',
       quote: 'बैंक मित्रों के सशक्तिकरण और एकता के लिए समर्पित प्रयास।'
     },
     {
@@ -99,7 +99,7 @@ export class CommitteeComponent {
       photo: '/images/pawan_kumar_verma.png',
       role: 'स्टेट बैंक ऑफ इंडिया (CSP)',
       roleEn: 'State Bank of India CSP Coordinator',
-      location: 'जूनिया (केकड़ी, अजमेर) ',
+      location: 'जूनिया, केकड़ी (अजमेर), राजस्थान',
       quote: 'सभी बैंक मित्रों को संगठित कर उनके उज्ज्वल भविष्य का मार्ग प्रशस्त करना।'
     },
     {
@@ -108,7 +108,7 @@ export class CommitteeComponent {
       photo: '/images/rajesh_kumar_saini.png',
       role: 'बैंक ऑफ बड़ौदा (CSP)',
       roleEn: 'Bank of Baroda CSP Coordinator',
-      location: 'अलवर, राजस्थान',
+      location: 'राजगढ़, अलवर, राजस्थान',
       quote: 'सच्ची कर्तव्यनिष्ठा और सामूहिक प्रयास से ही हम अपने अधिकारों को प्राप्त कर सकते हैं।'
     },
     {
@@ -121,8 +121,8 @@ export class CommitteeComponent {
       quote: 'संगठन में ही शक्ति है और हमारा लक्ष्य बैंक मित्रों के हितों को सुरक्षित रखना है।'
     },
     {
-      name: 'बिरदी चंद रैदास',
-      nameEn: 'Birdhi Chand Raidas',
+      name: 'वरदी चंद रैदास',
+      nameEn: 'Virdi Chand Raidas',
       photo: '/images/birdhi_chand_raidas.png',
       role: 'राजस्थान ग्रामीण बैंक (BC)',
       roleEn: 'Rajasthan Gramin Bank BC Coordinator',
@@ -144,7 +144,7 @@ export class CommitteeComponent {
       photo: '/images/lunaram_khileri.jpg',
       role: 'पंजाब नेशनल बैंक (BC)',
       roleEn: 'Punjab National Bank BC Coordinator',
-      location: 'लूणकरणसर बीकानेर',
+      location: 'लूणकरणसर, बीकानेर, राजस्थान',
       quote: 'एकता और सेवा भाव से ही संगठन सुदृढ़ होता है और बैंक मित्रों की समस्याओं का समाधान संभव है।'
     },
     {
@@ -162,7 +162,7 @@ export class CommitteeComponent {
       photo: '/images/kamal_rajak.png',
       role: 'स्टेट बैंक ऑफ इंडिया (CSP)',
       roleEn: 'State Bank of India CSP Coordinator',
-      location: 'सांगानेर, जयपुर',
+      location: 'सांगानेर, जयपुर, राजस्थान',
       quote: 'सामूहिक शक्ति और संगठित आवाज़ ही हमारी समस्याओं के समाधान की कुंजी है।'
     },
     {
@@ -171,7 +171,7 @@ export class CommitteeComponent {
       photo: '/images/nasrin_bano.png',
       role: 'स्टेट बैंक ऑफ इंडिया (CSP)',
       roleEn: 'State Bank of India CSP Coordinator',
-      location: 'अलवर, राजस्थान',
+      location: 'अजमेर, राजस्थान',
       quote: 'बैंक मित्रों की उन्नति और उनके अधिकारों की रक्षा के प्रति सदैव तत्पर।'
     }
   ];

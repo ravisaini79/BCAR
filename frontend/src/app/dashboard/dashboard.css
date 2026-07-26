@@ -1181,33 +1181,382 @@
   gap: 10px;
 }
 
-/* Card Wrapper & Containers */
+/* ═══════════════════════════════════════════════════════
+   BCAR MEMBERSHIP CARD — Professional SBI-CSP Style
+   ═══════════════════════════════════════════════════════ */
+
+/* Card Wrapper */
 .bcar-card-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 28px;
   align-items: center;
-  justify-content: center;
 }
 
+/* Card Container — Landscape A5 proportion */
 .bcar-card-container {
   width: 100%;
-  max-width: 638px;
-  height: 1012px;
-  background: #F5FAFE;
-  border: 4px solid #0B5ED7;
-  border-radius: 30px;
-  box-shadow: 0 15px 40px rgba(11, 45, 92, 0.08);
-  padding: 26px 35px;
+  max-width: 680px;
+  background: #ffffff;
+  border: 2.5px solid #0D47A1;
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(13, 71, 161, 0.14), 0 2px 8px rgba(0,0,0,0.06);
+  padding: 0;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
-  color: #334155;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
+
+/* Faint BCAR watermark */
+.card-watermark-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  background: url('/images/bcar-logo-official.jpg') no-repeat center center / contain;
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Top Header Stripe ── */
+.card-top-stripe {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, #0D47A1 0%, #1565C0 60%, #1976D2 100%);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-radius: 15px 15px 0 0;
+}
+
+.stripe-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stripe-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,0.85);
+  object-fit: contain;
+  background: #ffffff;
+  flex-shrink: 0;
+  padding: 2px;
+}
+
+.stripe-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.stripe-title-main {
+  font-size: 26px;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+
+.stripe-title-sub {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.stripe-title-hindi {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.80);
+  font-family: 'Noto Sans Devanagari', sans-serif;
+}
+
+.stripe-badge {
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.55);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  padding: 5px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Gold Divider Bar ── */
+.card-gold-divider {
+  position: relative;
+  z-index: 1;
+  height: 4px;
+  background: linear-gradient(90deg, #D4AF37 0%, #F5C842 50%, #D4AF37 100%);
+}
+
+/* ── Main Body Row: Photo Left | Info Right ── */
+.card-body-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  flex: 1;
+  padding: 18px 22px 14px;
+  align-items: flex-start;
+}
+
+/* LEFT: Photo Column */
+.card-photo-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  width: 170px;
+}
+
+.card-photo-frame {
+  width: 148px;
+  height: 174px;
+  border-radius: 12px;
+  border: 3px solid #0D47A1;
+  overflow: hidden;
+  background: #e8f0fe;
+  box-shadow: 0 4px 16px rgba(13, 71, 161, 0.18);
+}
+
+.card-member-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.card-member-name-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  text-align: center;
+}
+
+.card-member-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0D47A1;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.card-member-id {
+  background: #0D47A1;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  padding: 3px 10px;
+  border-radius: 5px;
+  letter-spacing: 0.04em;
+}
+
+.card-member-type {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #1565C0;
+  background: #E3F2FD;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #90CAF9;
+  letter-spacing: 0.02em;
+}
+
+/* Vertical Divider */
+.card-body-divider {
+  width: 1.5px;
+  background: linear-gradient(to bottom, transparent, #BBDEFB 20%, #90CAF9 50%, #BBDEFB 80%, transparent);
+  align-self: stretch;
+  margin: 0 18px;
+  flex-shrink: 0;
+}
+
+/* RIGHT: Info Column */
+.card-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Info Row */
+.ci-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  padding: 2.5px 0;
+  border-bottom: 1px dashed #E3F2FD;
+}
+
+.ci-row:last-child {
+  border-bottom: none;
+}
+
+.ci-label {
+  font-weight: 700;
+  color: #37474F;
+  width: 90px;
+  flex-shrink: 0;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.ci-sep {
+  color: #0D47A1;
+  font-weight: 800;
+  margin: 0 6px 0 2px;
+  flex-shrink: 0;
+}
+
+.ci-val {
+  color: #1A237E;
+  font-weight: 600;
+  flex: 1;
+  font-size: 11.5px;
+}
+
+.ci-val-wrap {
+  white-space: pre-line;
+  word-break: break-word;
+  line-height: 1.35;
+}
+
+.ci-mono {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.03em;
+}
+
+.ci-bold {
+  font-weight: 800;
+}
+
+.ci-red {
+  color: #C62828;
+  background: #FFEBEE;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+/* Dates Row — Issue + Valid Upto */
+.ci-dates-row {
+  margin-top: 4px;
+  padding-top: 6px !important;
+  border-top: 1.5px solid #90CAF9 !important;
+  border-bottom: none !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.ci-date-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+}
+
+.ci-date-sep {
+  width: 1.5px;
+  height: 32px;
+  background: #90CAF9;
+  margin: 0 14px;
+  flex-shrink: 0;
+}
+
+.ci-date-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  color: #455A64;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ci-date-val {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #0D47A1;
+  font-family: 'Courier New', monospace;
+}
+
+/* ── Card Footer ── */
+.card-footer-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 10px 22px 14px;
+  border-top: 2px solid #E3F2FD;
+  background: linear-gradient(to right, #F8FBFF, #EEF4FF);
+}
+
+.card-footer-reg {
+  font-size: 9px;
+  font-weight: 600;
+  color: #546E7A;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  max-width: 55%;
+}
+
+.card-footer-sig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.sig-line {
+  width: 100px;
+  height: 1.5px;
+  background: #0D47A1;
+}
+
+.sig-text {
+  font-size: 9px;
+  font-weight: 700;
+  color: #0D47A1;
+  letter-spacing: 0.02em;
+}
+
+.sig-org {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: #546E7A;
+}
+
+
 
 .card-watermark-logo {
   position: absolute;

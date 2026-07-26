@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, HostListener } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +17,7 @@ import { ToastService } from '../core/services/toast.service';
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   router = inject(Router);
   http = inject(HttpClient);
 
@@ -36,7 +36,7 @@ export class HomeComponent implements OnInit {
   pageSize = 3;
 
   // Gallery Lightbox
-  selectedImage: any = null;
+  selectedIdx = -1;
 
   // Live data from API
   galleryItems: any[] = [];
@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
     {
       title: 'Professional Networking',
       icon: 'fa-solid fa-users-gear',
-      desc: 'Statewide network connecting over thousands of CSPs across 33 districts to share best practices and resources.'
+      desc: 'Statewide network connecting over thousands of CSPs across 41 districts to share best practices and resources.'
     },
     {
       title: 'Career Advancement',
@@ -247,5 +247,53 @@ export class HomeComponent implements OnInit {
         this.showToast('Failed to send message. Please try again later.', 'error');
       }
     });
+  }
+
+  get activeItem() {
+    return this.selectedIdx !== -1 ? this.galleryItems[this.selectedIdx] : null;
+  }
+
+  openLightbox(idx: number): void {
+    this.selectedIdx = idx;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeLightbox(): void {
+    this.selectedIdx = -1;
+    document.body.style.overflow = '';
+  }
+
+  prevImage(event?: Event): void {
+    if (event) event.stopPropagation();
+    const len = this.galleryItems.length;
+    if (len === 0) return;
+    this.selectedIdx = this.selectedIdx > 0 ? this.selectedIdx - 1 : len - 1;
+  }
+
+  nextImage(event?: Event): void {
+    if (event) event.stopPropagation();
+    const len = this.galleryItems.length;
+    if (len === 0) return;
+    this.selectedIdx = this.selectedIdx < len - 1 ? this.selectedIdx + 1 : 0;
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboard(event: KeyboardEvent) {
+    if (this.selectedIdx !== -1) {
+      if (event.key === 'ArrowLeft')  this.prevImage();
+      if (event.key === 'ArrowRight') this.nextImage();
+      if (event.key === 'Escape')     this.closeLightbox();
+    }
+  }
+
+  getTag(category: string): string {
+    if (category === 'inclusion') return 'Financial Inclusion';
+    if (category === 'meeting')   return 'Official Assembly';
+    if (category === 'training')  return 'Workshop & Training';
+    return 'BCAR Media';
+  }
+
+  ngOnDestroy(): void {
+    document.body.style.overflow = '';
   }
 }

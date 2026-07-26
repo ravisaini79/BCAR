@@ -3,11 +3,10 @@ import { FormGroup } from '@angular/forms';
 import { ToastService } from '../core/services/toast.service';
 import { inject } from '@angular/core';
 
-export type UploadFieldName = 'profileImage' | 'photograph' | 'aadhaarCard' | 'aadhaarBack' | 'panCard' | 'bankBcCertificate';
+export type UploadFieldName = 'profileImage' | 'aadhaarCard' | 'aadhaarBack' | 'panCard' | 'bankBcCertificate';
 
 export interface FileMetadata {
   profileImageName: string;
-  photographName: string;
   aadhaarCardName: string;
   aadhaarBackName: string;
   panCardName: string;
@@ -16,7 +15,6 @@ export interface FileMetadata {
 
 export interface RawFileStore {
   profileImage: File | null;
-  photograph: File | null;
   aadhaarCard: File | null;
   aadhaarBack: File | null;
   panCard: File | null;
@@ -24,7 +22,7 @@ export interface RawFileStore {
 }
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
-const MAX_SIZE_MB = 5;
+const MAX_SIZE_MB = 1;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
 @Injectable({
@@ -35,7 +33,6 @@ export class UploadService {
 
   fileNames = signal<FileMetadata>({
     profileImageName: '',
-    photographName: '',
     aadhaarCardName: '',
     aadhaarBackName: '',
     panCardName: '',
@@ -44,7 +41,6 @@ export class UploadService {
 
   rawFiles = signal<RawFileStore>({
     profileImage: null,
-    photograph: null,
     aadhaarCard: null,
     aadhaarBack: null,
     panCard: null,
@@ -55,7 +51,7 @@ export class UploadService {
    * Validate and process a single file for a given field
    */
   processFile(file: File, fieldName: UploadFieldName, form: FormGroup): void {
-    const isProfileField = fieldName === 'profileImage' || fieldName === 'photograph';
+    const isProfileField = fieldName === 'profileImage';
     const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     const allowedDocTypes = [...allowedImageTypes, 'application/pdf'];
 
@@ -69,10 +65,10 @@ export class UploadService {
       return;
     }
 
-    const maxSizeBytes = 5 * 1024 * 1024;
+    const maxSizeBytes = 1 * 1024 * 1024;
     if (file.size > maxSizeBytes) {
       const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-      this.toast.error(`"${file.name}" is ${fileSizeMB} MB. Maximum allowed file size is 5 MB.`, 'File Size Limit Exceeded');
+      this.toast.error(`"${file.name}" is ${fileSizeMB} MB. Maximum allowed file size is 1 MB.`, 'File Size Limit Exceeded');
       return;
     }
 
@@ -111,12 +107,12 @@ export class UploadService {
    * Reset all file state after form submission
    */
   resetAll(form: FormGroup): void {
-    (['profileImage', 'photograph', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(field => {
+    (['profileImage', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(field => {
       form.get(field)?.setValue(null);
       form.get(field)?.markAsUntouched();
     });
-    this.rawFiles.set({ profileImage: null, photograph: null, aadhaarCard: null, aadhaarBack: null, panCard: null, bankBcCertificate: null });
-    this.fileNames.set({ profileImageName: '', photographName: '', aadhaarCardName: '', aadhaarBackName: '', panCardName: '', bankBcCertificateName: '' });
+    this.rawFiles.set({ profileImage: null, aadhaarCard: null, aadhaarBack: null, panCard: null, bankBcCertificate: null });
+    this.fileNames.set({ profileImageName: '', aadhaarCardName: '', aadhaarBackName: '', panCardName: '', bankBcCertificateName: '' });
   }
 
   /**

@@ -77,12 +77,12 @@ const getStats = async (req, res, next) => {
 
     const [totalMembers, activeMembers, pendingMembers, rejectedMembers, todayRegistrations, monthlyRegistrations] =
       await Promise.all([
-        User.countDocuments({ role: 'member' }),
-        User.countDocuments({ role: 'member', status: { $in: ['active', 'Approved'] } }),
-        User.countDocuments({ role: 'member', status: { $in: ['pending', 'Pending Approval'] } }),
-        User.countDocuments({ role: 'member', status: 'rejected' }),
-        User.countDocuments({ role: 'member', createdAt: { $gte: today } }),
-        User.countDocuments({ role: 'member', createdAt: { $gte: monthStart } }),
+        User.countDocuments({ role: 'member', isDeleted: { $ne: true } }),
+        User.countDocuments({ role: 'member', status: { $in: ['active', 'Approved'] }, isDeleted: { $ne: true } }),
+        User.countDocuments({ role: 'member', status: { $in: ['pending', 'Pending Approval'] }, isDeleted: { $ne: true } }),
+        User.countDocuments({ role: 'member', status: 'rejected', isDeleted: { $ne: true } }),
+        User.countDocuments({ role: 'member', createdAt: { $gte: today }, isDeleted: { $ne: true } }),
+        User.countDocuments({ role: 'member', createdAt: { $gte: monthStart }, isDeleted: { $ne: true } }),
       ]);
 
     res.json({ totalMembers, activeMembers, pendingMembers, rejectedMembers, todayRegistrations, monthlyRegistrations });
@@ -108,7 +108,7 @@ const getMembers = async (req, res, next) => {
       all = 'false'
     } = req.query;
 
-    const query = { role: 'member' };
+    const query = { role: 'member', isDeleted: { $ne: true } };
 
     // District filter
     if (district && district !== 'All') {
@@ -297,25 +297,12 @@ const deleteMember = async (req, res, next) => {
       const name = member.name;
       const email = member.email;
 
-      // Delete member images and documents from S3 before DB deletion
-      const documentFields = [
-        'photograph', 'aadhaarCard', 'panCard', 'bankBcCertificate',
-        'profilePhoto', 'aadhaarFront', 'aadhaarBack', 'bankPassbook',
-        'signature', 'otherDocuments'
-      ];
+      member.isDeleted = true;
+      member.deletedAt = new Date();
+      member.deletedBy = req.user?.name || req.user?.email || 'Admin';
+      await member.save();
 
-      for (const field of documentFields) {
-        if (member[field] && (member[field].key || member[field].public_id)) {
-          try {
-            await deleteFile(member[field].key || member[field].public_id);
-          } catch (delErr) {
-            logError(`Failed to delete S3 file ${field} for member ${email}: ${delErr.message}`);
-          }
-        }
-      }
-
-      await member.deleteOne();
-      logRegistration(`Admin deleted member: ${name} (${email})`);
+      logRegistration(`Admin soft-deleted member: ${name} (${email})`);
       res.json({ message: 'Member deleted successfully' });
     } else {
       res.status(404);

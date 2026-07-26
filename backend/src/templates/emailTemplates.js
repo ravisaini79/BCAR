@@ -82,7 +82,7 @@ const memberWelcomeTemplate = (member) => {
 
           <div class="help-box">
             <strong>Need Assistance?</strong><br>
-            If you have any questions or did not receive your receipt, please feel free to reach out to our Help Desk at <a href="mailto:info@bcarajasthan.org" style="color: #0B2D5C; font-weight: bold; text-decoration: none;">info@bcarajasthan.org</a> or Call/WhatsApp us at <strong>+91 98297 15474</strong>.
+            If you have any questions or did not receive your receipt, please feel free to reach out to our Help Desk at <a href="mailto:support@bcarbankmitra.com" style="color: #0B2D5C; font-weight: bold; text-decoration: none;">support@bcarbankmitra.com</a> or Call/WhatsApp us at <strong>+91 98297 15474</strong>.
           </div>
         </div>
         

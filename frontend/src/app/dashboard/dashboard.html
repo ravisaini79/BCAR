@@ -988,15 +988,54 @@
       </div>
     </div>
 
-    <div class="dialog-actions" style="margin-top: 24px;">
-      <button class="btn-primary" [disabled]="editSubmitting" (click)="saveMemberProfile()">
-        <i class="pi pi-check"></i> {{ editSubmitting ? 'Saving...' : 'Save Profile Changes' }}
-      </button>
-      <button class="btn-secondary" (click)="showEditProfileDialog = false">
-        <i class="pi pi-times"></i> Cancel
+    <div class="dialog-actions" style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 15px;">
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-primary" [disabled]="editSubmitting" (click)="saveMemberProfile()">
+          <i class="pi pi-check"></i> {{ editSubmitting ? 'Saving...' : 'Save Profile Changes' }}
+        </button>
+        <button class="btn-secondary" (click)="showEditProfileDialog = false">
+          <i class="pi pi-times"></i> Cancel
+        </button>
+      </div>
+      <button type="button" class="btn-outline" (click)="openChangePasswordDialog()" style="color: #ef4444; border-color: #fca5a5;">
+        <i class="pi pi-key"></i> Change Password
       </button>
     </div>
 
+  </div>
+</p-dialog>
+
+<!-- ════════════════════ CHANGE PASSWORD DIALOG ════════════════════ -->
+<p-dialog
+  header="Change Password"
+  [visible]="showChangePasswordDialog"
+  (visibleChange)="showChangePasswordDialog = $event"
+  [modal]="true"
+  [style]="{width: '450px', maxWidth: '95vw'}"
+  [closable]="true">
+
+  <div class="dialog-form" style="display: flex; flex-direction: column; gap: 16px; padding: 10px 0;">
+    <div class="form-field">
+      <label style="font-weight: 600; font-size: 13px; color: #334155; display: block; margin-bottom: 6px;">Current Password *</label>
+      <input pInputText type="password" [(ngModel)]="passwordForm.currentPassword" placeholder="Enter current password" class="w-full" style="width: 100%;" />
+    </div>
+    <div class="form-field">
+      <label style="font-weight: 600; font-size: 13px; color: #334155; display: block; margin-bottom: 6px;">New Password *</label>
+      <input pInputText type="password" [(ngModel)]="passwordForm.newPassword" placeholder="Enter new password (min 6 characters)" class="w-full" style="width: 100%;" />
+    </div>
+    <div class="form-field">
+      <label style="font-weight: 600; font-size: 13px; color: #334155; display: block; margin-bottom: 6px;">Confirm New Password *</label>
+      <input pInputText type="password" [(ngModel)]="passwordForm.confirmPassword" placeholder="Confirm new password" class="w-full" style="width: 100%;" />
+    </div>
+
+    <div class="dialog-actions" style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
+      <button class="btn-primary" [disabled]="passwordSubmitting" (click)="submitPasswordChange()">
+        <i class="pi pi-check"></i> {{ passwordSubmitting ? 'Changing...' : 'Change Password' }}
+      </button>
+      <button class="btn-secondary" (click)="showChangePasswordDialog = false">
+        <i class="pi pi-times"></i> Cancel
+      </button>
+    </div>
   </div>
 </p-dialog>
 
@@ -1021,109 +1060,142 @@
 
     <!-- Live Responsive HTML Card Preview -->
     <div class="bcar-card-wrapper">
-      <!-- FRONT SIDE -->
+      <!-- ══════════ FRONT SIDE ══════════ -->
       <div class="bcar-card-container bcar-card-front">
+
+        <!-- Watermark -->
         <div class="card-watermark-logo"></div>
-        <div class="card-top-accent-bar"></div>
-        
-        <!-- Header -->
-        <div class="bcar-card-header">
-          <div class="bcar-header-left">
-            <img src="/images/bcar-logo-official.jpg" alt="BCAR Logo" class="bcar-header-logo" />
-            <div class="bcar-header-titles">
-              <h2 class="bcar-main-title">BCAR</h2>
-              <p class="bcar-sub-title">BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN</p>
-              <p class="bcar-meta-subtitle">राजस्थान के बैंक मित्रों का सशक्त संगठन</p>
+
+        <!-- ── Top Accent Bar ── -->
+        <div class="card-top-stripe">
+          <div class="stripe-left">
+            <img src="/images/bcar-logo-official.jpg" alt="BCAR Logo" class="stripe-logo" />
+            <div class="stripe-titles">
+              <span class="stripe-title-main">BCAR</span>
+              <span class="stripe-title-sub">Business Correspondent Association Rajasthan</span>
+              <span class="stripe-title-hindi">राजस्थान के बैंक मित्रों का सशक्त संगठन</span>
             </div>
           </div>
-          <div class="bcar-header-badge">OFFICIAL MEMBERSHIP CARD</div>
+          <div class="stripe-badge">OFFICIAL MEMBERSHIP CARD</div>
         </div>
 
-        <!-- Profile Section -->
-        <div class="bcar-card-profile-section">
-          <div class="bcar-photo-box-wrapper">
-            <div class="bcar-photo-box">
-              <img [src]="getMemberPhoto(cardPreviewMember) || '/images/default-avatar.png'" alt="Member Photo" class="bcar-member-photo" />
+        <!-- ── Gold Divider ── -->
+        <div class="card-gold-divider"></div>
+
+        <!-- ── Main Body: Photo Left + Info Right ── -->
+        <div class="card-body-row">
+
+          <!-- LEFT: Photo Column -->
+          <div class="card-photo-col">
+            <div class="card-photo-frame">
+              <img
+                [src]="getMemberPhoto(cardPreviewMember) || '/images/default-avatar.png'"
+                alt="Member Photo"
+                class="card-member-photo"
+              />
             </div>
-            <div class="bcar-seal-badge">
-              <div class="seal-icon-circle"><i class="pi pi-check"></i></div>
-              <span class="seal-text-1">VERIFIED</span>
-              <span class="seal-text-2">MEMBER</span>
+            <div class="card-member-name-block">
+              <div class="card-member-name">{{ (cardPreviewMember.name || 'MEMBER NAME') | uppercase }}</div>
+              <div class="card-member-id">{{ cardPreviewMember.membershipNo || 'BCAR/RJ/00001' }}</div>
+              <div class="card-member-type">BANK MITRA (BC/CSP)</div>
             </div>
-            <div class="bcar-mem-no-badge">{{ cardPreviewMember.membershipNo || 'BCAR/RJ/00001' }}</div>
           </div>
-          
-          <div class="bcar-profile-details">
-            <h3 class="bcar-member-name">{{ (cardPreviewMember.name || 'MEMBER NAME') | uppercase }}</h3>
-            <div class="bcar-membership-type">Membership Type : <span class="type-highlight">BANK MITRA (CSP)</span></div>
-            
-            <!-- Issue Date Block -->
-            <div class="bcar-dates-row">
-              <div class="date-block">
-                <i class="pi pi-calendar date-icon"></i>
-                <div class="date-texts">
-                  <span class="date-lbl">ISSUE DATE</span>
-                  <span class="date-val">{{ (cardPreviewMember.joinedAt || cardPreviewMember.createdAt) | date:'dd-MM-yyyy' }}</span>
+
+          <!-- Vertical Divider -->
+          <div class="card-body-divider"></div>
+
+          <!-- RIGHT: Info Column -->
+          <div class="card-info-col">
+            <div class="card-info-grid">
+
+              <div class="ci-row">
+                <span class="ci-label">Address</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val ci-val-wrap">{{ getFormattedAddress(cardPreviewMember) || '—' }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">Sub District</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val">{{ cardPreviewMember.subDistrict || cardPreviewMember.devBlock || '—' }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">District</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val">{{ cardPreviewMember.district || '—' }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">Pin Code</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val ci-mono">{{ cardPreviewMember.pin || '—' }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">BCAR BC Code</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val ci-mono">{{ cardPreviewMember.bcCspIdNo || '—' }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">Link Branch</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val">{{ cardPreviewMember.linkBranchName || '—' }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">Mobile No.</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val ci-mono">{{ cardPreviewMember.phone || '—' }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">Aadhaar No.</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val ci-mono">{{ maskAadhaar(cardPreviewMember.aadhaarNumber) }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">Blood Group</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val ci-bold ci-red">{{ cardPreviewMember.bloodGroup || '—' }}</span>
+              </div>
+
+              <div class="ci-row">
+                <span class="ci-label">Date of Birth</span>
+                <span class="ci-sep">:</span>
+                <span class="ci-val ci-mono">{{ cardPreviewMember.dob || '—' }}</span>
+              </div>
+
+              <div class="ci-row ci-dates-row">
+                <div class="ci-date-block">
+                  <span class="ci-date-lbl">Issue Date</span>
+                  <span class="ci-date-val">{{ (cardPreviewMember.joinedAt || cardPreviewMember.createdAt) | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="ci-date-sep"></div>
+                <div class="ci-date-block">
+                  <span class="ci-date-lbl">Valid Upto</span>
+                  <span class="ci-date-val">Lifetime</span>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
 
-        <!-- Details Grid -->
-        <div class="bcar-card-grid">
-          <div class="card-section-box">
-            <div class="bcar-grid-item address-item">
-              <span class="bcar-grid-label"><i class="pi pi-map-marker icon-accent"></i> Address :</span>
-              <span class="bcar-grid-val text-wrap">{{ getFormattedAddress(cardPreviewMember) }}</span>
-            </div>
-            
-            <div class="card-grid-inner">
-              <div class="bcar-grid-item">
-                <span class="bcar-grid-label"><i class="pi pi-compass icon-accent"></i> Sub District :</span>
-                <span class="bcar-grid-val">{{ cardPreviewMember.subDistrict || cardPreviewMember.devBlock || '—' }}</span>
-              </div>
-              <div class="bcar-grid-item">
-                <span class="bcar-grid-label"><i class="pi pi-id-card icon-accent"></i> Aadhaar No. :</span>
-                <span class="bcar-grid-val monospace-val">{{ maskAadhaar(cardPreviewMember.aadhaarNumber) }}</span>
-              </div>
-              <div class="bcar-grid-item">
-                <span class="bcar-grid-label"><i class="pi pi-envelope icon-accent"></i> Email :</span>
-                <span class="bcar-grid-val text-wrap">{{ cardPreviewMember.email || '—' }}</span>
-              </div>
-              <div class="bcar-grid-item">
-                <span class="bcar-grid-label"><i class="pi pi-building icon-accent"></i> Bank Name :</span>
-                <span class="bcar-grid-val">{{ cardPreviewMember.bankName || '—' }}</span>
-              </div>
-              <div class="bcar-grid-item">
-                <span class="bcar-grid-label"><i class="pi pi-phone icon-accent"></i> Contact :</span>
-                <span class="bcar-grid-val">{{ cardPreviewMember.phone || '—' }}</span>
-              </div>
-              <div class="bcar-grid-item">
-                <span class="bcar-grid-label"><i class="pi pi-wallet icon-accent"></i> Account No. :</span>
-                <span class="bcar-grid-val">{{ cardPreviewMember.bankAccountNumber || cardPreviewMember.accountNo || '—' }}</span>
-              </div>
-              <div class="bcar-grid-item">
-                <span class="bcar-grid-label"><i class="pi pi-link icon-accent"></i> Link Branch :</span>
-                <span class="bcar-grid-val">{{ cardPreviewMember.linkBranchName || '—' }}</span>
-              </div>
-              <div class="bcar-grid-item">
-                <span class="bcar-grid-label"><i class="pi pi-credit-card icon-accent"></i> IFSC Code :</span>
-                <span class="bcar-grid-val">{{ cardPreviewMember.ifsc || '—' }}</span>
-              </div>
-              <div class="bcar-grid-item" style="grid-column: 2;">
-                <span class="bcar-grid-label"><i class="pi pi-key icon-accent"></i> SSA Code :</span>
-                <span class="bcar-grid-val">{{ cardPreviewMember.ssa || '—' }}</span>
-              </div>
-            </div>
+        <!-- ── Footer ── -->
+        <div class="card-footer-row">
+          <div class="card-footer-reg">
+            Reg. No.: TU/2026/14/132549 &nbsp;|&nbsp; Helpline: +91 98291 15474
+          </div>
+          <div class="card-footer-sig">
+            <div class="sig-line"></div>
+            <div class="sig-text">Authorised Signatory</div>
+            <div class="sig-org">BCAR, Rajasthan</div>
           </div>
         </div>
 
-        <div class="bcar-card-footer">
-          <div class="bcar-footer-meta">
-            BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN
-          </div>
-        </div>
       </div>
 
       <!-- BACK SIDE -->

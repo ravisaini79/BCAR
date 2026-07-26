@@ -1,0 +1,85 @@
+<app-header></app-header>
+
+<main class="certificate-page-container">
+  <!-- Interactive Action Bar -->
+  <div class="action-bar no-print">
+    <div class="action-container">
+      <div class="back-link">
+        <a routerLink="/"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+      </div>
+      <div class="page-title">
+        <i class="fa-solid fa-file-pdf" style="color: #ef4444; font-size: 20px;"></i>
+        Official Trade Union Certificate
+      </div>
+      <a href="/documents/BCAR-Registration-Certificate.pdf" download class="download-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #0284c7; color: #ffffff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s ease; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">
+        <i class="fa-solid fa-download"></i> Download PDF
+      </a>
+    </div>
+  </div>
+
+  <!-- Native PDF Embed Container (Visible on Desktop) -->
+  <div class="pdf-viewer-container">
+    <iframe src="/documents/BCAR-Registration-Certificate.pdf" class="pdf-iframe"></iframe>
+  </div>
+
+  <!-- Mobile Friendly HTML Version (Visible only on Mobile) -->
+  <div class="mobile-cert-card no-print">
+    <div class="cert-header">
+      <img src="/images/rajasthan-emblem.jpg" alt="Govt of Rajasthan Emblem" class="cert-emblem">
+      <div class="cert-header-text">
+        <h4>Government of Rajasthan</h4>
+        <h5>Department of Labour</h5>
+      </div>
+    </div>
+    <div class="cert-body">
+      <div class="cert-title">CERTIFICATE</div>
+      <div class="cert-subtitle">Trade Unions Act, 1926</div>
+      <div class="cert-divider"></div>
+      
+      <div class="cert-row">
+        <span class="cert-label">Reg. No. :</span>
+        <span class="cert-value highlight">TU/2026/14/132549</span>
+      </div>
+      <div class="cert-row">
+        <span class="cert-label">Union Name :</span>
+        <span class="cert-value font-strong">BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN</span>
+      </div>
+      <div class="cert-row">
+        <span class="cert-label">Address :</span>
+        <span class="cert-value">24, KISHOR VIHAR B GAJSINGHPURA, JAIPUR, Jaipur, Rajasthan</span>
+      </div>
+      <div class="cert-row">
+        <span class="cert-label">Formation Date :</span>
+        <span class="cert-value">08/01/2025</span>
+      </div>
+      <div class="cert-row">
+        <span class="cert-label">Total Employees :</span>
+        <span class="cert-value">11</span>
+      </div>
+      <div class="cert-row">
+        <span class="cert-label">Mobile No :</span>
+        <span class="cert-value">9829715474</span>
+      </div>
+    </div>
+    
+    <div class="cert-footer">
+      <div class="cert-seal-section">
+        <div class="cert-seal-badge">
+          <i class="fa-solid fa-circle-check"></i> VERIFIED TU
+        </div>
+      </div>
+      <div class="cert-sign-section">
+        <div class="cert-sign-name">Aasif Sheikh</div>
+        <div class="cert-sign-title">Registrar of Trade Unions</div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 24px;">
+      <a href="/documents/BCAR-Registration-Certificate.pdf" download class="download-btn-mobile">
+        <i class="fa-solid fa-download"></i> Download Original PDF
+      </a>
+    </div>
+  </div>
+</main>
+
+<app-footer class="no-print"></app-footer>

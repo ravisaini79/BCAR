@@ -80,7 +80,7 @@ export class BenefitsComponent {
     {
       num: '10',
       title: 'Bank Mitra ID की कानूनी सुरक्षा',
-      desc: 'बैंक मित्रों की डिजिटल व कानूनी रूप से सुरक्षित हो, बिना कारण ID सस्पेंड/डीवीट न की जाए और अपील प्रणाली लागू हो!',
+      desc: 'बैंक मित्रों की डिजिटल ID व कानूनी रूप से सुरक्षित हो, बिना कारण ID सस्पेंड/DELETE  न की जाए और अपील प्रणाली लागू हो!',
       icon: 'fa-solid fa-id-card-clip',
       colorClass: 'demand-blue-navy'
     },

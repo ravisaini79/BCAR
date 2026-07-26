@@ -24,6 +24,10 @@ export const routes: Routes = [
 
   // Top-level pages
   {
+    path: 'registration-certificate',
+    loadComponent: () => import('./pages/registration-certificate/registration-certificate').then(m => m.RegistrationCertificateComponent)
+  },
+  {
     path: 'benefits',
     loadComponent: () => import('./pages/benefits/benefits').then(m => m.BenefitsComponent)
   },

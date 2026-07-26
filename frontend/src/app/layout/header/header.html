@@ -12,16 +12,21 @@
       <button class="brand" (click)="scrollTo('hero')">
         <img src="/images/bcar-logo-official.jpg" alt="BCAR logo">
         <div class="brand-info">
-          <span class="brand-name">Business Correspondent Association Rajasthan</span>
-          <span class="brand-tagline">Empowering Banking Correspondents Across Rajasthan</span>
+          <span class="brand-name desktop-only">Business Correspondent Association Rajasthan</span>
+          <span class="brand-tagline desktop-only">Empowering Banking Correspondents Across Rajasthan</span>
+          <span class="brand-name mobile-only" style="font-size: 18px; font-weight: 800; color: #0369A1;">BCAR</span>
+          <span class="brand-tagline mobile-only" style="font-size: 9px; font-weight: 700; color: #0284C7; text-transform: uppercase;">Association Rajasthan</span>
         </div>
       </button>
 
       <!-- Hamburger -->
-      <button class="menu" (click)="toggleMobile()" aria-label="Toggle menu">☰</button>
+      <button class="menu" (click)="toggleMobile()" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
 
       <!-- Nav -->
       <nav [class.open]="mobileOpen()">
+        <!-- Close Menu Button (Visible on mobile/tablet) -->
+        <button class="drawer-close" (click)="closeMobile()" aria-label="Close menu"><i class="fas fa-times"></i></button>
+
         <!-- Brand logo inside mobile drawer -->
         <div class="mobile-drawer-brand">
           <img src="/images/bcar-logo-official.jpg" alt="BCAR Logo">

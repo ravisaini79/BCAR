@@ -378,7 +378,7 @@ const sendApprovalEmail = async (memberEmail, name, regNumber, membershipNo, tem
 };
 
 const sendContactQueryEmail = async (name, email, phone, message) => {
-  const recipient = process.env.CONTACT_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || 'info@bcarajasthan.org';
+  const recipient = process.env.CONTACT_RECEIVER_EMAIL || process.env.ADMIN_EMAIL || 'support@bcarbankmitra.com';
   const html = `
     <!DOCTYPE html>
     <html>

@@ -366,7 +366,7 @@ export class MemberCardService {
     this.drawFieldRow(ctx, 'link',  'Link Branch',   member.linkBranchName  || '—', colRightX, gridY + rowH,     colRightW);
     this.drawFieldRow(ctx, 'phone', 'CSP Mobile',    member.phone           || '—', colRightX, gridY + rowH * 2, colRightW);
     this.drawFieldRow(ctx, 'id',    'Aadhaar No.',   this.maskAadhaar(member.aadhaarNumber), colRightX, gridY + rowH * 3, colRightW);
-    this.drawFieldRow(ctx, 'key',   'Valid Upto',    'Life Time',                   colRightX, gridY + rowH * 4, colRightW);
+    this.drawFieldRow(ctx, 'bank',  'Bank Name',     member.bankName        || '—', colRightX, gridY + rowH * 4, colRightW);
 
     // Vertical divider between columns
     ctx.strokeStyle = '#E2E8F0';

@@ -99,12 +99,13 @@ export class MemberCardService {
     this.roundRect(ctx, 0, 0, w, h, 30);
     ctx.stroke();
 
-    // ── Header (Logo + Title) ──
-    const logoSize = 90;
-    const logoX = w / 2 - logoSize / 2;
-    const logoY = 35;
+    // ── 4. TOP HEADER: LOGO LEFT, USER IMAGE RIGHT, TITLE CENTERED ──
+    
+    // A. LOGO (Top-Left)
+    const logoSize = 80;
+    const logoX = 35;
+    const logoY = 28;
 
-    let logoLoaded = false;
     try {
       const logo = await this.loadImage('/images/bcar-logo-official.jpg');
       ctx.save();
@@ -122,55 +123,20 @@ export class MemberCardService {
       ctx.strokeStyle = '#0B5ED7';
       ctx.lineWidth = 2.5;
       ctx.stroke();
-      logoLoaded = true;
-    } catch {
-      logoLoaded = false;
-    }
+    } catch {}
 
-    // "BCAR"
-    ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 36px Arial, Helvetica, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('BCAR', w / 2, 160);
+    // B. USER PROFILE PHOTO (Top-Right)
+    const photoRadius = 45;
+    const photoCx = w - 35 - photoRadius;
+    const photoCy = logoY + logoSize / 2;
 
-    // "BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN"
-    ctx.fillStyle = '#0B5ED7';
-    ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
-    ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', w / 2, 185);
-
-    // Hindi tagline
-    ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 13px "Noto Sans Devanagari", "Segoe UI", sans-serif';
-    ctx.fillText('राजस्थान के बैंक मित्रों का सशक्त संगठन', w / 2, 206);
-
-    // Official Membership Card Pill Badge
-    const badgeW = 200;
-    const badgeH = 28;
-    const badgeX = w / 2 - badgeW / 2;
-    const badgeY = 222;
-
-    ctx.fillStyle = '#0B5ED7';
-    this.roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 8);
-    ctx.fill();
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
-    ctx.fillText('OFFICIAL MEMBERSHIP CARD', w / 2, badgeY + 18);
-    ctx.textAlign = 'left'; // Reset
-
-    // ── Member Profile Circular Headshot ──
-    const photoCx = w / 2;
-    const photoCy = 355;
-    const photoRadius = 75;
-
-    // Draw blue outer ring
+    // Draw blue outer ring & white gap
     ctx.beginPath();
-    ctx.arc(photoCx, photoCy, photoRadius + 4, 0, Math.PI * 2);
+    ctx.arc(photoCx, photoCy, photoRadius + 3, 0, Math.PI * 2);
     ctx.strokeStyle = '#0B5ED7';
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Draw white gap ring
     ctx.beginPath();
     ctx.arc(photoCx, photoCy, photoRadius + 1, 0, Math.PI * 2);
     ctx.strokeStyle = '#ffffff';
@@ -218,111 +184,150 @@ export class MemberCardService {
       ctx.clip();
       ctx.fillStyle = '#E0F2FE';
       ctx.fillRect(photoCx - photoRadius, photoCy - photoRadius, photoRadius * 2, photoRadius * 2);
-      this.drawPersonIcon(ctx, photoCx, photoCy + 10);
+      this.drawPersonIcon(ctx, photoCx, photoCy + 6);
       ctx.restore();
     }
 
-    // ── Verified Seal Badge ──
-    const sealCx = w / 2 + 55;
-    const sealCy = 295;
-    const sealRadius = 32;
+    // Small Verified Seal Badge overlay on photo
+    const sealCx = photoCx + 26;
+    const sealCy = photoCy + 26;
+    const sealRadius = 16;
 
     ctx.beginPath();
     ctx.arc(sealCx, sealCy, sealRadius, 0, Math.PI * 2);
     ctx.fillStyle = '#0B5ED7';
     ctx.fill();
     ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(sealCx, sealCy - 6, 10, 0, Math.PI * 2);
+    ctx.arc(sealCx, sealCy - 2, 5, 0, Math.PI * 2);
     ctx.fillStyle = '#ffffff';
     ctx.fill();
 
     ctx.strokeStyle = '#0B5ED7';
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 1.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(sealCx - 4, sealCy - 6);
-    ctx.lineTo(sealCx - 1, sealCy - 3);
-    ctx.lineTo(sealCx + 4, sealCy - 8);
+    ctx.moveTo(sealCx - 2, sealCy - 2);
+    ctx.lineTo(sealCx, sealCy - 1);
+    ctx.lineTo(sealCx + 2, sealCy - 4);
     ctx.stroke();
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 7px Arial, Helvetica, sans-serif';
+    ctx.font = 'bold 5px Arial, Helvetica, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('VERIFIED', sealCx, sealCy + 13);
-    ctx.fillText('MEMBER', sealCx, sealCy + 21);
+    ctx.fillText('VERIFIED', sealCx, sealCy + 8);
     ctx.textAlign = 'left';
 
+    // C. CENTER HEADER TITLE & HINDI TAGLINE
+    ctx.textAlign = 'center';
+
+    // "BCAR"
+    ctx.fillStyle = '#0b2d5c';
+    ctx.font = 'bold 28px Arial, Helvetica, sans-serif';
+    ctx.fillText('BCAR', w / 2, 48);
+
+    // "BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN"
+    ctx.fillStyle = '#0B5ED7';
+    ctx.font = 'bold 10px Arial, Helvetica, sans-serif';
+    ctx.fillText('BUSINESS CORRESPONDENT', w / 2, 68);
+    ctx.fillText('ASSOCIATION RAJASTHAN', w / 2, 82);
+
+    // Hindi tagline
+    ctx.fillStyle = '#0b2d5c';
+    ctx.font = 'bold 10.5px "Noto Sans Devanagari", "Segoe UI", sans-serif';
+    ctx.fillText('राजस्थान के बैंक मित्रों का सशक्त संगठन', w / 2, 102);
+
+    // Header divider line
+    ctx.strokeStyle = '#BAE6FD';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(35, 120);
+    ctx.lineTo(w - 35, 120);
+    ctx.stroke();
+
+    // ── 5. OFFICIAL MEMBERSHIP CARD BADGE & MEMBERSHIP NO ──
+
+    // Official Membership Card Pill Badge
+    const badgeW = 210;
+    const badgeH = 26;
+    const badgeX = w / 2 - badgeW / 2;
+    const badgeY = 134;
+
+    ctx.fillStyle = '#0B5ED7';
+    this.roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 6);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
+    ctx.fillText('OFFICIAL MEMBERSHIP CARD', w / 2, badgeY + 17);
+
     // Membership No Badge
-    const mNoBadgeW = 180;
+    const mNoBadgeW = 210;
     const mNoBadgeH = 34;
-    const mNoBadgeX = photoCx - mNoBadgeW / 2;
-    const mNoBadgeY = photoCy + photoRadius + 15;
+    const mNoBadgeX = w / 2 - mNoBadgeW / 2;
+    const mNoBadgeY = 172;
 
     ctx.fillStyle = '#0B5ED7';
     this.roundRect(ctx, mNoBadgeX, mNoBadgeY, mNoBadgeW, mNoBadgeH, 6);
     ctx.fill();
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 15px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText(member.membershipNo || 'BCAR/RJ/00001', photoCx, mNoBadgeY + 22);
-    ctx.textAlign = 'left';
+    ctx.font = 'bold 16px monospace';
+    ctx.fillText(member.membershipNo || 'BCAR/RJ/00001', w / 2, mNoBadgeY + 22);
+
+    // ── 6. MEMBER NAME, TYPE & ISSUE DATE CONTENT ──
 
     // Member Name
     ctx.fillStyle = '#0b2d5c';
     ctx.font = 'bold 26px Arial, Helvetica, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), w / 2, 515);
+    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), w / 2, 238);
 
     // Membership Type
-    ctx.fillStyle = '#475569';
-    ctx.font = '500 15px Arial, Helvetica, sans-serif';
     const typeText = 'Membership Type : ';
     const typeVal  = 'BANK MITRA (CSP)';
-    ctx.font = '500 15px Arial';
+    ctx.font = '500 14px Arial';
     const tWidth1 = ctx.measureText(typeText).width;
-    ctx.font = 'bold 15px Arial';
+    ctx.font = 'bold 14px Arial';
     const tWidth2 = ctx.measureText(typeVal).width;
     const typeStartX = w / 2 - (tWidth1 + tWidth2) / 2;
 
     ctx.fillStyle = '#475569';
-    ctx.font = '500 15px Arial';
-    ctx.fillText(typeText, typeStartX, 542);
+    ctx.font = '500 14px Arial';
+    ctx.fillText(typeText, typeStartX + tWidth1 / 2, 266);
     ctx.fillStyle = '#0B5ED7';
-    ctx.font = 'bold 15px Arial';
-    ctx.fillText(typeVal, typeStartX + tWidth1, 542);
-    ctx.textAlign = 'left';
+    ctx.font = 'bold 14px Arial';
+    ctx.fillText(typeVal, typeStartX + tWidth1 + tWidth2 / 2, 266);
 
     // Date block with calendar icon
-    const dateBlockY = 562;
+    const dateBlockY = 284;
     const issueDate    = this.parseDate(member.joinedAt || member.createdAt);
     const issueDateStr = issueDate ? this.formatDateObj(issueDate) : '24-07-2025';
 
-    ctx.font = 'bold 9.5px Arial';
+    ctx.font = 'bold 9px Arial';
     const lblW = ctx.measureText('ISSUE DATE').width;
-    ctx.font = 'bold 15px monospace';
+    ctx.font = 'bold 14px monospace';
     const valW = ctx.measureText(issueDateStr).width;
-    const dateContentW = 34 + Math.max(lblW, valW);
+    const dateContentW = 32 + Math.max(lblW, valW);
     const dateStartX   = w / 2 - dateContentW / 2;
 
-    this.drawCalendarIcon(ctx, dateStartX, dateBlockY + 4, 26);
+    this.drawCalendarIcon(ctx, dateStartX, dateBlockY + 4, 24);
     ctx.fillStyle = '#475569';
-    ctx.font = 'bold 9.5px Arial, Helvetica, sans-serif';
-    ctx.fillText('ISSUE DATE', dateStartX + 34, dateBlockY + 12);
+    ctx.font = 'bold 9px Arial, Helvetica, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('ISSUE DATE', dateStartX + 32, dateBlockY + 12);
     ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 15px monospace';
-    ctx.fillText(issueDateStr, dateStartX + 34, dateBlockY + 28);
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText(issueDateStr, dateStartX + 32, dateBlockY + 28);
 
-    // ── Details Box ──
+    // ── 7. DETAILS BOX CONTAINER ──
     const boxX = 35;
-    const boxY = 618;
+    const boxY = 330;
     const boxW = w - 70; // 568
-    const boxH = 320;
+    const boxH = 620;
 
     ctx.fillStyle = '#ffffff';
     this.roundRect(ctx, boxX, boxY, boxW, boxH, 14);
@@ -352,7 +357,7 @@ export class MemberCardService {
     const colLeftW  = w / 2 - colLeftX - 10;  // ~268px available
     const colRightW = boxX + boxW - 16 - colRightX; // ~242px available
     const gridY = boxY + 76;
-    const rowH  = 42;
+    const rowH  = 44;
 
     // Left Column
     this.drawFieldRow(ctx, 'building', 'Sub District', member.subDistrict || '—',    colLeftX, gridY,            colLeftW);
@@ -378,11 +383,6 @@ export class MemberCardService {
 
     // Divider above copyright
     ctx.strokeStyle = '#BAE6FD';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(50, h - 36);
-    ctx.lineTo(w - 50, h - 36);
-    ctx.stroke();
 
     // Copyright bar
     ctx.fillStyle = '#0B5ED7';

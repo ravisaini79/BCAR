@@ -121,6 +121,11 @@ export class DashboardComponent implements OnInit {
   loading = false;
   busy = false;
 
+  hasDoc(u: any, ...fields: string[]): boolean {
+    if (!u) return false;
+    return fields.some(f => !!u[f]);
+  }
+
   // Overview Counts & Info
   pendingCount = 0;
   openGrievancesCount = 0;

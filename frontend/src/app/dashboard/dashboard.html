@@ -343,7 +343,7 @@
 
             <!-- Action Buttons for Member ID Card -->
             <div class="hero-actions" *ngIf="user.status === 'Approved' || user.status === 'active'">
-              <button class="btn-primary-action" (click)="downloadCard(user)">
+              <button class="btn-primary-action" (click)="generateCard(user)">
                 <i class="pi pi-download"></i> Download Membership ID Card
               </button>
               <button class="btn-secondary-action" (click)="printCard(user)">
@@ -408,37 +408,37 @@
               <div class="doc-status-list">
                 <div class="doc-status-item">
                   <span><i class="pi pi-image text-primary"></i> Passport Size Photo</span>
-                  <span class="doc-badge" [class.success]="user.photograph || user['profilePhoto']" [class.danger]="!user.photograph && !user['profilePhoto']">
-                    <i class="pi" [class.pi-check]="user.photograph || user['profilePhoto']" [class.pi-times]="!user.photograph && !user['profilePhoto']"></i>
-                    {{ (user.photograph || user['profilePhoto']) ? 'Uploaded' : 'Pending' }}
+                  <span class="doc-badge" [class.success]="hasDoc(user, 'photograph', 'profilePhoto')" [class.danger]="!hasDoc(user, 'photograph', 'profilePhoto')">
+                    <i class="pi" [class.pi-check]="hasDoc(user, 'photograph', 'profilePhoto')" [class.pi-times]="!hasDoc(user, 'photograph', 'profilePhoto')"></i>
+                    {{ hasDoc(user, 'photograph', 'profilePhoto') ? 'Uploaded' : 'Pending' }}
                   </span>
                 </div>
                 <div class="doc-status-item">
                   <span><i class="pi pi-id-card text-primary"></i> Aadhaar Card Front</span>
-                  <span class="doc-badge" [class.success]="user.aadhaarCard || user['aadhaarFront']" [class.danger]="!user.aadhaarCard && !user['aadhaarFront']">
-                    <i class="pi" [class.pi-check]="user.aadhaarCard || user['aadhaarFront']" [class.pi-times]="!user.aadhaarCard && !user['aadhaarFront']"></i>
-                    {{ (user.aadhaarCard || user['aadhaarFront']) ? 'Uploaded' : 'Pending' }}
+                  <span class="doc-badge" [class.success]="hasDoc(user, 'aadhaarCard', 'aadhaarFront')" [class.danger]="!hasDoc(user, 'aadhaarCard', 'aadhaarFront')">
+                    <i class="pi" [class.pi-check]="hasDoc(user, 'aadhaarCard', 'aadhaarFront')" [class.pi-times]="!hasDoc(user, 'aadhaarCard', 'aadhaarFront')"></i>
+                    {{ hasDoc(user, 'aadhaarCard', 'aadhaarFront') ? 'Uploaded' : 'Pending' }}
                   </span>
                 </div>
                 <div class="doc-status-item">
                   <span><i class="pi pi-id-card text-primary"></i> Aadhaar Card Back</span>
-                  <span class="doc-badge" [class.success]="user.aadhaarBack" [class.danger]="!user.aadhaarBack">
-                    <i class="pi" [class.pi-check]="user.aadhaarBack" [class.pi-times]="!user.aadhaarBack"></i>
-                    {{ user.aadhaarBack ? 'Uploaded' : 'Pending' }}
+                  <span class="doc-badge" [class.success]="hasDoc(user, 'aadhaarBack')" [class.danger]="!hasDoc(user, 'aadhaarBack')">
+                    <i class="pi" [class.pi-check]="hasDoc(user, 'aadhaarBack')" [class.pi-times]="!hasDoc(user, 'aadhaarBack')"></i>
+                    {{ hasDoc(user, 'aadhaarBack') ? 'Uploaded' : 'Pending' }}
                   </span>
                 </div>
                 <div class="doc-status-item">
                   <span><i class="pi pi-credit-card text-primary"></i> PAN Card</span>
-                  <span class="doc-badge" [class.success]="user.panCard" [class.danger]="!user.panCard">
-                    <i class="pi" [class.pi-check]="user.panCard" [class.pi-times]="!user.panCard"></i>
-                    {{ user.panCard ? 'Uploaded' : 'Pending' }}
+                  <span class="doc-badge" [class.success]="hasDoc(user, 'panCard')" [class.danger]="!hasDoc(user, 'panCard')">
+                    <i class="pi" [class.pi-check]="hasDoc(user, 'panCard')" [class.pi-times]="!hasDoc(user, 'panCard')"></i>
+                    {{ hasDoc(user, 'panCard') ? 'Uploaded' : 'Pending' }}
                   </span>
                 </div>
                 <div class="doc-status-item">
                   <span><i class="pi pi-building text-primary"></i> Bank BC Certificate</span>
-                  <span class="doc-badge" [class.success]="user.bankBcCertificate || user['bankPassbook']" [class.danger]="!user.bankBcCertificate && !user['bankPassbook']">
-                    <i class="pi" [class.pi-check]="user.bankBcCertificate || user['bankPassbook']" [class.pi-times]="!user.bankBcCertificate && !user['bankPassbook']"></i>
-                    {{ (user.bankBcCertificate || user['bankPassbook']) ? 'Uploaded' : 'Pending' }}
+                  <span class="doc-badge" [class.success]="hasDoc(user, 'bankBcCertificate', 'bankPassbook')" [class.danger]="!hasDoc(user, 'bankBcCertificate', 'bankPassbook')">
+                    <i class="pi" [class.pi-check]="hasDoc(user, 'bankBcCertificate', 'bankPassbook')" [class.pi-times]="!hasDoc(user, 'bankBcCertificate', 'bankPassbook')"></i>
+                    {{ hasDoc(user, 'bankBcCertificate', 'bankPassbook') ? 'Uploaded' : 'Pending' }}
                   </span>
                 </div>
               </div>

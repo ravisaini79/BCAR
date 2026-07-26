@@ -50,6 +50,9 @@
           </span>
           
           <div class="card-actions">
+            <button class="btn-icon crop" pTooltip="Crop Image" tooltipPosition="top" (click)="openCropperForItem(item)">
+              <i class="pi pi-crop"></i>
+            </button>
             <button class="btn-icon" pTooltip="Edit Image" tooltipPosition="top" (click)="openEditDialog(item)">
               <i class="pi pi-pencil"></i>
             </button>
@@ -90,7 +93,8 @@
   <!-- Image CRUD Dialog -->
   <p-dialog 
     [header]="isEditMode() ? 'Edit Gallery Image' : 'Add New Gallery Image'" 
-    [(visible)]="dialogVisible" 
+    [visible]="dialogVisible()" 
+    (visibleChange)="dialogVisible.set($event)"
     [modal]="true" 
     [style]="{width: '550px'}"
     [draggable]="false"
@@ -120,12 +124,17 @@
 
         <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" />
 
-        <!-- Image Preview -->
+        <!-- Image Preview & Crop Button -->
         <div class="img-preview-box" *ngIf="imagePreviewUrl">
           <img [src]="imagePreviewUrl" alt="Preview" />
-          <button type="button" class="remove-preview-btn" (click)="removeImage()">
-            <i class="pi pi-times"></i>
-          </button>
+          <div class="preview-actions">
+            <button type="button" class="btn-crop-preview" (click)="openCropperForFile()" pTooltip="Crop Image" tooltipPosition="top">
+              <i class="pi pi-crop"></i> Crop
+            </button>
+            <button type="button" class="remove-preview-btn" (click)="removeImage()" pTooltip="Remove Image" tooltipPosition="top">
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -140,4 +149,76 @@
 
     </form>
   </p-dialog>
+
+  <!-- ── Interactive Image Cropper Modal (Registration Page Style) ── -->
+  @if (isCropping()) {
+    <div class="cropper-modal-overlay" (click)="closeCropper()">
+      <div class="cropper-modal-card" (click)="$event.stopPropagation()">
+        
+        <div class="cropper-modal-header">
+          <h4><i class="pi pi-crop"></i> {{ cropperTitle }}</h4>
+          <button type="button" class="close-cropper-btn" (click)="closeCropper()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+
+        <div class="cropper-modal-body">
+          <p class="cropper-instructions"><i class="pi pi-info-circle"></i> Drag to position &amp; use controls to scale or rotate</p>
+          
+          <div class="cropper-viewport-wrap"
+               (mousedown)="startCropDrag($event)"
+               (mousemove)="onCropDrag($event)"
+               (mouseup)="endCropDrag()"
+               (mouseleave)="endCropDrag()"
+               (touchstart)="startCropDrag($event)"
+               (touchmove)="onCropDrag($event)"
+               (touchend)="endCropDrag()">
+
+            <!-- Crop Guide Box -->
+            <div class="cropper-guide-box"></div>
+
+            <!-- Source Image -->
+            <img [src]="cropperImageSrc"
+                 class="cropper-source-img"
+                 [style.transform]="'translate(' + cropOffsetX + 'px, ' + cropOffsetY + 'px) scale(' + cropScale + ') rotate(' + cropRotate + 'deg)'"
+                 alt="Source Image to Crop">
+          </div>
+
+          <!-- Controls Toolbar -->
+          <div class="cropper-controls-toolbar">
+            <div class="cropper-tool-group">
+              <span class="tool-label">Zoom:</span>
+              <button type="button" class="crop-tool-btn" (click)="zoomOutCropper()">
+                <i class="pi pi-search-minus"></i>
+              </button>
+              <span class="crop-scale-label">{{ (cropScale * 100).toFixed(0) }}%</span>
+              <button type="button" class="crop-tool-btn" (click)="zoomInCropper()">
+                <i class="pi pi-search-plus"></i>
+              </button>
+            </div>
+
+            <div class="cropper-tool-group">
+              <button type="button" class="crop-tool-btn" (click)="rotateCropper()">
+                <i class="pi pi-refresh"></i> Rotate
+              </button>
+              <button type="button" class="crop-tool-btn" (click)="resetCropper()">
+                <i class="pi pi-undo"></i> Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cropper-modal-footer">
+          <button type="button" class="cropper-btn-cancel" (click)="closeCropper()">Cancel</button>
+          <button type="button" class="cropper-btn-save" (click)="applyCrop()" [disabled]="cropBusy">
+            <i class="pi pi-spin pi-spinner" *ngIf="cropBusy"></i>
+            <i class="pi pi-check" *ngIf="!cropBusy"></i>
+            Crop &amp; Save Photo
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
 </div>

@@ -69,7 +69,11 @@ export class HeaderComponent implements OnDestroy {
   goto(route: string): void {
     this.mobileOpen.set(false);
     this.aboutOpen.set(false);
-    this.router.navigate([route]);
+    this.router.navigate([route]).then(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
   }
 
   /** Scroll to section on home page, or navigate home first then scroll */

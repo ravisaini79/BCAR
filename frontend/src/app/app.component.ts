@@ -1,16 +1,27 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ToastModule],
-  // p-toast at ROOT level — uses the root MessageService from main.ts
-  // This means toasts work on every page without needing p-toast in each component
   template: `
     <p-toast position="top-right" [life]="4500" [breakpoints]="{'960px': {width: '100%', right: '0', left: '0'}}"></p-toast>
     <router-outlet></router-outlet>
   `
 })
-export class AppComponent {}
+export class AppComponent {
+  private router = inject(Router);
+
+  constructor() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
+  }
+}

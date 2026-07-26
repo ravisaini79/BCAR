@@ -328,10 +328,23 @@ export class DashboardComponent implements OnInit {
     return this.grievances.filter(g => g && g.status === this.grievanceFilter);
   }
 
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const content = document.querySelector('.admin-content') || document.querySelector('.admin-main');
+    if (content) {
+      content.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  onTablePageChange(event: any): void {
+    this.scrollToTop();
+  }
+
   // Navigation
   navigate(view: typeof this.activeView) {
     this.activeView = view;
     this.selectedMembers = [];
+    this.scrollToTop();
     if (window.innerWidth < 768) {
       this.sidebarCollapsed = true;
     }

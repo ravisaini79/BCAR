@@ -127,6 +127,14 @@ export class GalleryManagementComponent implements OnInit {
     this.currentPage = 1; // Reset to page 1
   }
 
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const container = document.querySelector('.admin-content') || document.querySelector('.admin-main');
+    if (container) {
+      container.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
   // Pagination getters & methods
   get totalPages(): number {
     return Math.ceil(this.filteredItems().length / this.pageSize);
@@ -138,11 +146,177 @@ export class GalleryManagementComponent implements OnInit {
   }
 
   prevPage(): void {
-    if (this.currentPage > 1) this.currentPage--;
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.scrollToTop();
+    }
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) this.currentPage++;
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.scrollToTop();
+    }
+  }
+
+  // Interactive Image Cropper (Registration Page Style)
+  isCropping = signal<boolean>(false);
+  cropperImageSrc = '';
+  cropperTitle = 'Crop Gallery Image';
+  cropScale = 1;
+  cropRotate = 0;
+  cropOffsetX = 0;
+  cropOffsetY = 0;
+  isDraggingCropper = false;
+  cropBusy = false;
+  cropTargetItem: any | null = null;
+  private dragStartX = 0;
+  private dragStartY = 0;
+
+  openCropper(dataUrl: string, item: any | null = null): void {
+    this.cropTargetItem = item;
+    this.cropperImageSrc = dataUrl;
+    this.cropScale = 1;
+    this.cropRotate = 0;
+    this.cropOffsetX = 0;
+    this.cropOffsetY = 0;
+    this.isCropping.set(true);
+  }
+
+  openCropperForFile(): void {
+    if (!this.imagePreviewUrl) return;
+    this.openCropper(this.imagePreviewUrl, null);
+  }
+
+  openCropperForItem(item: any): void {
+    const url = this.getItemImageUrl(item);
+    if (!url) return;
+    this.openCropper(url, item);
+  }
+
+  closeCropper(): void {
+    this.isCropping.set(false);
+    this.cropperImageSrc = '';
+  }
+
+  zoomInCropper(): void {
+    this.cropScale = Math.min(3, +(this.cropScale + 0.15).toFixed(2));
+  }
+
+  zoomOutCropper(): void {
+    this.cropScale = Math.max(0.5, +(this.cropScale - 0.15).toFixed(2));
+  }
+
+  rotateCropper(): void {
+    this.cropRotate = (this.cropRotate + 90) % 360;
+  }
+
+  resetCropper(): void {
+    this.cropScale = 1;
+    this.cropRotate = 0;
+    this.cropOffsetX = 0;
+    this.cropOffsetY = 0;
+  }
+
+  startCropDrag(event: MouseEvent | TouchEvent): void {
+    event.preventDefault();
+    this.isDraggingCropper = true;
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+    this.dragStartX = clientX - this.cropOffsetX;
+    this.dragStartY = clientY - this.cropOffsetY;
+  }
+
+  onCropDrag(event: MouseEvent | TouchEvent): void {
+    if (!this.isDraggingCropper) return;
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+    this.cropOffsetX = clientX - this.dragStartX;
+    this.cropOffsetY = clientY - this.dragStartY;
+  }
+
+  endCropDrag(): void {
+    this.isDraggingCropper = false;
+  }
+
+  applyCrop(): void {
+    if (!this.cropperImageSrc) return;
+    this.cropBusy = true;
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const outputCanvas = document.createElement('canvas');
+      const size = 600;
+      outputCanvas.width = size;
+      outputCanvas.height = size;
+      const ctx = outputCanvas.getContext('2d');
+
+      if (ctx) {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, size, size);
+
+        ctx.save();
+        ctx.translate(size / 2 + this.cropOffsetX, size / 2 + this.cropOffsetY);
+        ctx.rotate((this.cropRotate * Math.PI) / 180);
+        ctx.scale(this.cropScale, this.cropScale);
+
+        const aspect = img.width / img.height;
+        let drawWidth = size;
+        let drawHeight = size;
+        if (aspect > 1) {
+          drawHeight = size;
+          drawWidth = size * aspect;
+        } else {
+          drawWidth = size;
+          drawHeight = size / aspect;
+        }
+
+        ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+        ctx.restore();
+
+        outputCanvas.toBlob((blob) => {
+          if (!blob) {
+            this.toast.error('Failed to crop image.', 'Error');
+            this.cropBusy = false;
+            return;
+          }
+
+          const croppedFile = new File([blob], `cropped_${Date.now()}.jpg`, { type: 'image/jpeg' });
+          const croppedUrl = URL.createObjectURL(blob);
+
+          if (this.cropTargetItem) {
+            const formData = new FormData();
+            formData.append('image', croppedFile);
+            this.galleryService.updateItem(this.cropTargetItem._id, formData).subscribe({
+              next: () => {
+                this.toast.success('Gallery image cropped and saved successfully!', 'Image Cropped');
+                this.cropBusy = false;
+                this.closeCropper();
+                this.loadItems();
+              },
+              error: (err) => {
+                this.toast.error('Failed to save cropped image.', 'Error');
+                this.cropBusy = false;
+              }
+            });
+          } else {
+            this.selectedFile = croppedFile;
+            this.imagePreviewUrl = croppedUrl;
+            this.toast.success('Image cropped successfully!', 'Image Cropped');
+            this.cropBusy = false;
+            this.closeCropper();
+          }
+        }, 'image/jpeg', 0.92);
+      }
+    };
+
+    img.onerror = () => {
+      this.toast.error('Could not load image for cropping.', 'Error');
+      this.cropBusy = false;
+    };
+
+    img.src = this.cropperImageSrc;
   }
 
   // Image upload handling

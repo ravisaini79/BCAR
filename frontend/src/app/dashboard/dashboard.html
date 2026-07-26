@@ -494,6 +494,7 @@
             [paginator]="true"
             [rows]="10"
             [rowsPerPageOptions]="[10, 25, 50, 100]"
+            (onPage)="onTablePageChange($event)"
             [(selection)]="selectedMembers"
             dataKey="_id"
             [loading]="loading"

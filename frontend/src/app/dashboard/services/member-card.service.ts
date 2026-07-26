@@ -74,34 +74,34 @@ export class MemberCardService {
 
   // ════════════════════════════════════════════════════════════════════
   private async drawFrontSide(ctx: CanvasRenderingContext2D, member: any, w: number, h: number): Promise<void> {
-    // 1. Background (very light blue slate)
-    ctx.fillStyle = '#F5FAFE';
-    this.roundRect(ctx, 0, 0, w, h, 30);
+    // 1. Light Ice Blue Card Background
+    ctx.fillStyle = '#F0F8FF';
+    this.roundRect(ctx, 0, 0, w, h, 28);
     ctx.fill();
 
-    // 2. Watermark Logo
+    // 2. Watermark Logo (Center Background)
     try {
       const watermark = await this.loadImage('/images/bcar-logo-official.jpg');
       ctx.save();
       ctx.globalAlpha = 0.04;
-      const wmSize = 400;
+      const wmSize = 380;
       ctx.drawImage(watermark, w / 2 - wmSize / 2, h / 2 - wmSize / 2, wmSize, wmSize);
       ctx.restore();
     } catch (e) {}
 
-    // 3. Thick Blue Outer Border
+    // 3. Card Outer Border
     ctx.strokeStyle = '#0B5ED7';
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 4;
     ctx.beginPath();
-    this.roundRect(ctx, 0, 0, w, h, 30);
+    this.roundRect(ctx, 0, 0, w, h, 28);
     ctx.stroke();
 
-    // ── 4. TOP HEADER: LOGO LEFT, USER IMAGE RIGHT, TITLE CENTERED ──
+    // ── 4. CENTERED HEADER BLOCK ──
     
-    // A. LOGO (Top-Left)
-    const logoSize = 80;
-    const logoX = 35;
-    const logoY = 28;
+    // A. TOP CENTER LOGO
+    const logoSize = 82;
+    const logoX = w / 2 - logoSize / 2;
+    const logoY = 22;
 
     try {
       const logo = await this.loadImage('/images/bcar-logo-official.jpg');
@@ -114,7 +114,6 @@ export class MemberCardService {
       ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
       ctx.restore();
 
-      // Blue border ring around logo
       ctx.beginPath();
       ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 2, 0, Math.PI * 2);
       ctx.strokeStyle = '#0B5ED7';
@@ -122,12 +121,44 @@ export class MemberCardService {
       ctx.stroke();
     } catch {}
 
-    // B. USER PROFILE PHOTO (Top-Right)
-    const photoRadius = 45;
-    const photoCx = w - 35 - photoRadius;
-    const photoCy = logoY + logoSize / 2;
+    // B. HEADER CENTER TEXT
+    ctx.textAlign = 'center';
 
-    // Draw blue outer ring & white gap
+    // BCAR Title
+    ctx.fillStyle = '#0B2D5C';
+    ctx.font = 'bold 32px Arial, Helvetica, sans-serif';
+    ctx.fillText('BCAR', w / 2, 134);
+
+    // Organization Name
+    ctx.fillStyle = '#0B5ED7';
+    ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
+    ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', w / 2, 154);
+
+    // Tagline in Hindi
+    ctx.fillStyle = '#0B2D5C';
+    ctx.font = 'bold 11px "Noto Sans Devanagari", "Segoe UI", sans-serif';
+    ctx.fillText('राजस्थान के बैंक मित्रों का सशक्त संगठन', w / 2, 174);
+
+    // C. OFFICIAL MEMBERSHIP CARD PILL BADGE
+    const badgeW = 210;
+    const badgeH = 28;
+    const badgeX = w / 2 - badgeW / 2;
+    const badgeY = 192;
+
+    ctx.fillStyle = '#0B5ED7';
+    this.roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 6);
+    ctx.fill();
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 11.5px Arial, Helvetica, sans-serif';
+    ctx.fillText('OFFICIAL MEMBERSHIP CARD', w / 2, badgeY + 18);
+
+    // ── 5. CENTER CIRCULAR USER PHOTO WITH VERIFIED BADGE ──
+    const photoRadius = 56;
+    const photoCx = w / 2;
+    const photoCy = 294;
+
+    // Photo Outer Ring
     ctx.beginPath();
     ctx.arc(photoCx, photoCy, photoRadius + 3, 0, Math.PI * 2);
     ctx.strokeStyle = '#0B5ED7';
@@ -136,7 +167,7 @@ export class MemberCardService {
 
     ctx.beginPath();
     ctx.arc(photoCx, photoCy, photoRadius + 1, 0, Math.PI * 2);
-    ctx.strokeStyle = '#ffffff';
+    ctx.strokeStyle = '#FFFFFF';
     ctx.lineWidth = 2;
     ctx.stroke();
 
@@ -181,220 +212,199 @@ export class MemberCardService {
       ctx.clip();
       ctx.fillStyle = '#E0F2FE';
       ctx.fillRect(photoCx - photoRadius, photoCy - photoRadius, photoRadius * 2, photoRadius * 2);
-      this.drawPersonIcon(ctx, photoCx, photoCy + 6);
+      this.drawPersonIcon(ctx, photoCx, photoCy + 8);
       ctx.restore();
     }
 
-    // Small Verified Seal Badge overlay on photo
-    const sealCx = photoCx + 26;
-    const sealCy = photoCy + 26;
-    const sealRadius = 16;
+    // Verified Checkmark Badge (Top Right of Photo)
+    const checkCx = photoCx + 38;
+    const checkCy = photoCy - 38;
+    const checkRadius = 14;
 
     ctx.beginPath();
-    ctx.arc(sealCx, sealCy, sealRadius, 0, Math.PI * 2);
+    ctx.arc(checkCx, checkCy, checkRadius, 0, Math.PI * 2);
     ctx.fillStyle = '#0B5ED7';
     ctx.fill();
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 2;
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.arc(sealCx, sealCy - 2, 5, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-
-    ctx.strokeStyle = '#0B5ED7';
-    ctx.lineWidth = 1.5;
+    // Checkmark icon draw inside circle
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 2.2;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-    ctx.moveTo(sealCx - 2, sealCy - 2);
-    ctx.lineTo(sealCx, sealCy - 1);
-    ctx.lineTo(sealCx + 2, sealCy - 4);
+    ctx.moveTo(checkCx - 5, checkCy);
+    ctx.lineTo(checkCx - 1, checkCy + 4);
+    ctx.lineTo(checkCx + 5, checkCy - 4);
     ctx.stroke();
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 5px Arial, Helvetica, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('VERIFIED', sealCx, sealCy + 8);
-    ctx.textAlign = 'left';
-
-    // C. CENTER HEADER TITLE & HINDI TAGLINE
-    ctx.textAlign = 'center';
-
-    // "BCAR"
-    ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 28px Arial, Helvetica, sans-serif';
-    ctx.fillText('BCAR', w / 2, 48);
-
-    // "BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN"
-    ctx.fillStyle = '#0B5ED7';
-    ctx.font = 'bold 10px Arial, Helvetica, sans-serif';
-    ctx.fillText('BUSINESS CORRESPONDENT', w / 2, 68);
-    ctx.fillText('ASSOCIATION RAJASTHAN', w / 2, 82);
-
-    // Hindi tagline
-    ctx.fillStyle = '#0b2d5c';
-    ctx.font = 'bold 10.5px "Noto Sans Devanagari", "Segoe UI", sans-serif';
-    ctx.fillText('राजस्थान के बैंक मित्रों का सशक्त संगठन', w / 2, 102);
-
-    // Header divider line
-    ctx.strokeStyle = '#BAE6FD';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(35, 120);
-    ctx.lineTo(w - 35, 120);
-    ctx.stroke();
-
-    // ── 5. OFFICIAL MEMBERSHIP CARD BADGE & MEMBERSHIP NO ──
-
-    // Official Membership Card Pill Badge
-    const badgeW = 210;
-    const badgeH = 26;
-    const badgeX = w / 2 - badgeW / 2;
-    const badgeY = 134;
-
-    ctx.fillStyle = '#0B5ED7';
-    this.roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 6);
-    ctx.fill();
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
-    ctx.fillText('OFFICIAL MEMBERSHIP CARD', w / 2, badgeY + 17);
-
-    // Membership No Badge
-    const mNoBadgeW = 210;
-    const mNoBadgeH = 34;
+    // ── 6. MEMBERSHIP NO BADGE BELOW PHOTO ──
+    const mNoBadgeW = 200;
+    const mNoBadgeH = 32;
     const mNoBadgeX = w / 2 - mNoBadgeW / 2;
-    const mNoBadgeY = 170;
+    const mNoBadgeY = 366;
 
     ctx.fillStyle = '#0B5ED7';
     this.roundRect(ctx, mNoBadgeX, mNoBadgeY, mNoBadgeW, mNoBadgeH, 6);
     ctx.fill();
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 16px monospace';
-    ctx.fillText(member.membershipNo || 'BCAR/RJ/00001', w / 2, mNoBadgeY + 22);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 15px monospace';
+    ctx.fillText(member.membershipNo || 'BCAR/RJ/00001', w / 2, mNoBadgeY + 21);
 
-    // ── 6. MEMBER NAME, TYPE & ISSUE DATE CONTENT ──
+    // ── 7. MEMBER NAME, TYPE & ISSUE DATE ──
 
-    // Member Name
-    ctx.fillStyle = '#0b2d5c';
+    // Member Name (Large & Bold Navy)
+    ctx.fillStyle = '#0B2D5C';
     ctx.font = 'bold 26px Arial, Helvetica, sans-serif';
-    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), w / 2, 234);
+    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), w / 2, 426);
 
     // Membership Type
     const typeText = 'Membership Type : ';
     const typeVal  = 'BANK MITRA (CSP)';
-    ctx.font = '500 14px Arial';
+    ctx.font = '500 13.5px Arial';
     const tWidth1 = ctx.measureText(typeText).width;
-    ctx.font = 'bold 14px Arial';
+    ctx.font = 'bold 13.5px Arial';
     const tWidth2 = ctx.measureText(typeVal).width;
     const typeStartX = w / 2 - (tWidth1 + tWidth2) / 2;
 
-    ctx.fillStyle = '#475569';
-    ctx.font = '500 14px Arial';
-    ctx.fillText(typeText, typeStartX + tWidth1 / 2, 260);
+    ctx.fillStyle = '#64748B';
+    ctx.font = '500 13.5px Arial';
+    ctx.fillText(typeText, typeStartX + tWidth1 / 2, 452);
     ctx.fillStyle = '#0B5ED7';
-    ctx.font = 'bold 14px Arial';
-    ctx.fillText(typeVal, typeStartX + tWidth1 + tWidth2 / 2, 260);
+    ctx.font = 'bold 13.5px Arial';
+    ctx.fillText(typeVal, typeStartX + tWidth1 + tWidth2 / 2, 452);
 
-    // Date block with calendar icon
-    const dateBlockY = 278;
+    // Issue Date with calendar icon
+    const dateBlockY = 472;
     const issueDate    = this.parseDate(member.joinedAt || member.createdAt);
     const issueDateStr = issueDate ? this.formatDateObj(issueDate) : '24-07-2025';
 
     ctx.font = 'bold 9px Arial';
     const lblW = ctx.measureText('ISSUE DATE').width;
-    ctx.font = 'bold 14px monospace';
+    ctx.font = 'bold 13.5px monospace';
     const valW = ctx.measureText(issueDateStr).width;
-    const dateContentW = 32 + Math.max(lblW, valW);
+    const dateContentW = 30 + Math.max(lblW, valW);
     const dateStartX   = w / 2 - dateContentW / 2;
 
-    this.drawCalendarIcon(ctx, dateStartX, dateBlockY + 4, 24);
-    ctx.fillStyle = '#475569';
+    this.drawCalendarIcon(ctx, dateStartX, dateBlockY + 4, 22);
+    ctx.fillStyle = '#64748B';
     ctx.font = 'bold 9px Arial, Helvetica, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('ISSUE DATE', dateStartX + 32, dateBlockY + 12);
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 14px monospace';
-    ctx.fillText(issueDateStr, dateStartX + 32, dateBlockY + 28);
+    ctx.fillText('ISSUE DATE', dateStartX + 30, dateBlockY + 12);
+    ctx.fillStyle = '#0B2D5C';
+    ctx.font = 'bold 13.5px monospace';
+    ctx.fillText(issueDateStr, dateStartX + 30, dateBlockY + 26);
 
-    // ── 7. FULL-CARD DETAILS CONTAINER (Fills 324 to 950) ──
-    const boxX = 35;
-    const boxY = 324;
-    const boxW = w - 70; // 568
-    const boxH = 630;
+    // ── 8. WHITE CONTENT CONTAINER BOX (GRID OF DETAILS) ──
+    const boxX = 25;
+    const boxY = 512;
+    const boxW = w - 50; // 588
+    const boxH = 445;
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#FFFFFF';
     this.roundRect(ctx, boxX, boxY, boxW, boxH, 16);
     ctx.fill();
     ctx.strokeStyle = '#BAE6FD';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Address (Full Width)
+    // Address (Top Full Width Item)
     const addrParts = [member.homeAddressVill, member.gramPanchayat, member.devBlock].filter(Boolean);
     const addrLine1  = addrParts.join(', ') || 'Jagatpura, Jaipur';
     const addrLine2  = `${member.district || 'Rajasthan'} - ${member.pin || ''}`.trim().replace(/ -\s*$/, '');
-    const addressVal = `${addrLine1}\n${addrLine2}`;
-    this.drawFieldRow(ctx, 'pin', 'Address', addressVal, boxX + 16, boxY + 16, boxW - 32, true);
+    const addressVal = `${addrLine1}, ${addrLine2}`;
 
-    // Divider
-    ctx.strokeStyle = '#E2E8F0';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(boxX + 16, boxY + 62);
-    ctx.lineTo(boxX + boxW - 16, boxY + 62);
-    ctx.stroke();
+    this.drawInlineFieldRow(ctx, 'pin', 'Address', addressVal, boxX + 16, boxY + 18, boxW - 32, true);
 
-    // 2-Column grid spanning 7 complete rows to fill the full container height
+    // 2-Column Grid (7 Rows of Inline Field Rows)
     const colLeftX  = boxX + 16;
     const colRightX = w / 2 + 10;
     const colLeftW  = w / 2 - colLeftX - 10;
     const colRightW = boxX + boxW - 16 - colRightX;
     const gridY = boxY + 76;
-    const rowH  = 76; // Spaced evenly to fill down to Y = 940
+    const rowH  = 50;
 
     // Left Column (7 rows)
-    this.drawFieldRow(ctx, 'building', 'Sub District',   member.subDistrict    || '—', colLeftX, gridY,            colLeftW);
-    this.drawFieldRow(ctx, 'building', 'District',       member.district       || '—', colLeftX, gridY + rowH,     colLeftW);
-    this.drawFieldRow(ctx, 'id',       'Pin Code',       member.pin            || '—', colLeftX, gridY + rowH * 2, colLeftW);
-    this.drawFieldRow(ctx, 'user',     'Gram Panchayat', member.gramPanchayat  || '—', colLeftX, gridY + rowH * 3, colLeftW);
-    this.drawFieldRow(ctx, 'user',     'Blood Group',    member.bloodGroup     || '—', colLeftX, gridY + rowH * 4, colLeftW);
-    this.drawFieldRow(ctx, 'envelope', 'DOB',            this.formatDate(member.dob), colLeftX, gridY + rowH * 5, colLeftW);
-    this.drawFieldRow(ctx, 'user',     'Gender',         member.gender         || '—', colLeftX, gridY + rowH * 6, colLeftW);
+    this.drawInlineFieldRow(ctx, 'building', 'Sub District',   member.subDistrict    || '—', colLeftX, gridY,            colLeftW);
+    this.drawInlineFieldRow(ctx, 'building', 'District',       member.district       || '—', colLeftX, gridY + rowH,     colLeftW);
+    this.drawInlineFieldRow(ctx, 'id',       'Pin Code',       member.pin            || '—', colLeftX, gridY + rowH * 2, colLeftW);
+    this.drawInlineFieldRow(ctx, 'user',     'Gram Panchayat', member.gramPanchayat  || '—', colLeftX, gridY + rowH * 3, colLeftW);
+    this.drawInlineFieldRow(ctx, 'user',     'Blood Group',    member.bloodGroup     || '—', colLeftX, gridY + rowH * 4, colLeftW);
+    this.drawInlineFieldRow(ctx, 'envelope', 'DOB',            this.formatDate(member.dob), colLeftX, gridY + rowH * 5, colLeftW);
+    this.drawInlineFieldRow(ctx, 'user',     'Gender',         member.gender         || '—', colLeftX, gridY + rowH * 6, colLeftW);
 
     // Right Column (7 rows)
-    this.drawFieldRow(ctx, 'key',   'BC/CSP Code',   member.bcCspIdNo       || '—', colRightX, gridY,            colRightW);
-    this.drawFieldRow(ctx, 'bank',  'Bank Name',     member.bankName        || '—', colRightX, gridY + rowH,     colRightW);
-    this.drawFieldRow(ctx, 'link',  'Link Branch',   member.linkBranchName  || '—', colRightX, gridY + rowH * 2, colRightW);
-    this.drawFieldRow(ctx, 'key',   'SSA Code',      member.ssa             || '—', colRightX, gridY + rowH * 3, colRightW);
-    this.drawFieldRow(ctx, 'phone', 'CSP Mobile',    member.phone           || '—', colRightX, gridY + rowH * 4, colRightW);
-    this.drawFieldRow(ctx, 'id',    'Aadhaar No.',   this.maskAadhaar(member.aadhaarNumber), colRightX, gridY + rowH * 5, colRightW);
-    this.drawFieldRow(ctx, 'user',  'Father/Husband',member.fatherHusbandName || '—', colRightX, gridY + rowH * 6, colRightW);
+    this.drawInlineFieldRow(ctx, 'key',   'BC/CSP Code',   member.bcCspIdNo       || '—', colRightX, gridY,            colRightW);
+    this.drawInlineFieldRow(ctx, 'bank',  'Bank Name',     member.bankName        || '—', colRightX, gridY + rowH,     colRightW);
+    this.drawInlineFieldRow(ctx, 'link',  'Link Branch',   member.linkBranchName  || '—', colRightX, gridY + rowH * 2, colRightW);
+    this.drawInlineFieldRow(ctx, 'key',   'SSA Code',      member.ssa             || '—', colRightX, gridY + rowH * 3, colRightW);
+    this.drawInlineFieldRow(ctx, 'phone', 'CSP Mobile',    member.phone           || '—', colRightX, gridY + rowH * 4, colRightW);
+    this.drawInlineFieldRow(ctx, 'id',    'Aadhaar No',    this.maskAadhaar(member.aadhaarNumber), colRightX, gridY + rowH * 5, colRightW);
+    this.drawInlineFieldRow(ctx, 'user',  'Father/Husband',member.fatherHusbandName || '—', colRightX, gridY + rowH * 6, colRightW);
 
-    // Vertical divider between columns
-    ctx.strokeStyle = '#E2E8F0';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(w / 2 + 2, boxY + 66);
-    ctx.lineTo(w / 2 + 2, boxY + boxH - 12);
-    ctx.stroke();
-
-    // Divider above footer
-    ctx.strokeStyle = '#BAE6FD';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(35, h - 45);
-    ctx.lineTo(w - 35, h - 45);
-    ctx.stroke();
-
+    // ── 9. FOOTER ──
     ctx.fillStyle = '#0B5ED7';
     ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN © 2026', w / 2, h - 18);
     ctx.textAlign = 'left';
+  }
+
+  // ════════════════════════════════════════════════════════════════════
+  // INLINE FIELD ROW (Matches Reference Screenshot Perfectly)
+  // ════════════════════════════════════════════════════════════════════
+
+  private drawInlineFieldRow(
+    ctx: CanvasRenderingContext2D,
+    iconType: string,
+    label: string,
+    value: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    isTwoLine: boolean = false
+  ) {
+    const iconSize = 16;
+    this.drawVectorIcon(ctx, iconType, x, y + 2, iconSize);
+
+    // Label
+    ctx.fillStyle = '#475569';
+    ctx.font = '500 12.5px Arial, Helvetica, sans-serif';
+    const labelText = label + ' : ';
+    ctx.fillText(labelText, x + 24, y + 14);
+    const lw = ctx.measureText(labelText).width;
+
+    const valueAreaX = x + 24 + lw;
+    const availableForValue = x + maxWidth - valueAreaX - 2;
+
+    // Value in Bold Navy Blue #0B2D5C
+    ctx.fillStyle = '#0B2D5C';
+    ctx.font = 'bold 13px Arial, Helvetica, sans-serif';
+
+    if (isTwoLine) {
+      ctx.fillText(this.truncateText(ctx, value || '—', x + maxWidth - valueAreaX), valueAreaX, y + 14);
+      if (value && value.length > 55) {
+        ctx.fillText(this.truncateText(ctx, value.slice(55), x + maxWidth - (x + 24)), x + 24, y + 32);
+      }
+    } else {
+      ctx.fillText(this.truncateText(ctx, value || '—', availableForValue), valueAreaX, y + 14);
+    }
+  }
+
+  private drawFieldRow(
+    ctx: CanvasRenderingContext2D,
+    iconType: string,
+    label: string,
+    value: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    isTwoLine: boolean = false
+  ) {
+    this.drawInlineFieldRow(ctx, iconType, label, value, x, y, maxWidth, isTwoLine);
   }
 
   // ════════════════════════════════════════════════════════════════════
@@ -506,49 +516,8 @@ export class MemberCardService {
     ctx.textAlign = 'left';
   }
 
-  // ════════════════════════════════════════════════════════════════════
-  // FIELD ROW — with proper text truncation to prevent overflow
-  // ════════════════════════════════════════════════════════════════════
 
-  private drawFieldRow(
-    ctx: CanvasRenderingContext2D,
-    iconType: string,
-    label: string,
-    value: string,
-    x: number,
-    y: number,
-    maxWidth: number,        // total available width for icon + label + value
-    isTwoLine: boolean = false
-  ) {
-    const iconSize = 16;
-    this.drawVectorIcon(ctx, iconType, x, y, iconSize);
 
-    // Label
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 12px Arial, Helvetica, sans-serif';
-    const labelText = label + ' : ';
-    ctx.fillText(labelText, x + 24, y + 12);
-    const lw = ctx.measureText(labelText).width;
-
-    // Available pixels remaining for the value
-    const valueAreaX    = x + 24 + lw;
-    const availableForValue = x + maxWidth - valueAreaX - 4;   // 4px safety margin
-
-    ctx.fillStyle = '#334155';
-    ctx.font = '500 12px Arial, Helvetica, sans-serif';
-
-    if (isTwoLine) {
-      const parts = (value || '—').split('\n');
-      if (parts.length > 0) {
-        ctx.fillText(this.truncateText(ctx, parts[0], x + maxWidth - valueAreaX), valueAreaX, y + 12);
-      }
-      if (parts.length > 1) {
-        ctx.fillText(this.truncateText(ctx, parts[1], x + maxWidth - (x + 24) + 4), x + 24, y + 27);
-      }
-    } else {
-      ctx.fillText(this.truncateText(ctx, value || '—', availableForValue), valueAreaX, y + 12);
-    }
-  }
 
   /** Truncate text with ellipsis so it fits within maxWidth pixels */
   private truncateText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {

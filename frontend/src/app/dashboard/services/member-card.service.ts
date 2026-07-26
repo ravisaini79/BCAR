@@ -73,9 +73,6 @@ export class MemberCardService {
   }
 
   // ════════════════════════════════════════════════════════════════════
-  // FRONT SIDE (Vertical Premium Light Blue Corporate Card)
-  // ════════════════════════════════════════════════════════════════════
-
   private async drawFrontSide(ctx: CanvasRenderingContext2D, member: any, w: number, h: number): Promise<void> {
     // 1. Background (very light blue slate)
     ctx.fillStyle = '#F5FAFE';
@@ -86,8 +83,8 @@ export class MemberCardService {
     try {
       const watermark = await this.loadImage('/images/bcar-logo-official.jpg');
       ctx.save();
-      ctx.globalAlpha = 0.05;
-      const wmSize = 350;
+      ctx.globalAlpha = 0.04;
+      const wmSize = 400;
       ctx.drawImage(watermark, w / 2 - wmSize / 2, h / 2 - wmSize / 2, wmSize, wmSize);
       ctx.restore();
     } catch (e) {}
@@ -269,7 +266,7 @@ export class MemberCardService {
     const mNoBadgeW = 210;
     const mNoBadgeH = 34;
     const mNoBadgeX = w / 2 - mNoBadgeW / 2;
-    const mNoBadgeY = 172;
+    const mNoBadgeY = 170;
 
     ctx.fillStyle = '#0B5ED7';
     this.roundRect(ctx, mNoBadgeX, mNoBadgeY, mNoBadgeW, mNoBadgeH, 6);
@@ -284,7 +281,7 @@ export class MemberCardService {
     // Member Name
     ctx.fillStyle = '#0b2d5c';
     ctx.font = 'bold 26px Arial, Helvetica, sans-serif';
-    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), w / 2, 238);
+    ctx.fillText((member.name || 'MEMBER NAME').toUpperCase(), w / 2, 234);
 
     // Membership Type
     const typeText = 'Membership Type : ';
@@ -297,13 +294,13 @@ export class MemberCardService {
 
     ctx.fillStyle = '#475569';
     ctx.font = '500 14px Arial';
-    ctx.fillText(typeText, typeStartX + tWidth1 / 2, 266);
+    ctx.fillText(typeText, typeStartX + tWidth1 / 2, 260);
     ctx.fillStyle = '#0B5ED7';
     ctx.font = 'bold 14px Arial';
-    ctx.fillText(typeVal, typeStartX + tWidth1 + tWidth2 / 2, 266);
+    ctx.fillText(typeVal, typeStartX + tWidth1 + tWidth2 / 2, 260);
 
     // Date block with calendar icon
-    const dateBlockY = 284;
+    const dateBlockY = 278;
     const issueDate    = this.parseDate(member.joinedAt || member.createdAt);
     const issueDateStr = issueDate ? this.formatDateObj(issueDate) : '24-07-2025';
 
@@ -323,14 +320,14 @@ export class MemberCardService {
     ctx.font = 'bold 14px monospace';
     ctx.fillText(issueDateStr, dateStartX + 32, dateBlockY + 28);
 
-    // ── 7. DETAILS BOX CONTAINER ──
+    // ── 7. FULL-CARD DETAILS CONTAINER (Fills 324 to 950) ──
     const boxX = 35;
-    const boxY = 330;
+    const boxY = 324;
     const boxW = w - 70; // 568
-    const boxH = 620;
+    const boxH = 630;
 
     ctx.fillStyle = '#ffffff';
-    this.roundRect(ctx, boxX, boxY, boxW, boxH, 14);
+    this.roundRect(ctx, boxX, boxY, boxW, boxH, 16);
     ctx.fill();
     ctx.strokeStyle = '#BAE6FD';
     ctx.lineWidth = 1.5;
@@ -351,44 +348,52 @@ export class MemberCardService {
     ctx.lineTo(boxX + boxW - 16, boxY + 62);
     ctx.stroke();
 
-    // 2-Column grid
-    const colLeftX  = boxX + 16;          // 51
-    const colRightX = w / 2 + 10;         // 329
-    const colLeftW  = w / 2 - colLeftX - 10;  // ~268px available
-    const colRightW = boxX + boxW - 16 - colRightX; // ~242px available
+    // 2-Column grid spanning 7 complete rows to fill the full container height
+    const colLeftX  = boxX + 16;
+    const colRightX = w / 2 + 10;
+    const colLeftW  = w / 2 - colLeftX - 10;
+    const colRightW = boxX + boxW - 16 - colRightX;
     const gridY = boxY + 76;
-    const rowH  = 44;
+    const rowH  = 76; // Spaced evenly to fill down to Y = 940
 
-    // Left Column
-    this.drawFieldRow(ctx, 'building', 'Sub District', member.subDistrict || '—',    colLeftX, gridY,            colLeftW);
-    this.drawFieldRow(ctx, 'building', 'District',     member.district    || '—',    colLeftX, gridY + rowH,     colLeftW);
-    this.drawFieldRow(ctx, 'id',       'Pin Code',     member.pin         || '—',    colLeftX, gridY + rowH * 2, colLeftW);
-    this.drawFieldRow(ctx, 'user',     'Blood Group',  member.bloodGroup  || '—',    colLeftX, gridY + rowH * 3, colLeftW);
-    this.drawFieldRow(ctx, 'envelope', 'DOB',          this.formatDate(member.dob),  colLeftX, gridY + rowH * 4, colLeftW);
+    // Left Column (7 rows)
+    this.drawFieldRow(ctx, 'building', 'Sub District',   member.subDistrict    || '—', colLeftX, gridY,            colLeftW);
+    this.drawFieldRow(ctx, 'building', 'District',       member.district       || '—', colLeftX, gridY + rowH,     colLeftW);
+    this.drawFieldRow(ctx, 'id',       'Pin Code',       member.pin            || '—', colLeftX, gridY + rowH * 2, colLeftW);
+    this.drawFieldRow(ctx, 'user',     'Gram Panchayat', member.gramPanchayat  || '—', colLeftX, gridY + rowH * 3, colLeftW);
+    this.drawFieldRow(ctx, 'user',     'Blood Group',    member.bloodGroup     || '—', colLeftX, gridY + rowH * 4, colLeftW);
+    this.drawFieldRow(ctx, 'envelope', 'DOB',            this.formatDate(member.dob), colLeftX, gridY + rowH * 5, colLeftW);
+    this.drawFieldRow(ctx, 'user',     'Gender',         member.gender         || '—', colLeftX, gridY + rowH * 6, colLeftW);
 
-    // Right Column — labels kept short to leave room for values
+    // Right Column (7 rows)
     this.drawFieldRow(ctx, 'key',   'BC/CSP Code',   member.bcCspIdNo       || '—', colRightX, gridY,            colRightW);
-    this.drawFieldRow(ctx, 'link',  'Link Branch',   member.linkBranchName  || '—', colRightX, gridY + rowH,     colRightW);
-    this.drawFieldRow(ctx, 'phone', 'CSP Mobile',    member.phone           || '—', colRightX, gridY + rowH * 2, colRightW);
-    this.drawFieldRow(ctx, 'id',    'Aadhaar No.',   this.maskAadhaar(member.aadhaarNumber), colRightX, gridY + rowH * 3, colRightW);
-    this.drawFieldRow(ctx, 'bank',  'Bank Name',     member.bankName        || '—', colRightX, gridY + rowH * 4, colRightW);
+    this.drawFieldRow(ctx, 'bank',  'Bank Name',     member.bankName        || '—', colRightX, gridY + rowH,     colRightW);
+    this.drawFieldRow(ctx, 'link',  'Link Branch',   member.linkBranchName  || '—', colRightX, gridY + rowH * 2, colRightW);
+    this.drawFieldRow(ctx, 'key',   'SSA Code',      member.ssa             || '—', colRightX, gridY + rowH * 3, colRightW);
+    this.drawFieldRow(ctx, 'phone', 'CSP Mobile',    member.phone           || '—', colRightX, gridY + rowH * 4, colRightW);
+    this.drawFieldRow(ctx, 'id',    'Aadhaar No.',   this.maskAadhaar(member.aadhaarNumber), colRightX, gridY + rowH * 5, colRightW);
+    this.drawFieldRow(ctx, 'user',  'Father/Husband',member.fatherHusbandName || '—', colRightX, gridY + rowH * 6, colRightW);
 
     // Vertical divider between columns
     ctx.strokeStyle = '#E2E8F0';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(w / 2 + 2, boxY + 66);
-    ctx.lineTo(w / 2 + 2, boxY + boxH - 10);
+    ctx.lineTo(w / 2 + 2, boxY + boxH - 12);
     ctx.stroke();
 
-    // Divider above copyright
+    // Divider above footer
     ctx.strokeStyle = '#BAE6FD';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(35, h - 45);
+    ctx.lineTo(w - 35, h - 45);
+    ctx.stroke();
 
-    // Copyright bar
     ctx.fillStyle = '#0B5ED7';
     ctx.font = 'bold 11px Arial, Helvetica, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN', w / 2, h - 16);
+    ctx.fillText('BUSINESS CORRESPONDENT ASSOCIATION RAJASTHAN © 2026', w / 2, h - 18);
     ctx.textAlign = 'left';
   }
 

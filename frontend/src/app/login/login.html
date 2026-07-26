@@ -20,13 +20,20 @@
     <form class="auth-form" (ngSubmit)="submitLogin()" *ngIf="mode === 'login'">
       <div class="mobile-brand"><img src="/images/bcar-logo-official.jpg" alt="BCAR"><b>BCAR</b></div>
       <span class="eyebrow">Welcome back</span><h1>Member login</h1><p>Access your membership, notices and support services.</p>
-      <label>Email address<input type="email" name="email" [(ngModel)]="login.email" placeholder="you@example.com" required></label>
+      <label>Email, Mobile Number or Registration No.
+        <input type="text" name="email" [(ngModel)]="login.email" placeholder="Email, Mobile (e.g. 9829xxxxxx) or BCAR-2026-XXXXXX" required>
+      </label>
       <label>
         <span style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
           Password
           <button type="button" (click)="mode = 'forgot'" style="border: 0; background: none; color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; padding: 0;">Forgot password?</button>
         </span>
-        <input type="password" name="password" [(ngModel)]="login.password" placeholder="Enter your password" required>
+        <div style="position: relative; width: 100%;">
+          <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="login.password" placeholder="Enter your password" required style="width: 100%; padding-right: 40px;">
+          <button type="button" (click)="showPassword = !showPassword" title="Toggle password visibility" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border: 0; background: none; color: #64748b; cursor: pointer; font-size: 16px; padding: 0;">
+            <i [class]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+          </button>
+        </div>
       </label>
       <button class="primary full" [disabled]="busy">
         <i class="fa-solid fa-circle-notch fa-spin" *ngIf="busy" style="margin-right:8px;"></i>

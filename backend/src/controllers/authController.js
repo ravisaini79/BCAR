@@ -545,9 +545,17 @@ const updateMemberDocuments = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const cleanEmail = email ? email.trim().toLowerCase() : '';
+    const identifier = email ? email.trim() : '';
 
-    const user = await User.findOne({ email: cleanEmail, isDeleted: { $ne: true } });
+    const user = await User.findOne({
+      $or: [
+        { email: identifier.toLowerCase() },
+        { phone: identifier },
+        { registrationNumber: identifier },
+        { membershipNo: identifier }
+      ],
+      isDeleted: { $ne: true }
+    });
 
     if (user && (await user.matchPassword(password))) {
       // Check member status (admins / coordinators bypass pending check)

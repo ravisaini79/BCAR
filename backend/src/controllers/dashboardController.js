@@ -208,17 +208,21 @@ const updateMemberStatus = async (req, res, next) => {
           member.membershipNo = `BCAR/RJ/${String(count + 1).padStart(4, '0')}`;
         }
 
-        // Generate temporary secure password (12 character alphanumeric string)
-        const tempPassword = crypto.randomBytes(6).toString('hex');
-        member.password = tempPassword; // hashed automatically pre-save
+        // Keep existing password set during registration, or generate temp if missing
+        let tempPassword = null;
+        if (!member.password) {
+          tempPassword = crypto.randomBytes(6).toString('hex');
+          member.password = tempPassword;
+        }
         
         // Save database record first to ensure validity
         await member.save();
         logRegistration(`Admin Approved member: ${member.name} (${member.email}). Generated membershipNo: ${member.membershipNo}`);
 
-        // Dispatch Approval Email with temporary password credentials
+        // Dispatch Approval Email
         try {
-          await sendApprovalEmail(member.email, member.name, member.registrationNumber || 'N/A', member.membershipNo, tempPassword);
+          const passNotice = tempPassword ? tempPassword : 'Your Portal Access Password (created during registration)';
+          await sendApprovalEmail(member.email, member.name, member.registrationNumber || 'N/A', member.membershipNo, passNotice);
           logEmail(`Approved credentials email sent to ${member.email}`);
         } catch (mailErr) {
           logError(`SMTP error sending approval email to ${member.email}: ${mailErr.message}`);

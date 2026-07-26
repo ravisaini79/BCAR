@@ -19,6 +19,7 @@ export class LoginComponent {
   busy = false;
   toast = '';
   toastType: 'success'|'error' = 'success';
+  showPassword = false;
   login = { email: '', password: '' };
   mode: 'login' | 'forgot' = 'login';
   forgotEmail = '';

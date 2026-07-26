@@ -62,21 +62,21 @@
 
       <div class="sb-divider"></div>
 
-      <!-- Notices -->
-      <button class="sb-item" [class.active]="activeView === 'notices'" (click)="navigate('notices')">
+      <!-- Notices (Admin Only) -->
+      <button class="sb-item" *ngIf="isAdmin" [class.active]="activeView === 'notices'" (click)="navigate('notices')">
         <i class="pi pi-bell sb-icon"></i>
         <span class="sb-label">Notices</span>
         <span class="sb-badge success" *ngIf="notices.length > 0">{{ notices.length }}</span>
       </button>
 
-      <!-- Grievances -->
-      <button class="sb-item" *ngIf="!isAdmin" [class.active]="activeView === 'grievances'" (click)="navigate('grievances')">
+      <!-- Grievances (Admin Only) -->
+      <button class="sb-item" *ngIf="isAdmin" [class.active]="activeView === 'grievances'" (click)="navigate('grievances')">
         <i class="pi pi-comments sb-icon"></i>
         <span class="sb-label">Grievances</span>
         <span class="sb-badge danger" *ngIf="openGrievancesCount > 0">{{ openGrievancesCount }}</span>
       </button>
 
-      <div class="sb-divider"></div>
+      <div class="sb-divider" *ngIf="isAdmin"></div>
 
       <!-- Account Settings -->
       <div class="sb-section-label">My Account</div>
@@ -86,7 +86,7 @@
         <span class="sb-label">View Profile</span>
       </button>
 
-      <button class="sb-item" (click)="openEditProfile()">
+      <button class="sb-item" *ngIf="isAdmin" (click)="openEditProfile()">
         <i class="pi pi-user-edit sb-icon"></i>
         <span class="sb-label">Edit Profile</span>
       </button>
@@ -137,10 +137,10 @@
         <button class="topbar-btn" (click)="refreshAll()" pTooltip="Refresh data" tooltipPosition="bottom">
           <i class="pi pi-refresh"></i>
         </button>
-        <div class="topbar-user" (click)="openEditProfile()" style="cursor:pointer;" pTooltip="Click to edit profile" tooltipPosition="bottom">
+        <div class="topbar-user" (click)="isAdmin ? openEditProfile() : viewMember(user)" style="cursor:pointer;" [pTooltip]="isAdmin ? 'Click to edit profile' : 'View Profile'" tooltipPosition="bottom">
           <p-avatar [image]="getMemberPhoto(user)" [label]="userInitial" shape="circle" />
           <div class="topbar-user-info">
-            <span>{{ user.name }} <i class="pi pi-user-edit" style="font-size:12px;margin-left:4px;color:#d4af37"></i></span>
+            <span>{{ user.name }} <i class="pi pi-user-edit" *ngIf="isAdmin" style="font-size:12px;margin-left:4px;color:#d4af37"></i></span>
             <small>{{ user.role | titlecase }}</small>
           </div>
         </div>
@@ -311,16 +311,139 @@
           </p-table>
         </div>
 
-        <!-- Member view for non-admins -->
-        <div class="members-card" *ngIf="isMember">
-          <h3 class="chart-title"><i class="pi pi-user"></i> My Account</h3>
-          <div class="detail-grid" style="max-width:500px">
-            <div class="detail-item"><span>Name</span><b>{{ user.name }}</b></div>
-            <div class="detail-item"><span>Role</span><b>{{ user.role | titlecase }}</b></div>
-            <div class="detail-item"><span>Email</span><b>{{ user.email }}</b></div>
-            <div class="detail-item"><span>Status</span>
-              <div><p-tag [value]="formatStatus(user.status)" [severity]="getStatusSeverity(user.status)" /></div>
+        <!-- Comprehensive Member Profile Dashboard View for Non-Admins / Members -->
+        <div class="member-profile-wrapper" *ngIf="isMember">
+
+          <!-- Header Card / Profile Banner -->
+          <div class="profile-hero-card">
+            <div class="hero-left">
+              <div class="hero-avatar-wrapper">
+                <p-avatar [image]="getMemberPhoto(user)" [label]="userInitial" shape="circle" size="xlarge" styleClass="hero-avatar" />
+                <span class="verified-badge-icon" *ngIf="user.status === 'Approved' || user.status === 'active'" title="Verified Member">
+                  <i class="pi pi-check"></i>
+                </span>
+              </div>
+              <div class="hero-info">
+                <h2 class="hero-name">{{ user.name }}</h2>
+                <p class="hero-subtext">
+                  <i class="pi pi-envelope"></i> {{ user.email }} &nbsp;•&nbsp;
+                  <i class="pi pi-phone"></i> {{ user.phone }}
+                </p>
+                <div class="hero-badges">
+                  <p-tag [value]="formatStatus(user.status)" [severity]="getStatusSeverity(user.status)" />
+                  <span class="badge-pill" *ngIf="user.membershipNo">
+                    <i class="pi pi-id-card"></i> {{ user.membershipNo }}
+                  </span>
+                  <span class="badge-pill text-muted" *ngIf="user.registrationNumber">
+                    Reg No: {{ user.registrationNumber }}
+                  </span>
+                </div>
+              </div>
             </div>
+
+            <!-- Action Buttons for Member ID Card -->
+            <div class="hero-actions" *ngIf="user.status === 'Approved' || user.status === 'active'">
+              <button class="btn-primary-action" (click)="downloadCard(user)">
+                <i class="pi pi-download"></i> Download Membership ID Card
+              </button>
+              <button class="btn-secondary-action" (click)="printCard(user)">
+                <i class="pi pi-print"></i> Print Card
+              </button>
+            </div>
+          </div>
+
+          <!-- Multi-Section Details Grid -->
+          <div class="profile-sections-grid">
+
+            <!-- Section 1: Personal Details -->
+            <div class="detail-section-card">
+              <div class="section-title"><i class="pi pi-user text-primary"></i> Personal Details</div>
+              <div class="info-grid">
+                <div class="info-item"><span class="info-label">Full Name</span><span class="info-val">{{ user.name || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Father / Husband Name</span><span class="info-val">{{ user.fatherHusbandName || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Date of Birth</span><span class="info-val">{{ user.dob ? (user.dob | date:'dd/MM/yyyy') : '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Gender</span><span class="info-val">{{ user.gender || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Marital Status</span><span class="info-val">{{ user.maritalStatus || '—' }}</span></div>
+                <div class="info-item" *ngIf="user.wifeHusbandName"><span class="info-label">Spouse Name</span><span class="info-val">{{ user.wifeHusbandName }}</span></div>
+                <div class="info-item"><span class="info-label">Blood Group</span><span class="info-val text-bold" style="color: #d97706;">{{ user.bloodGroup || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Educational Qualification</span><span class="info-val">{{ user.educationalQualification || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Aadhaar Number</span><span class="info-val monospace">{{ user.aadhaarNumber || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Children</span><span class="info-val">{{ user.childrenSon || 0 }} Son / {{ user.childrenDaughter || 0 }} Daughter</span></div>
+              </div>
+            </div>
+
+            <!-- Section 2: Address & Contact Details -->
+            <div class="detail-section-card">
+              <div class="section-title"><i class="pi pi-map-marker text-success"></i> Address & Contact Information</div>
+              <div class="info-grid">
+                <div class="info-item"><span class="info-label">Mobile Number</span><span class="info-val">{{ user.phone || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Email Address</span><span class="info-val">{{ user.email || '—' }}</span></div>
+                <div class="info-item full-width"><span class="info-label">Home Address (Street/Vill)</span><span class="info-val">{{ user.homeAddressVill || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Post Office (P.O)</span><span class="info-val">{{ user.po || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Police Station (P.S)</span><span class="info-val">{{ user.ps || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Gram Panchayat</span><span class="info-val">{{ user.gramPanchayat || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Development Block</span><span class="info-val">{{ user.devBlock || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Sub District / Tehsil</span><span class="info-val text-bold">{{ user.subDistrict || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">District</span><span class="info-val text-bold" style="color: #0b2d5c;">{{ user.district || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">PIN Code</span><span class="info-val monospace">{{ user.pin || '—' }}</span></div>
+              </div>
+            </div>
+
+            <!-- Section 3: Professional & CSP Details -->
+            <div class="detail-section-card">
+              <div class="section-title"><i class="pi pi-briefcase text-warning"></i> Professional & CSP Details</div>
+              <div class="info-grid">
+                <div class="info-item"><span class="info-label">BC / CSP ID Number</span><span class="info-val text-primary text-bold">{{ user.bcCspIdNo || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Associated Bank</span><span class="info-val text-bold">{{ user.bankName || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Link Branch Name</span><span class="info-val">{{ user.linkBranchName || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Sub Service Agent (SSA)</span><span class="info-val">{{ user.ssa || '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Date of Starting CSP</span><span class="info-val">{{ user.dateOfStartingCsp ? (user.dateOfStartingCsp | date:'dd/MM/yyyy') : '—' }}</span></div>
+                <div class="info-item"><span class="info-label">Interested to Join BCAR</span><span class="info-val">{{ user.interestedToJoin || 'YES' }}</span></div>
+              </div>
+            </div>
+
+            <!-- Section 4: Uploaded Documents Status -->
+            <div class="detail-section-card">
+              <div class="section-title"><i class="pi pi-file text-info"></i> Uploaded Documents Status</div>
+              <div class="doc-status-list">
+                <div class="doc-status-item">
+                  <span><i class="pi pi-image text-primary"></i> Passport Size Photo</span>
+                  <span class="doc-badge" [class.success]="user.photograph || user.profilePhoto" [class.danger]="!user.photograph && !user.profilePhoto">
+                    <i class="pi" [class.pi-check]="user.photograph || user.profilePhoto" [class.pi-times]="!user.photograph && !user.profilePhoto"></i>
+                    {{ (user.photograph || user.profilePhoto) ? 'Uploaded' : 'Pending' }}
+                  </span>
+                </div>
+                <div class="doc-status-item">
+                  <span><i class="pi pi-id-card text-primary"></i> Aadhaar Card Front</span>
+                  <span class="doc-badge" [class.success]="user.aadhaarCard || user.aadhaarFront" [class.danger]="!user.aadhaarCard && !user.aadhaarFront">
+                    <i class="pi" [class.pi-check]="user.aadhaarCard || user.aadhaarFront" [class.pi-times]="!user.aadhaarCard && !user.aadhaarFront"></i>
+                    {{ (user.aadhaarCard || user.aadhaarFront) ? 'Uploaded' : 'Pending' }}
+                  </span>
+                </div>
+                <div class="doc-status-item">
+                  <span><i class="pi pi-id-card text-primary"></i> Aadhaar Card Back</span>
+                  <span class="doc-badge" [class.success]="user.aadhaarBack" [class.danger]="!user.aadhaarBack">
+                    <i class="pi" [class.pi-check]="user.aadhaarBack" [class.pi-times]="!user.aadhaarBack"></i>
+                    {{ user.aadhaarBack ? 'Uploaded' : 'Pending' }}
+                  </span>
+                </div>
+                <div class="doc-status-item">
+                  <span><i class="pi pi-credit-card text-primary"></i> PAN Card</span>
+                  <span class="doc-badge" [class.success]="user.panCard" [class.danger]="!user.panCard">
+                    <i class="pi" [class.pi-check]="user.panCard" [class.pi-times]="!user.panCard"></i>
+                    {{ user.panCard ? 'Uploaded' : 'Pending' }}
+                  </span>
+                </div>
+                <div class="doc-status-item">
+                  <span><i class="pi pi-building text-primary"></i> Bank BC Certificate</span>
+                  <span class="doc-badge" [class.success]="user.bankBcCertificate || user.bankPassbook" [class.danger]="!user.bankBcCertificate && !user.bankPassbook">
+                    <i class="pi" [class.pi-check]="user.bankBcCertificate || user.bankPassbook" [class.pi-times]="!user.bankBcCertificate && !user.bankPassbook"></i>
+                    {{ (user.bankBcCertificate || user.bankPassbook) ? 'Uploaded' : 'Pending' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 

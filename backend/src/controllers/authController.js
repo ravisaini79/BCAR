@@ -65,8 +65,8 @@ const registerUser = async (req, res, next) => {
   try {
     const { 
       name, fatherHusbandName, dob, gender, maritalStatus, wifeHusbandName, 
-      childrenSon, childrenDaughter, educationalQualification, email, phone, 
-      homeAddressVill, po, ps, district, pin, gramPanchayat, devBlock, 
+      childrenSon, childrenDaughter, educationalQualification, bloodGroup, email, phone, 
+      homeAddressVill, po, ps, district, pin, gramPanchayat, devBlock, subDistrict,
       bcCspIdNo, ssa, bankName, linkBranchName, dateOfStartingCsp, 
       interestedToJoin, admissionFee, perMonthMembershipFee, password, declarationAccepted,
       // Base64 document attachments fallback from request body
@@ -374,9 +374,9 @@ const registerUser = async (req, res, next) => {
       name, fatherHusbandName, dob, gender, maritalStatus, wifeHusbandName, 
       childrenSon: childrenSon ? parseInt(childrenSon, 10) : 0, 
       childrenDaughter: childrenDaughter ? parseInt(childrenDaughter, 10) : 0, 
-      educationalQualification, email, phone, 
+      educationalQualification, bloodGroup, email, phone, 
       aadhaarNumber: aadhaarClean,
-      homeAddressVill, po, ps, district, pin, gramPanchayat, devBlock, 
+      homeAddressVill, po, ps, district, pin, gramPanchayat, devBlock, subDistrict,
       bcCspIdNo, ssa, bankName, linkBranchName, dateOfStartingCsp, 
       interestedToJoin, password,
       declarationAccepted: (declarationAccepted === true || declarationAccepted === 'true'),

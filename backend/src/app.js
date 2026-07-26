@@ -27,6 +27,10 @@ app.use(helmet({
 // Media proxy route (unlimited for asset loading)
 app.use('/api/media', mediaRoutes);
 
+// Trust first proxy hop (Nginx / hosting reverse proxy)
+// Required so express-rate-limit can read the real IP from X-Forwarded-For
+app.set('trust proxy', 1);
+
 // Rate Limiting — API Abuse Prevention
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

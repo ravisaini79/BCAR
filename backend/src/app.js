@@ -48,8 +48,41 @@ app.use('/api', globalLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/auth/login', authLimiter);
 
+// CORS Options for Live Production & Local Dev
+const allowedOrigins = [
+  'https://bcarbankmitra.com',
+  'https://www.bcarbankmitra.com',
+  'http://bcarbankmitra.com',
+  'http://www.bcarbankmitra.com',
+  'http://localhost:4200',
+  'http://127.0.0.1:4200'
+];
+
+if (process.env.ALLOWED_ORIGINS) {
+  process.env.ALLOWED_ORIGINS.split(',').forEach(o => {
+    const trimmed = o.trim();
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed);
+    }
+  });
+}
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS policy does not allow access from origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '25mb' })); // Support larger base64 file payloads
 
 // Serve uploads statically

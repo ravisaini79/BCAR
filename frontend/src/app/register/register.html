@@ -247,7 +247,7 @@
                 <div class="searchable-select-container"
                      [class.invalid-control]="hasError('district')">
                   <div class="searchable-select-trigger"
-                       (click)="srv.districtDropdownOpen.set(!srv.districtDropdownOpen())">
+                       (click)="toggleDistrictDropdown($event)">
                     <span>
                       <i class="pi pi-map-marker" style="margin-right:6px;color:#718096"></i>
                       {{ registerForm.get('district')?.value || 'Select District *' }}
@@ -258,11 +258,12 @@
                     </span>
                   </div>
                   @if (srv.districtDropdownOpen()) {
-                    <div class="searchable-select-dropdown">
+                    <div class="searchable-select-dropdown" (click)="$event.stopPropagation()">
                       <div class="search-input-wrapper">
                         <i class="pi pi-search search-icon"></i>
                         <input pInputText type="text" placeholder="Search District…"
-                               [(ngModel)]="districtSearchText" name="districtSearch"
+                               [value]="srv.districtSearchText()"
+                               (input)="onDistrictSearch($event)"
                                (click)="$event.stopPropagation()" />
                       </div>
                       <div class="options-list">
@@ -327,12 +328,43 @@
                 <label class="field-label">Sub Service Agent (SSA)</label>
                 <input pInputText formControlName="ssa" placeholder="SSA code or location" class="w-full" />
               </div>
+              <!-- Searchable bank dropdown -->
               <div class="input-group">
                 <label class="field-label">Associated Bank Name <span class="required">*</span></label>
-                <input pInputText formControlName="bankName" placeholder="E.g., SBI, BRKGB, PNB" 
-                       [class.p-invalid]="hasError('bankName')" class="w-full" />
+                <div class="searchable-select-container"
+                     [class.invalid-control]="hasError('bankName')">
+                  <div class="searchable-select-trigger"
+                       (click)="toggleBankDropdown($event)">
+                    <span>
+                      <i class="pi pi-building" style="margin-right:6px;color:#718096"></i>
+                      {{ registerForm.get('bankName')?.value || 'Select Associated Bank *' }}
+                    </span>
+                    <span class="arrow">
+                      <i class="pi" [class.pi-chevron-down]="!srv.bankDropdownOpen()"
+                                    [class.pi-chevron-up]="srv.bankDropdownOpen()"></i>
+                    </span>
+                  </div>
+                  @if (srv.bankDropdownOpen()) {
+                    <div class="searchable-select-dropdown" (click)="$event.stopPropagation()">
+                      <div class="search-input-wrapper bank-search-input">
+                        <i class="pi pi-search search-icon"></i>
+                        <input pInputText type="text" placeholder="Search Bank Name…"
+                               [value]="srv.bankSearchText()"
+                               (input)="onBankSearch($event)"
+                               (click)="$event.stopPropagation()" />
+                      </div>
+                      <div class="options-list">
+                        @for (bank of srv.filteredBanks(); track bank) {
+                          <div class="option-item" (click)="selectBank(bank)">{{ bank }}</div>
+                        } @empty {
+                          <div class="no-options">No banks match your search</div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
                 @if (hasError('bankName', 'required')) {
-                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Associated Bank Name is required.</small>
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Associated Bank Name selection is required.</small>
                 }
               </div>
               <div class="input-group">

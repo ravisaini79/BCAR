@@ -21,6 +21,7 @@ export class RegisterBusinessService {
   // UI State Signals
   submitting = signal<boolean>(false);
   dragOverField = signal<string>('');
+  // District Dropdown Signals
   districtSearchText = signal<string>('');
   districtDropdownOpen = signal<boolean>(false);
 
@@ -37,6 +38,56 @@ export class RegisterBusinessService {
     const search = this.districtSearchText().toLowerCase().trim();
     const all = this.districts();
     return search ? all.filter(d => d.toLowerCase().includes(search)) : all;
+  });
+
+  // Bank Dropdown Signals
+  bankSearchText = signal<string>('');
+  bankDropdownOpen = signal<boolean>(false);
+
+  readonly banks = signal<string[]>([
+    'State Bank of India (SBI)',
+    'Bank of Baroda (BOB)',
+    'Punjab National Bank (PNB)',
+    'Baroda Rajasthan Kshetriya Gramin Bank (BRKGB)',
+    'Rajasthan Marudhara Gramin Bank (RMGB)',
+    'Canara Bank',
+    'Union Bank of India',
+    'Bank of India (BOI)',
+    'Central Bank of India',
+    'Indian Bank',
+    'UCO Bank',
+    'Bank of Maharashtra',
+    'Punjab & Sind Bank',
+    'Indian Overseas Bank',
+    'AU Small Finance Bank',
+    'HDFC Bank',
+    'ICICI Bank',
+    'Axis Bank',
+    'Kotak Mahindra Bank',
+    'IndusInd Bank',
+    'IDFC FIRST Bank',
+    'Bandhan Bank',
+    'Yes Bank',
+    'Federal Bank',
+    'Airtel Payments Bank',
+    'India Post Payments Bank (IPPB)',
+    'Fino Payments Bank',
+    'Paytm Payments Bank',
+    'Equitas Small Finance Bank',
+    'Capital Small Finance Bank',
+    'Suryoday Small Finance Bank',
+    'Ujjivan Small Finance Bank',
+    'Utkarsh Small Finance Bank',
+    'Rajasthan State Co-operative Bank (RSCB)',
+    'District Central Co-operative Bank (DCCB)',
+    'Other Bank'
+  ]);
+
+  /** Computed: filtered bank list based on search input */
+  readonly filteredBanks = computed(() => {
+    const search = this.bankSearchText().toLowerCase().trim();
+    const all = this.banks();
+    return search ? all.filter(b => b.toLowerCase().includes(search)) : all;
   });
 
   /** Build the reactive registration FormGroup */
@@ -146,6 +197,13 @@ export class RegisterBusinessService {
     form.get('district')?.markAsTouched();
     this.districtSearchText.set('');
     this.districtDropdownOpen.set(false);
+  }
+
+  selectBank(bank: string, form: FormGroup): void {
+    form.get('bankName')?.setValue(bank);
+    form.get('bankName')?.markAsTouched();
+    this.bankSearchText.set('');
+    this.bankDropdownOpen.set(false);
   }
 
   // ── Scroll to first invalid ────────────────────────────────────────────────

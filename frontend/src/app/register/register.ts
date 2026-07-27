@@ -1,6 +1,6 @@
 import {
   Component, inject, OnInit, OnDestroy,
-  ChangeDetectionStrategy, ChangeDetectorRef
+  ChangeDetectionStrategy, ChangeDetectorRef, HostListener
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -268,9 +268,66 @@ export class RegisterComponent implements OnInit, OnDestroy {
     img.src = this.cropperImageSrc;
   }
 
-  // District dropdown proxy (needed for ngModel binding in template)
-  get districtSearchText(): string { return this.srv.districtSearchText(); }
-  set districtSearchText(v: string) { this.srv.districtSearchText.set(v); }
+  // ── District Dropdown Handlers ────────────────────────────────────────────────
+  toggleDistrictDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    const isOpen = !this.srv.districtDropdownOpen();
+    this.srv.districtDropdownOpen.set(isOpen);
+    if (isOpen) {
+      this.srv.districtSearchText.set('');
+      setTimeout(() => {
+        const inputEl = document.querySelector('.search-input-wrapper input') as HTMLInputElement;
+        inputEl?.focus();
+      }, 50);
+    }
+    this.cdr.markForCheck();
+  }
+
+  onDistrictSearch(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.srv.districtSearchText.set(val);
+    this.cdr.markForCheck();
+  }
+
+  // ── Bank Dropdown Handlers ──────────────────────────────────────────────────
+  toggleBankDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    const isOpen = !this.srv.bankDropdownOpen();
+    this.srv.bankDropdownOpen.set(isOpen);
+    if (isOpen) {
+      this.srv.bankSearchText.set('');
+      setTimeout(() => {
+        const inputEl = document.querySelector('.bank-search-input input') as HTMLInputElement;
+        inputEl?.focus();
+      }, 50);
+    }
+    this.cdr.markForCheck();
+  }
+
+  onBankSearch(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.srv.bankSearchText.set(val);
+    this.cdr.markForCheck();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.searchable-select-container')) {
+      let changed = false;
+      if (this.srv.districtDropdownOpen()) {
+        this.srv.districtDropdownOpen.set(false);
+        changed = true;
+      }
+      if (this.srv.bankDropdownOpen()) {
+        this.srv.bankDropdownOpen.set(false);
+        changed = true;
+      }
+      if (changed) {
+        this.cdr.markForCheck();
+      }
+    }
+  }
 
   // Dropdown option lists
   readonly genderOptions  = [
@@ -316,6 +373,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   selectDistrict(dist: string): void {
     this.srv.selectDistrict(dist, this.registerForm);
+    this.cdr.markForCheck();
+  }
+
+  selectBank(bank: string): void {
+    this.srv.selectBank(bank, this.registerForm);
     this.cdr.markForCheck();
   }
 

@@ -1537,6 +1537,13 @@
   gap: 2px;
 }
 
+.card-sig-img {
+  height: 30px;
+  max-width: 105px;
+  object-fit: contain;
+  margin-bottom: -2px;
+}
+
 .sig-line {
   width: 100px;
   height: 1.5px;

@@ -475,7 +475,7 @@ const updateMemberDocuments = async (req, res, next) => {
       throw new Error('Member not found');
     }
 
-    const { profileImage, photograph, aadhaarCard, panCard, bankBcCertificate } = req.body;
+    const { profileImage, photograph, aadhaarCard, panCard, bankBcCertificate, paymentReceipt } = req.body;
     const uploadTasks = [];
     const uploadKeys = [];
 
@@ -528,6 +528,16 @@ const updateMemberDocuments = async (req, res, next) => {
       const filename = `bank_${member.email}_${Date.now()}.${getExt(mimeType)}`;
       uploadTasks.push(uploadFile(buffer, 'members/documents', filename, mimeType));
       uploadKeys.push('bankBcCertificate');
+    }
+
+    if (paymentReceipt) {
+      if (member.paymentReceipt && (member.paymentReceipt.key || member.paymentReceipt.public_id)) {
+        await deleteFile(member.paymentReceipt.key || member.paymentReceipt.public_id);
+      }
+      const { buffer, mimeType } = getBufferFromBase64(paymentReceipt);
+      const filename = `receipt_${member.email}_${Date.now()}.${getExt(mimeType)}`;
+      uploadTasks.push(uploadFile(buffer, 'members/receipts', filename, mimeType));
+      uploadKeys.push('paymentReceipt');
     }
 
     const results = await Promise.all(uploadTasks);

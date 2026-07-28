@@ -674,20 +674,111 @@
           </div>
         </div>
 
-        <!-- Spacer -->
-        <div class="bottom-spacer"></div>
+        <!-- ========== SECTION 8: PAYMENT & RECEIPT UPLOAD ========== -->
+        <div class="form-section-card payment-section-highlight">
+          <div class="section-card-header payment-header">
+            <h3><i class="pi pi-credit-card"></i> Registration Fee Payment &amp; Receipt Upload</h3>
+            <span class="payment-badge-fee">₹700 Total Fee</span>
+          </div>
+          <div class="section-card-body">
+            
+            <!-- Bank Account & UPI Payment Box -->
+            <div class="bank-details-card">
+              <div class="bank-card-header">
+                <img src="/images/bcar-logo-official.jpg" alt="BCAR Logo" class="bank-bcar-logo" />
+                <div class="bank-title-group">
+                  <h4>Official Bank Account Details</h4>
+                  <p>Business Correspondent Association Rajasthan</p>
+                </div>
+              </div>
 
-        <!-- ── Sticky Action Bar ──────────────────────────────────────── -->
-        <div class="sticky-footer-action-bar">
+              <div class="bank-details-grid">
+                <div class="bank-detail-item">
+                  <span class="detail-label">Bank Name</span>
+                  <span class="detail-value">State Bank of India (SBI)</span>
+                </div>
+                <div class="bank-detail-item">
+                  <span class="detail-label">Account Holder Name</span>
+                  <span class="detail-value">Business Correspondent Association Rajasthan</span>
+                </div>
+                <div class="bank-detail-item copyable" (click)="copyToClipboard('45377413562', 'Account Number')">
+                  <span class="detail-label">Account Number</span>
+                  <span class="detail-value highlight-num">45377413562 <i class="pi pi-copy copy-icon"></i></span>
+                </div>
+                <div class="bank-detail-item copyable" (click)="copyToClipboard('SBIN0011396', 'IFSC Code')">
+                  <span class="detail-label">IFSC Code</span>
+                  <span class="detail-value highlight-code">SBIN0011396 <i class="pi pi-copy copy-icon"></i></span>
+                </div>
+              </div>
+
+            </div><!-- /bank-details-card -->
+
+            <!-- UTR Number & Receipt Upload Inputs -->
+            <div class="form-grid payment-inputs-grid">
+
+              <!-- UTR Number Input (Optional) -->
+              <div class="input-group full-col">
+                <label class="field-label">12-Digit UPI UTR / Transaction Ref No. <span class="optional-tag">(Optional)</span></label>
+                <div class="input-with-icon">
+                  <span class="input-icon-prefix"><i class="pi pi-hashtag"></i></span>
+                  <input pInputText formControlName="paymentUtr" placeholder="Enter 12-digit UTR/Ref No. (E.g. 425189012345)"
+                         maxlength="18" class="w-full pl-icon" />
+                </div>
+                <small class="field-hint">You will find this 12-digit UTR/Ref No. in your PhonePe / GPay / Paytm payment receipt.</small>
+              </div>
+
+              <!-- Payment Receipt Upload Zone -->
+              <div class="input-group full-col">
+                <label class="field-label">Payment Receipt Screenshot <span class="required">*</span></label>
+
+                <div class="document-upload-card" [class.has-file]="!!registerForm.get('paymentReceipt')?.value" [class.p-invalid]="hasError('paymentReceipt')">
+                  <input id="upload-paymentReceipt" type="file" class="file-input-hidden" accept=".jpg,.jpeg,.png,.pdf"
+                         (change)="onFileSelected($event, 'paymentReceipt')">
+
+                  @if (registerForm.get('paymentReceipt')?.value) {
+                    <div class="file-uploaded-preview">
+                      <div class="file-info-col">
+                        <i class="pi pi-check-circle success-file-icon"></i>
+                        <span class="file-name-text">{{ getDisplayFileName('paymentReceipt') }}</span>
+                      </div>
+                      <div class="file-actions-col">
+                        <button type="button" class="action-icon-btn view" (click)="viewUploadedFile('paymentReceipt', 'Payment Receipt')" pTooltip="View Receipt" tooltipPosition="top">
+                          <i class="pi pi-eye"></i>
+                        </button>
+                        <button type="button" class="action-icon-btn delete" (click)="removeFile('paymentReceipt')" pTooltip="Remove File" tooltipPosition="top">
+                          <i class="pi pi-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="upload-dropzone" (click)="openFilePicker('upload-paymentReceipt')">
+                      <i class="pi pi-cloud-upload dropzone-icon"></i>
+                      <span class="dropzone-title">Upload Payment Receipt Screenshot</span>
+                      <span class="dropzone-sub">Supports JPG, PNG or PDF (Max 5MB)</span>
+                    </div>
+                  }
+                </div>
+
+                @if (hasError('paymentReceipt', 'required')) {
+                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Payment Receipt Screenshot is mandatory.</small>
+                }
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── In-Form Action Bar (At bottom of form content) ── -->
+        <div class="in-form-action-bar">
           <div class="action-bar-inner">
-
             <!-- Save Draft -->
             <button type="button" class="btn-save-draft" (click)="saveDraft()"
-                    pTooltip="Save your progress" tooltipPosition="top">
+                    pTooltip="Save your progress for later" tooltipPosition="top">
               <i class="pi pi-save"></i> Save Draft
             </button>
 
-            <!-- Submit — with inline spinner -->
+            <!-- Submit Membership -->
             <button type="submit" class="btn-submit-membership" [disabled]="srv.submitting()">
               @if (srv.submitting()) {
                 <p-progressSpinner strokeWidth="4" styleClass="btn-spinner" />
@@ -697,7 +788,6 @@
                 <span>Submit Membership</span>
               }
             </button>
-
           </div>
         </div>
 

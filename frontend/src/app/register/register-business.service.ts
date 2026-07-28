@@ -136,6 +136,10 @@ export class RegisterBusinessService {
       aadhaarBack:       [null, Validators.required],
       panCard:           [null, Validators.required],
       bankBcCertificate: [null, Validators.required],
+
+      // Payment & Receipt Verification
+      paymentUtr:     [''],
+      paymentReceipt: [null, Validators.required],
     });
 
     return form;

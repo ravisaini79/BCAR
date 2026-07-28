@@ -19,12 +19,14 @@
     "express": "^4.21.2",
     "express-rate-limit": "^8.5.2",
     "helmet": "^8.2.0",
+    "jpeg-js": "^0.4.4",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "multer": "^2.2.0",
     "multer-s3": "^3.0.1",
     "nodemailer": "^9.0.1",
     "pdfkit": "^0.19.1",
+    "pngjs": "^7.0.0",
     "uuid": "^14.0.1"
   }
 }

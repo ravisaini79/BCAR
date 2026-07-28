@@ -23,6 +23,7 @@ import { FloatLabelModule }    from 'primeng/floatlabel';
 // App
 import { RegisterBusinessService } from './register-business.service';
 import { UploadService, UploadFieldName, FileMetadata } from './upload.service';
+import { ToastService } from '../core/services/toast.service';
 import { HeaderComponent } from '../layout/header/header';
 import { FooterComponent } from '../layout/footer/footer';
 
@@ -46,8 +47,18 @@ export class RegisterComponent implements OnInit, OnDestroy {
   readonly srv    = inject(RegisterBusinessService);
   readonly upload = inject(UploadService);
   readonly router = inject(Router);
+  private  toast  = inject(ToastService);
   private  cdr    = inject(ChangeDetectorRef);
   private  sanitizer = inject(DomSanitizer);
+
+  copyToClipboard(text: string, label: string): void {
+    if (navigator && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      this.toast.success(`${label} (${text}) copied to clipboard!`, 'Copied!');
+    } else {
+      this.toast.info(`Account Detail: ${text}`, label);
+    }
+  }
 
   registerForm!: FormGroup;
   submitted = false;
@@ -459,6 +470,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (!ctrl) return false;
     const invalid = error ? ctrl.hasError(error) : ctrl.invalid;
     return invalid && (ctrl.touched || this.submitted);
+  }
+
+  getDisplayFileName(fieldName: UploadFieldName): string {
+    const key = `${fieldName}Name` as keyof FileMetadata;
+    return this.upload.fileNames()[key] || 'Uploaded Document';
   }
 
   trackByDistrict(_: number, d: string): string { return d; }

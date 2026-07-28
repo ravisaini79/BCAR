@@ -316,6 +316,11 @@ const registerUser = async (req, res, next) => {
     if (signatureFile) validateDocument(signatureFile, docExts, 5120, 'Signature');
     if (otherFile) validateDocument(otherFile, docExts, 5120, 'Other Documents');
 
+    const paymentReceiptFile = getFileBuffer('paymentReceipt', req.body.paymentReceipt);
+    if (paymentReceiptFile) {
+      validateDocument(paymentReceiptFile, docExts, 5120, 'Payment Receipt');
+    }
+
     const uploadTasks = [];
     const uploadKeys = [];
 
@@ -355,6 +360,10 @@ const registerUser = async (req, res, next) => {
       uploadTasks.push(uploadFile(otherFile.buffer, 'members/documents', otherFile.filename, otherFile.mimetype));
       uploadKeys.push('otherDocuments');
     }
+    if (paymentReceiptFile) {
+      uploadTasks.push(uploadFile(paymentReceiptFile.buffer, 'members/receipts', paymentReceiptFile.filename, paymentReceiptFile.mimetype));
+      uploadKeys.push('paymentReceipt');
+    }
 
     // Execute uploads concurrently
     let results = [];
@@ -380,6 +389,12 @@ const registerUser = async (req, res, next) => {
       bcCspIdNo, ssa, bankName, linkBranchName, dateOfStartingCsp, 
       interestedToJoin, password,
       declarationAccepted: (declarationAccepted === true || declarationAccepted === 'true'),
+      
+      // Payment & Verification Details
+      paymentUtr: req.body.paymentUtr || req.body.transactionId || '',
+      transactionId: req.body.paymentUtr || req.body.transactionId || '',
+      paymentStatus: 'Pending Verification',
+      paymentMode: 'UPI / Direct Bank Transfer',
       
       // System defaults
       role: 'member',

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ToastService } from '../core/services/toast.service';
 import { inject } from '@angular/core';
 
-export type UploadFieldName = 'profileImage' | 'aadhaarCard' | 'aadhaarBack' | 'panCard' | 'bankBcCertificate';
+export type UploadFieldName = 'profileImage' | 'aadhaarCard' | 'aadhaarBack' | 'panCard' | 'bankBcCertificate' | 'paymentReceipt';
 
 export interface FileMetadata {
   profileImageName: string;
@@ -11,6 +11,7 @@ export interface FileMetadata {
   aadhaarBackName: string;
   panCardName: string;
   bankBcCertificateName: string;
+  paymentReceiptName: string;
 }
 
 export interface RawFileStore {
@@ -19,10 +20,11 @@ export interface RawFileStore {
   aadhaarBack: File | null;
   panCard: File | null;
   bankBcCertificate: File | null;
+  paymentReceipt: File | null;
 }
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
-const MAX_SIZE_MB = 1;
+const MAX_SIZE_MB = 5;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
 @Injectable({
@@ -36,7 +38,8 @@ export class UploadService {
     aadhaarCardName: '',
     aadhaarBackName: '',
     panCardName: '',
-    bankBcCertificateName: ''
+    bankBcCertificateName: '',
+    paymentReceiptName: ''
   });
 
   rawFiles = signal<RawFileStore>({
@@ -44,7 +47,8 @@ export class UploadService {
     aadhaarCard: null,
     aadhaarBack: null,
     panCard: null,
-    bankBcCertificate: null
+    bankBcCertificate: null,
+    paymentReceipt: null
   });
 
   /**
@@ -107,12 +111,12 @@ export class UploadService {
    * Reset all file state after form submission
    */
   resetAll(form: FormGroup): void {
-    (['profileImage', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'] as UploadFieldName[]).forEach(field => {
+    (['profileImage', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate', 'paymentReceipt'] as UploadFieldName[]).forEach(field => {
       form.get(field)?.setValue(null);
       form.get(field)?.markAsUntouched();
     });
-    this.rawFiles.set({ profileImage: null, aadhaarCard: null, aadhaarBack: null, panCard: null, bankBcCertificate: null });
-    this.fileNames.set({ profileImageName: '', aadhaarCardName: '', aadhaarBackName: '', panCardName: '', bankBcCertificateName: '' });
+    this.rawFiles.set({ profileImage: null, aadhaarCard: null, aadhaarBack: null, panCard: null, bankBcCertificate: null, paymentReceipt: null });
+    this.fileNames.set({ profileImageName: '', aadhaarCardName: '', aadhaarBackName: '', panCardName: '', bankBcCertificateName: '', paymentReceiptName: '' });
   }
 
   /**

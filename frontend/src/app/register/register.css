@@ -503,7 +503,17 @@
   height: 90px;
 }
 
-/* ── 10. Bottom Sticky Action Bar ── */
+/* In-form action bar right above spacer */
+.in-form-action-bar {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+/* ── 10. Bottom Action Bars (In-Form & Sticky Footer) ── */
 .sticky-footer-action-bar {
   position: fixed;
   bottom: 0;
@@ -524,50 +534,51 @@
   gap: 20px;
 }
 
-/* Secondary Button: White with blue border */
+/* Secondary Button: Outlined blue with rounded pill shape */
 .btn-save-draft {
   background: #FFFFFF;
-  color: #2563EB;
-  border: 1.5px solid #2563EB;
-  border-radius: 12px;
-  height: 50px;
+  color: #3B82F6;
+  border: 1.5px solid #3B82F6;
+  border-radius: 10px;
+  height: 48px;
   padding: 0 28px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: 14.5px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 .btn-save-draft:hover {
-  background: #EFF6FF;
-  border-color: #1D4ED8;
-  color: #1D4ED8;
+  background: #F0F6FF;
+  border-color: #2563EB;
+  color: #2563EB;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 }
 
-/* Primary Button: Dark Navy Blue */
+/* Primary Button: Dark Navy Blue with paper plane icon */
 .btn-submit-membership {
-  background: #0B2D5C;
+  background: #0B2545;
   color: #FFFFFF;
   border: none;
-  border-radius: 12px;
-  height: 50px;
-  padding: 0 36px;
+  border-radius: 10px;
+  height: 48px;
+  padding: 0 32px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 14.5px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 4px 15px rgba(11, 45, 92, 0.25);
+  box-shadow: 0 4px 14px rgba(11, 37, 69, 0.25);
 }
 .btn-submit-membership:hover:not(:disabled) {
-  background: #082247;
-  box-shadow: 0 6px 20px rgba(11, 45, 92, 0.35);
+  background: #061830;
+  box-shadow: 0 6px 18px rgba(11, 37, 69, 0.35);
   transform: translateY(-1px);
 }
 .btn-submit-membership:disabled {
@@ -1566,4 +1577,221 @@ p-datepicker {
     flex: 1;
     justify-content: center;
   }
+}
+
+/* ── SECTION 8: PAYMENT & RECEIPT STYLES ────────────────────────────────────────── */
+.payment-section-highlight {
+  border: 2px solid #38BDF8 !important;
+  background: #F0F9FF !important;
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-badge-fee {
+  background: #16A34A;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+}
+
+.bank-details-card {
+  background: #FFFFFF;
+  border: 1px solid #BAE6FD;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.08);
+}
+
+.bank-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E0F2FE;
+  margin-bottom: 18px;
+}
+
+.bank-bcar-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #0D47A1;
+}
+
+.bank-title-group h4 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0B2D5C;
+}
+
+.bank-title-group p {
+  margin: 2px 0 0 0;
+  font-size: 12.5px;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.bank-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.bank-detail-item {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.bank-detail-item.copyable {
+  cursor: pointer;
+}
+
+.bank-detail-item.copyable:hover {
+  background: #E0F2FE;
+  border-color: #38BDF8;
+}
+
+.detail-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748B;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.highlight-num {
+  font-family: monospace;
+  font-size: 15.5px;
+  color: #0D47A1;
+}
+
+.highlight-code {
+  font-family: monospace;
+  font-size: 15px;
+  color: #D97706;
+}
+
+.highlight-upi {
+  font-family: monospace;
+  font-size: 15px;
+  color: #16A34A;
+}
+
+.copy-icon {
+  font-size: 13px;
+  color: #0EA5E9;
+}
+
+.qr-code-payment-box {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: #F0FDF4;
+  border: 1px solid #86EFAC;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+@media (max-width: 640px) {
+  .qr-code-payment-box {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.qr-image-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #BBF7D0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.payment-qr-img {
+  width: 170px;
+  height: 170px;
+  object-fit: contain;
+}
+
+.qr-scan-badge {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #16A34A;
+  background: #DCFCE7;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.qr-instructions h5 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #166534;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qr-instructions p {
+  margin: 0 0 14px 0;
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.upi-apps-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.upi-app-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #15803D;
+  background: #FFFFFF;
+  border: 1px solid #86EFAC;
+  padding: 4px 10px;
+  border-radius: 14px;
+}
+
+.payment-inputs-grid {
+  margin-top: 16px;
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: #64748B;
+  margin-top: 4px;
+  display: block;
 }

@@ -140,6 +140,18 @@ const userSchema = new mongoose.Schema({
     file_size: Number,
     uploaded_at: Date
   },
+  paymentReceipt: {
+    url: String,
+    key: String,
+    bucket: String,
+    public_id: String,
+    secure_url: String,
+    original_filename: String,
+    resource_type: String,
+    format: String,
+    file_size: Number,
+    uploaded_at: Date
+  },
   signature: {
     url: String,
     key: String,
@@ -166,8 +178,9 @@ const userSchema = new mongoose.Schema({
   },
   registrationNumber: { type: String, unique: true, sparse: true },
   receiptNumber: { type: String, unique: true, sparse: true },
-  registrationFee: { type: Number, default: 600 },
-  paymentStatus: { type: String, enum: ['Pending', 'Paid', 'Failed'], default: 'Paid' },
+  registrationFee: { type: Number, default: 700 },
+  paymentStatus: { type: String, enum: ['Pending', 'Paid', 'Failed', 'Pending Verification', 'Verified'], default: 'Paid' },
+  paymentUtr: { type: String },
   paymentMode: { type: String, default: 'Online / UPI' },
   transactionId: { type: String },
   emailSent: { type: Boolean, default: false },

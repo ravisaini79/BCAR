@@ -228,7 +228,7 @@ export class RegisterBusinessService {
 
     // Append all text controls
     Object.keys(form.controls).forEach(key => {
-      if (!['profileImage', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate'].includes(key)) {
+      if (!['profileImage', 'aadhaarCard', 'aadhaarBack', 'panCard', 'bankBcCertificate', 'paymentReceipt'].includes(key)) {
         formData.append(key, form.get(key)?.value ?? '');
       }
     });
@@ -239,6 +239,7 @@ export class RegisterBusinessService {
     this.upload.appendFileToFormData(formData, 'aadhaarBack',       form, 'aadhaar_back_draft.pdf',  'application/pdf');
     this.upload.appendFileToFormData(formData, 'panCard',           form, 'pan_draft.pdf',         'application/pdf');
     this.upload.appendFileToFormData(formData, 'bankBcCertificate', form, 'bc_cert_draft.pdf',     'application/pdf');
+    this.upload.appendFileToFormData(formData, 'paymentReceipt',    form, 'payment_receipt_draft.jpg', 'image/jpeg');
 
     this.api.registerMember(formData).subscribe({
       next: res => {

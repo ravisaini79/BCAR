@@ -20,6 +20,7 @@ const cpUpload = upload.fields([
   { name: 'panCard', maxCount: 1 },
   { name: 'bankBcCertificate', maxCount: 1 },
   { name: 'bankPassbook', maxCount: 1 },
+  { name: 'paymentReceipt', maxCount: 1 },
   { name: 'signature', maxCount: 1 },
   { name: 'otherDocuments', maxCount: 1 }
 ]);

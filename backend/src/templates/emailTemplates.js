@@ -42,7 +42,7 @@ const memberWelcomeTemplate = (member) => {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://bcarajasthan.org/images/bcar-logo.jpeg" onerror="this.src='https://placehold.co/100x100/0b2d5c/ffffff?text=BCAR'" class="logo" alt="BCAR Logo">
+          <img src="cid:bcarlogo" class="logo" alt="BCAR Logo">
         </div>
         <div class="content">
           <h2 class="title">Welcome to BCAR Association</h2>
@@ -87,7 +87,7 @@ const memberWelcomeTemplate = (member) => {
         </div>
         
         <div class="footer">
-          <img src="https://bcarajasthan.org/images/bcar-logo.jpeg" onerror="this.src='https://placehold.co/100x100/0b2d5c/ffffff?text=BCAR'" class="footer-logo" alt="BCAR Logo">
+          <img src="cid:bcarlogo" class="footer-logo" alt="BCAR Logo">
           <p><strong>Business Correspondent Association Rajasthan</strong></p>
           <p>Registered under Trade Unions Act, 1926 | Reg No: TU/2026/14/132549</p>
           <p>24, Kishore Vihar B, Gopalpura Bypass, Ajmer Road, Jaipur, RJ - 302021</p>

@@ -515,6 +515,7 @@
                 <th pSortableColumn="phone">Mobile</th>
                 <th pSortableColumn="district">District <p-sortIcon field="district" /></th>
                 <th pSortableColumn="bankName">Bank <p-sortIcon field="bankName" /></th>
+                <th>Payment Receipt</th>
                 <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
                 <th pSortableColumn="createdAt">Joined <p-sortIcon field="createdAt" /></th>
                 <th>Actions</th>
@@ -541,6 +542,15 @@
                 <td>{{ m.phone }}</td>
                 <td>{{ m.district || '—' }}</td>
                 <td>{{ m.bankName || '—' }}</td>
+                <td>
+                  <div class="table-payment-cell">
+                    <button *ngIf="getPaymentReceiptUrl(m)" class="table-receipt-btn" (click)="viewDocument(getPaymentReceiptUrl(m)!)" pTooltip="View Payment Receipt Attachment" tooltipPosition="top">
+                      <i class="pi pi-receipt text-success"></i> Payment Receipt <i class="pi pi-eye ml-1"></i>
+                    </button>
+                    <span *ngIf="!getPaymentReceiptUrl(m)" class="table-no-receipt">No Receipt</span>
+                    <small class="utr-text" *ngIf="getUtr(m) !== '—'">UTR: {{ getUtr(m) }}</small>
+                  </div>
+                </td>
                 <td><p-tag [value]="formatStatus(m.status)" [severity]="getStatusSeverity(m.status)" /></td>
                 <td>{{ m.createdAt | date:'dd MMM yyyy' }}</td>
                 <td>
@@ -756,6 +766,71 @@
     <p-divider />
 
     <div class="detail-sections">
+
+      <!-- Highlighted Registration Fee Payment & Receipt Proof Box -->
+      <div class="detail-section payment-highlight-admin-card">
+        <div class="payment-admin-card-header">
+          <div class="payment-title-group">
+            <i class="pi pi-credit-card payment-card-icon"></i>
+            <div>
+              <h4 class="payment-card-title">Registration Fee Payment Verification</h4>
+              <span class="payment-sub-text">Total Registration &amp; Membership Fee: <strong class="text-success">₹700.00 Paid</strong></span>
+            </div>
+          </div>
+          <span class="payment-badge-status" [class.verified]="selectedMember.paymentStatus === 'Verified' || selectedMember.paymentStatus === 'Approved'"
+                [class.pending]="selectedMember.paymentStatus !== 'Verified'">
+            <i class="pi" [class.pi-check-circle]="selectedMember.paymentStatus === 'Verified'" [class.pi-clock]="selectedMember.paymentStatus !== 'Verified'"></i>
+            {{ selectedMember.paymentStatus || 'Pending Verification' }}
+          </span>
+        </div>
+
+        <div class="payment-admin-card-body">
+          <div class="payment-info-grid">
+            <div class="payment-info-box">
+              <span class="p-box-label">UPI UTR / Ref No.</span>
+              <span class="p-box-val highlight-utr">{{ getUtr(selectedMember) }}</span>
+            </div>
+            <div class="payment-info-box">
+              <span class="p-box-label">Payment Mode</span>
+              <span class="p-box-val">{{ selectedMember.paymentMode || 'UPI / Direct Bank Transfer' }}</span>
+            </div>
+            <div class="payment-info-box">
+              <span class="p-box-label">Fee Amount</span>
+              <span class="p-box-val fee-green">₹700.00</span>
+            </div>
+          </div>
+
+          <!-- Direct Payment Receipt Action Box -->
+          <div class="payment-receipt-action-card" [class.has-receipt]="!!getPaymentReceiptUrl(selectedMember)">
+            <div class="receipt-card-left">
+              <div class="receipt-icon-wrapper">
+                <i class="pi pi-file-pdf text-danger" *ngIf="getPaymentReceiptUrl(selectedMember) && getPaymentReceiptUrl(selectedMember)!.endsWith('.pdf')"></i>
+                <img *ngIf="getPaymentReceiptUrl(selectedMember) && !getPaymentReceiptUrl(selectedMember)!.endsWith('.pdf')"
+                     [src]="getPaymentReceiptUrl(selectedMember)" alt="Payment Receipt Attachment" class="receipt-thumb-img" />
+                <i *ngIf="!getPaymentReceiptUrl(selectedMember)" class="pi pi-receipt text-warn"></i>
+              </div>
+              <div class="receipt-text-group">
+                <span class="receipt-card-title font-bold">Payment Receipt Attachment</span>
+                <span class="receipt-card-sub text-success" *ngIf="getPaymentReceiptUrl(selectedMember)">
+                  <i class="pi pi-check-circle"></i> Payment Receipt Uploaded — Ready for Admin Verification
+                </span>
+                <span class="receipt-card-sub text-warn" *ngIf="!getPaymentReceiptUrl(selectedMember)">
+                  <i class="pi pi-exclamation-circle"></i> No Payment Receipt Uploaded
+                </span>
+              </div>
+            </div>
+
+            <div class="receipt-card-right">
+              <button class="btn-view-receipt-highlight" *ngIf="getPaymentReceiptUrl(selectedMember)"
+                      (click)="viewDocument(getPaymentReceiptUrl(selectedMember)!)">
+                <i class="pi pi-eye"></i> View Payment Receipt
+              </button>
+              <span class="badge-no-receipt" *ngIf="!getPaymentReceiptUrl(selectedMember)">Missing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Personal Details -->
       <div class="detail-section">
         <h4 class="section-title"><i class="pi pi-user"></i> Personal Details</h4>
@@ -827,7 +902,7 @@
         <h4 class="section-title"><i class="pi pi-cog"></i> Payment & System Details</h4>
         <div class="detail-grid">
           <div class="detail-item"><span>Receipt Number</span><b>{{ selectedMember.receiptNumber || '—' }}</b></div>
-          <div class="detail-item"><span>Registration Fee</span><b>₹{{ selectedMember.registrationFee || 600 }}</b></div>
+          <div class="detail-item"><span>Registration Fee</span><b>₹{{ selectedMember.registrationFee || 700 }}</b></div>
           <div class="detail-item"><span>Payment Status</span><b>{{ selectedMember.paymentStatus || 'Paid' }}</b></div>
           <div class="detail-item"><span>Payment Mode</span><b>{{ selectedMember.paymentMode || 'Online / UPI' }}</b></div>
           <div class="detail-item"><span>Transaction ID</span><b>{{ selectedMember.transactionId || '—' }}</b></div>
@@ -842,7 +917,7 @@
     <div class="attachments-section">
       <h4 class="section-title" style="color: #0b2d5c; font-size: 15px; margin-bottom: 5px;"><i class="pi pi-file"></i> Uploaded Documents & Attachments</h4>
       <div class="attachments-grid">
-        <div class="attachment-card" *ngFor="let doc of getAttachments(selectedMember)">
+        <div class="attachment-card" [class.payment-highlight-attachment]="doc.isPayment" *ngFor="let doc of getAttachments(selectedMember)">
           <div class="attachment-icon">
             <img *ngIf="doc.exists && isImageFile(doc.url)" [src]="doc.url" alt="doc preview" />
             <i *ngIf="!doc.exists || !isImageFile(doc.url)" class="pi" [ngClass]="doc.icon"></i>

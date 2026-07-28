@@ -1,5 +1,30 @@
 const nodemailer = require('nodemailer');
+const path = require('path');
+const fs = require('fs');
 const { memberWelcomeTemplate, adminAlertTemplate } = require('../templates/emailTemplates');
+
+/**
+ * Returns Nodemailer attachment object for inline CID embedding of BCAR Logo
+ */
+const getLogoAttachment = () => {
+  const candidatePaths = [
+    path.join(__dirname, '../assets/bcar-logo-official.jpg'),
+    path.join(__dirname, '../../../frontend/public/images/bcar-logo-official.jpg'),
+    path.join(process.cwd(), 'src/assets/bcar-logo-official.jpg'),
+    path.join(process.cwd(), 'frontend/public/images/bcar-logo-official.jpg')
+  ];
+
+  for (const p of candidatePaths) {
+    if (fs.existsSync(p)) {
+      return {
+        filename: 'bcar-logo.jpg',
+        path: p,
+        cid: 'bcarlogo'
+      };
+    }
+  }
+  return null;
+};
 
 // Structured Logger
 const emailLogger = {
@@ -171,14 +196,27 @@ const sendMail = async (options) => {
     throw new Error(`Recipient Validation Failed: ${options.to || 'missing'} is not a valid email address.`);
   }
 
-  validateAttachments(options.attachments);
+  const attachmentsList = [...(options.attachments || [])];
+
+  // If HTML contains cid:bcarlogo, automatically append the embedded logo file attachment
+  if (options.html && options.html.includes('cid:bcarlogo')) {
+    const logoAtt = getLogoAttachment();
+    if (logoAtt) {
+      const alreadyHasLogo = attachmentsList.some(a => a.cid === 'bcarlogo');
+      if (!alreadyHasLogo) {
+        attachmentsList.push(logoAtt);
+      }
+    }
+  }
+
+  validateAttachments(attachmentsList);
 
   const mailOptions = {
     from: fromAddress,
     to: options.to.trim(),
     subject: options.subject,
     html: options.html,
-    attachments: options.attachments || []
+    attachments: attachmentsList
   };
 
   const maxAttempts = 3;
@@ -253,7 +291,7 @@ const sendWelcomeEmail = async (memberEmail, name, regNumber) => {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://bcarajasthan.org/images/bcar-logo.jpeg" onerror="this.src='https://placehold.co/100x100/0b2d5c/ffffff?text=BCAR'" class="logo" alt="BCAR Logo">
+          <img src="cid:bcarlogo" class="logo" alt="BCAR Logo">
         </div>
         <div class="content">
           <h2 class="title">Welcome to BCAR</h2>
@@ -343,7 +381,7 @@ const sendApprovalEmail = async (memberEmail, name, regNumber, membershipNo, tem
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://bcarajasthan.org/images/bcar-logo.jpeg" onerror="this.src='https://placehold.co/100x100/0b2d5c/ffffff?text=BCAR'" class="logo" alt="BCAR Logo">
+          <img src="cid:bcarlogo" class="logo" alt="BCAR Logo">
         </div>
         <div class="content">
           <h2 class="title">Congratulations! Membership Approved</h2>
@@ -455,6 +493,7 @@ const sendCardImageEmail = async (email, name, membershipNo, imageBuffer) => {
     <body>
       <div class="container">
         <div class="header">
+          <img src="cid:bcarlogo" class="logo" style="width: 65px; height: 65px; border-radius: 50%; background: #ffffff; padding: 2px; margin-bottom: 10px;" alt="BCAR Logo"><br>
           <h2 style="color: #ffffff; margin: 0;">BCAR ID Card Issued</h2>
         </div>
         <div class="content">

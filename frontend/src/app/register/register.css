@@ -297,14 +297,21 @@
 /* ── Document Upload Cards ── */
 .document-uploads-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
   margin-top: 15px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .doc-upload-item {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .doc-label {
   font-size: 13.5px;
@@ -316,15 +323,20 @@
   border: 2px dashed #D1D5DB;
   background: #F9FAFB;
   border-radius: 12px;
-  padding: 26px 20px;
+  padding: 22px 16px;
   text-align: center;
   position: relative;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  min-height: 130px;
+  min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .upload-zone:hover, .upload-zone.drag-over {
   border-color: #2563EB;
@@ -343,6 +355,9 @@
   align-items: center;
   gap: 6px;
   pointer-events: none;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .upload-icon {
   font-size: 32px;
@@ -369,40 +384,50 @@
 .upload-preview {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  padding: 12px 14px;
+  max-width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
   background: #EFF6FF;
   border: 1px solid #BFDBFE;
   border-radius: 10px;
   z-index: 6;
   position: relative;
   text-align: left;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .photo-preview-image {
-  width: 46px;
-  height: 46px;
+  width: 42px;
+  height: 42px;
   object-fit: cover;
   border-radius: 8px;
   border: 1.5px solid #93C5FD;
+  flex-shrink: 0;
 }
 .file-icon {
-  font-size: 28px;
+  font-size: 26px;
   color: #2563EB;
+  flex-shrink: 0;
 }
 .file-details {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 .file-name {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #1F2937;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+  max-width: 100%;
 }
 .file-status {
   font-size: 11px;
@@ -418,6 +443,7 @@
   padding: 6px;
   border-radius: 4px;
   transition: background 0.15s;
+  flex-shrink: 0;
 }
 .remove-file-btn:hover {
   background: rgba(239, 68, 68, 0.08);
@@ -676,29 +702,66 @@
     padding: 18px 12px !important;
   }
   .document-uploads-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
     gap: 16px !important;
+    width: 100% !important;
   }
-  .sticky-footer-action-bar {
-    padding: 10px 12px;
+  .doc-upload-item {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .upload-zone {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px 10px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .upload-preview {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 10px 10px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    gap: 8px !important;
+  }
+  .file-details {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .file-name {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .in-form-action-bar {
+    padding: 14px 12px !important;
+    margin-top: 18px !important;
+    border-radius: 12px !important;
   }
   .action-bar-inner {
-    flex-direction: row;
-    gap: 8px;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
   }
-  .btn-save-draft,
-  .btn-submit-membership {
-    width: 48%;
-    flex: 1;
-    justify-content: center;
-    height: 44px;
-    font-size: 13px;
-    padding: 0 8px;
-    white-space: nowrap;
-    border-radius: 8px;
-  }
-  .bottom-spacer {
-    height: 75px;
+  .btn-submit-membership,
+  .btn-save-draft {
+    width: 100% !important;
+    flex: none !important;
+    height: 48px !important;
+    font-size: 14.5px !important;
+    justify-content: center !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
+    border-radius: 10px !important;
   }
 }
 

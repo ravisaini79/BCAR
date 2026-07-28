@@ -728,28 +728,54 @@ export class DashboardComponent implements OnInit {
     window.open(url, '_blank');
   }
 
+  getPaymentReceiptUrl(m: any): string | null {
+    if (!m) return null;
+    const fileData = m.paymentReceipt || m['paymentReceipt'] || m.bankPassbook || m['bankPassbook'] || m.receiptScreenshot || m.paymentProof;
+    if (!fileData) return null;
+    return fileData?.secure_url || fileData?.url || (typeof fileData === 'string' && fileData.trim() ? fileData : null);
+  }
+
+  getBankPassbookUrl(m: any): string | null {
+    return this.getPaymentReceiptUrl(m);
+  }
+
+  getUtr(m: any): string {
+    if (!m) return '—';
+    return m.paymentUtr || m['paymentUtr'] || m.transactionId || m['transactionId'] || '—';
+  }
+
   getAttachments(m: any): any[] {
     if (!m) return [];
     
     const docs = [
-      { field: 'profilePhoto', label: 'Profile Photo', icon: 'pi-user' },
-      { field: 'photograph', label: 'Photograph', icon: 'pi-image' },
-      { field: 'aadhaarFront', label: 'Aadhaar Card (Front)', icon: 'pi-id-card' },
-      { field: 'aadhaarBack', label: 'Aadhaar Card (Back)', icon: 'pi-id-card' },
-      { field: 'panCard', label: 'PAN Card', icon: 'pi-id-card' },
-      { field: 'bankBcCertificate', label: 'Bank BC Certificate', icon: 'pi-file-pdf' },
-      { field: 'bankPassbook', label: 'Bank Passbook', icon: 'pi-book' },
-      { field: 'signature', label: 'Signature', icon: 'pi-pencil' },
-      { field: 'otherDocuments', label: 'Other Documents', icon: 'pi-folder-open' }
+      { field: 'paymentReceipt', altFields: ['bankPassbook', 'receiptScreenshot', 'paymentProof'], label: 'Payment Receipt', icon: 'pi-receipt', isPayment: true },
+      { field: 'bankPassbook', altFields: [], label: 'Bank Passbook', icon: 'pi-book' },
+      { field: 'bankBcCertificate', altFields: [], label: 'Bank BC Certificate', icon: 'pi-file-pdf' },
+      { field: 'profilePhoto', altFields: ['photograph'], label: 'Profile Photo', icon: 'pi-user' },
+      { field: 'photograph', altFields: [], label: 'Photograph', icon: 'pi-image' },
+      { field: 'aadhaarFront', altFields: ['aadhaarCard'], label: 'Aadhaar Card (Front)', icon: 'pi-id-card' },
+      { field: 'aadhaarBack', altFields: [], label: 'Aadhaar Card (Back)', icon: 'pi-id-card' },
+      { field: 'panCard', altFields: [], label: 'PAN Card', icon: 'pi-id-card' },
+      { field: 'signature', altFields: [], label: 'Signature', icon: 'pi-pencil' },
+      { field: 'otherDocuments', altFields: [], label: 'Other Documents', icon: 'pi-folder-open' }
     ];
 
     return docs.map(d => {
-      const fileData = m[d.field];
+      let fileData = m[d.field];
+      if (!fileData && d.altFields && d.altFields.length > 0) {
+        for (const alt of d.altFields) {
+          if (m[alt]) {
+            fileData = m[alt];
+            break;
+          }
+        }
+      }
       const url = fileData?.secure_url || fileData?.url || (typeof fileData === 'string' && fileData.trim() ? fileData : null);
       const filename = fileData?.original_filename || (url ? url.split('/').pop() : '');
       return {
         label: d.label,
         icon: d.icon,
+        isPayment: d.isPayment || false,
         exists: !!url,
         url: url || undefined,
         filename: filename || 'document'

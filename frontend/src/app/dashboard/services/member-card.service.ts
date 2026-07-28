@@ -422,11 +422,16 @@ export class MemberCardService {
     const sigX = w - sigW - 25;
     const sigY = footerY + 6;
 
-    // Draw Pawan Kumar Signature Image
+    // Draw Pawan Kumar Digital Signature Image (SVG / PNG)
     try {
-      const sigImg = await this.loadImage('/images/authorised-signature.png');
+      const sigImg = await this.loadImage('/images/authorised-signature.svg');
       ctx.drawImage(sigImg, sigX, sigY, sigW, sigH);
-    } catch (err) {}
+    } catch (err) {
+      try {
+        const sigImgPng = await this.loadImage('/images/authorised-signature.png');
+        ctx.drawImage(sigImgPng, sigX, sigY, sigW, sigH);
+      } catch (e) {}
+    }
 
     // Signature Line
     const sigLineY = footerY + 44;

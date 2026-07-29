@@ -1,0 +1,207 @@
+<div class="custom-member-table-card" [class.has-checkboxes]="activeView === 'pending'">
+  
+  <!-- Outer Horizontal Scroll Engine -->
+  <div class="table-scroll-wrapper">
+    <table class="custom-enterprise-table">
+      
+      <!-- Table Header -->
+      <thead>
+        <tr>
+          @if (activeView === 'pending') {
+            <th class="col-sticky-check">
+              <input type="checkbox" [checked]="isAllSelected()" (change)="toggleAll($event)" class="custom-checkbox" />
+            </th>
+          }
+          <th class="col-sticky-num">#</th>
+          <th class="col-sticky-photo">Photo</th>
+          <th class="col-sticky-member sortable" (click)="onSort('name')">
+            Member
+            <i class="pi" [ngClass]="sortField === 'name' ? (sortOrder === 1 ? 'pi-sort-amount-up-alt' : 'pi-sort-amount-down') : 'pi-sort-alt'"></i>
+          </th>
+          <th class="col-reg sortable" (click)="onSort('registrationNumber')">
+            Reg No
+            <i class="pi" [ngClass]="sortField === 'registrationNumber' ? (sortOrder === 1 ? 'pi-sort-amount-up-alt' : 'pi-sort-amount-down') : 'pi-sort-alt'"></i>
+          </th>
+          <th class="col-mem">Membership No.</th>
+          <th class="col-phone sortable" (click)="onSort('phone')">
+            Mobile
+            <i class="pi" [ngClass]="sortField === 'phone' ? (sortOrder === 1 ? 'pi-sort-amount-up-alt' : 'pi-sort-amount-down') : 'pi-sort-alt'"></i>
+          </th>
+          <th class="col-district sortable" (click)="onSort('district')">
+            District
+            <i class="pi" [ngClass]="sortField === 'district' ? (sortOrder === 1 ? 'pi-sort-amount-up-alt' : 'pi-sort-amount-down') : 'pi-sort-alt'"></i>
+          </th>
+          <th class="col-bank sortable" (click)="onSort('bankName')">
+            Bank
+            <i class="pi" [ngClass]="sortField === 'bankName' ? (sortOrder === 1 ? 'pi-sort-amount-up-alt' : 'pi-sort-amount-down') : 'pi-sort-alt'"></i>
+          </th>
+          <th class="col-receipt">Payment Receipt</th>
+          <th class="col-status sortable" (click)="onSort('status')">
+            Status
+            <i class="pi" [ngClass]="sortField === 'status' ? (sortOrder === 1 ? 'pi-sort-amount-up-alt' : 'pi-sort-amount-down') : 'pi-sort-alt'"></i>
+          </th>
+          <th class="col-joined sortable" (click)="onSort('createdAt')">
+            Joined
+            <i class="pi" [ngClass]="sortField === 'createdAt' ? (sortOrder === 1 ? 'pi-sort-amount-up-alt' : 'pi-sort-amount-down') : 'pi-sort-alt'"></i>
+          </th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+
+      <!-- Table Body -->
+      <tbody>
+        @if (loading) {
+          <tr>
+            <td [attr.colspan]="activeView === 'pending' ? 13 : 12" class="table-loading-cell">
+              <div class="table-loading-content">
+                <i class="pi pi-spin pi-spinner"></i>
+                <span>Loading member records...</span>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          @for (m of paginatedMembers; track m._id; let i = $index) {
+            <tr [class.row-even]="i % 2 === 1" [class.row-selected]="isSelected(m)">
+              @if (activeView === 'pending') {
+                <td class="col-sticky-check">
+                  <input type="checkbox" [checked]="isSelected(m)" (change)="toggleMember(m)" class="custom-checkbox" />
+                </td>
+              }
+              <td class="col-sticky-num">
+                <span class="row-num-badge">{{ firstIndex + i }}</span>
+              </td>
+              <td class="col-sticky-photo">
+                <img [src]="getMemberPhoto(m)" class="table-avatar" alt="Avatar" />
+              </td>
+              <td class="col-sticky-member">
+                <div class="member-name-block">
+                  <span class="member-fullname">{{ m.name }}</span>
+                  <span class="member-email-text">{{ m.email }}</span>
+                </div>
+              </td>
+              <td class="col-reg">
+                <span class="monospace-code-badge">{{ m.registrationNumber || '—' }}</span>
+              </td>
+              <td class="col-mem">
+                @if (m.membershipNo) {
+                  <span class="monospace-code-badge blue">{{ m.membershipNo }}</span>
+                } @else {
+                  <span class="text-placeholder">—</span>
+                }
+              </td>
+              <td class="col-phone"><span class="cell-text">{{ m.phone }}</span></td>
+              <td class="col-district"><span class="cell-text">{{ m.district || '—' }}</span></td>
+              <td class="col-bank"><span class="cell-text">{{ m.bankName || '—' }}</span></td>
+              <td class="col-receipt">
+                <div class="receipt-cell-box">
+                  @if (getPaymentReceiptUrl(m); as receiptUrl) {
+                    <button class="btn-receipt-pill" (click)="viewDocument.emit(receiptUrl)" pTooltip="View Payment Receipt Attachment" tooltipPosition="top">
+                      <i class="pi pi-receipt"></i> Payment Receipt <i class="pi pi-eye"></i>
+                    </button>
+                  } @else {
+                    <span class="no-receipt-label">No Receipt</span>
+                  }
+                  @if (getUtr(m) !== '—') {
+                    <span class="utr-code-label">UTR: {{ getUtr(m) }}</span>
+                  }
+                </div>
+              </td>
+              <td class="col-status">
+                <span class="status-pill-badge" [ngClass]="getStatusClass(m.status)">
+                  <span class="status-dot"></span>
+                  {{ formatStatus(m.status) }}
+                </span>
+              </td>
+              <td class="col-joined">
+                <span class="cell-text">{{ m.createdAt | date:'dd MMM yyyy' }}</span>
+              </td>
+              <td class="col-actions">
+                <div class="action-btn-group">
+                  <button class="action-ic-btn btn-view" (click)="viewMember.emit(m)" pTooltip="View Profile" tooltipPosition="top">
+                    <i class="pi pi-eye"></i>
+                  </button>
+                  @if (isAdmin) {
+                    <button class="action-ic-btn btn-edit" (click)="editProfile.emit(m)" pTooltip="Edit Profile" tooltipPosition="top">
+                      <i class="pi pi-pencil"></i>
+                    </button>
+                  }
+                  @if (m.status === 'pending' || m.status === 'Pending Approval') {
+                    <button class="action-ic-btn btn-approve" (click)="confirmApprove.emit(m)" pTooltip="Approve Member" tooltipPosition="top">
+                      <i class="pi pi-check"></i>
+                    </button>
+                  }
+                  @if (m.status !== 'rejected') {
+                    <button class="action-ic-btn btn-reject" (click)="confirmReject.emit(m)" pTooltip="Reject Member" tooltipPosition="top">
+                      <i class="pi pi-ban"></i>
+                    </button>
+                  }
+                  @if (m.membershipNo) {
+                    <button class="action-ic-btn btn-card-preview" (click)="previewCard.emit(m)" pTooltip="Preview ID Card" tooltipPosition="top">
+                      <i class="pi pi-eye"></i>
+                    </button>
+                    <button class="action-ic-btn btn-card-gen" (click)="generateCard.emit(m)" pTooltip="Generate ID Card" tooltipPosition="top">
+                      <i class="pi pi-id-card"></i>
+                    </button>
+                    <button class="action-ic-btn btn-card-email" (click)="emailCard.emit(m)" pTooltip="Email ID Card to Member" tooltipPosition="top">
+                      <i class="pi pi-envelope"></i>
+                    </button>
+                  }
+                  <button class="action-ic-btn btn-delete" (click)="confirmDelete.emit(m)" pTooltip="Delete Member" tooltipPosition="top">
+                    <i class="pi pi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td [attr.colspan]="activeView === 'pending' ? 13 : 12" class="table-empty-cell">
+                <div class="table-empty-content">
+                  <i class="pi pi-users"></i>
+                  <h4>No member records found</h4>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+
+    </table>
+  </div>
+
+  <!-- FIXED NON-SCROLLABLE PAGINATION BAR AT BOTTOM -->
+  <div class="table-pagination-bar">
+    <div class="pagination-info">
+      Showing <b>{{ firstIndex }}</b> to <b>{{ lastIndex }}</b> of <b>{{ totalRecords }}</b> members
+    </div>
+
+    <div class="pagination-controls">
+      <div class="rows-select-box">
+        <label>Rows per page:</label>
+        <select [ngModel]="rowsPerPage" (ngModelChange)="onRowsPerPageChange($event)">
+          @for (opt of rowsPerPageOptions; track opt) {
+            <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="page-nav-btns">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="setPage(1)" pTooltip="First Page" tooltipPosition="top">
+          <i class="pi pi-angle-double-left"></i>
+        </button>
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)" pTooltip="Previous Page" tooltipPosition="top">
+          <i class="pi pi-angle-left"></i>
+        </button>
+
+        <span class="page-indicator">Page <b>{{ currentPage }}</b> of <b>{{ totalPages }}</b></span>
+
+        <button class="page-btn" [disabled]="currentPage === totalPages || totalPages === 0" (click)="setPage(currentPage + 1)" pTooltip="Next Page" tooltipPosition="top">
+          <i class="pi pi-angle-right"></i>
+        </button>
+        <button class="page-btn" [disabled]="currentPage === totalPages || totalPages === 0" (click)="setPage(totalPages)" pTooltip="Last Page" tooltipPosition="top">
+          <i class="pi pi-angle-double-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

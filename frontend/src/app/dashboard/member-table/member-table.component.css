@@ -1,0 +1,462 @@
+/* ================================================================
+   ENTERPRISE CUSTOM NO-WRAP MEMBER TABLE (BULLETPROOF COMPONENT)
+   ================================================================ */
+
+:host {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.custom-member-table-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  border-radius: 16px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 16px;
+}
+
+/* Outer Scroll Engine */
+.table-scroll-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  max-height: 640px !important;
+  display: block !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+
+/* Custom 10px Blue Scrollbar */
+.table-scroll-wrapper::-webkit-scrollbar {
+  height: 10px !important;
+  width: 10px !important;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background: #F1F5F9 !important;
+  border-radius: 6px !important;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #0284C7 !important;
+  border-radius: 6px !important;
+  border: 2px solid #F1F5F9 !important;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #0369A1 !important;
+}
+
+/* Enterprise Custom Table Base */
+.custom-enterprise-table {
+  width: max-content !important;
+  min-width: 2400px !important;
+  table-layout: auto !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  margin: 0 !important;
+}
+
+.custom-enterprise-table th,
+.custom-enterprise-table td {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  vertical-align: middle !important;
+  padding: 12px 16px !important;
+  font-size: 13px !important;
+  color: #1E293B !important;
+  box-sizing: border-box !important;
+}
+
+/* Header Styling */
+.custom-enterprise-table thead tr th {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%) !important;
+  color: #475569 !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  border-bottom: 2px solid #CBD5E1 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  user-select: none !important;
+}
+
+.custom-enterprise-table thead tr th.sortable {
+  cursor: pointer !important;
+  transition: color 0.15s ease !important;
+}
+
+.custom-enterprise-table thead tr th.sortable:hover {
+  color: #0284C7 !important;
+}
+
+.custom-enterprise-table thead tr th i {
+  margin-left: 4px;
+}
+
+/* Body Styling */
+.custom-enterprise-table tbody tr {
+  background: #FFFFFF !important;
+  transition: background-color 0.15s ease !important;
+  border-bottom: 1px solid #F1F5F9 !important;
+}
+
+.custom-enterprise-table tbody tr.row-even {
+  background: #F8FAFC !important;
+}
+
+.custom-enterprise-table tbody tr:hover {
+  background: #F1F5F9 !important;
+}
+
+.custom-enterprise-table tbody tr.row-selected {
+  background: #EFF6FF !important;
+}
+
+/* ================================================================
+   COLUMN WIDTHS & CLEAN LEFT-TO-RIGHT HORIZONTAL SCROLL
+   ================================================================ */
+
+/* # Column */
+.col-sticky-num {
+  width: 70px !important;
+  min-width: 70px !important;
+}
+
+/* Photo Column */
+.col-sticky-photo {
+  width: 90px !important;
+  min-width: 90px !important;
+}
+
+/* Member Column */
+.col-sticky-member {
+  width: 320px !important;
+  min-width: 320px !important;
+}
+
+/* Pending Tab with Checkboxes */
+.has-checkboxes .col-sticky-check {
+  width: 50px !important;
+  min-width: 50px !important;
+}
+
+/* Scrollable Column Widths */
+.col-reg { width: 200px !important; min-width: 200px !important; }
+.col-mem { width: 180px !important; min-width: 180px !important; }
+.col-phone { width: 170px !important; min-width: 170px !important; }
+.col-district { width: 180px !important; min-width: 180px !important; }
+.col-bank { width: 250px !important; min-width: 250px !important; }
+.col-receipt { width: 220px !important; min-width: 220px !important; }
+.col-status { width: 180px !important; min-width: 180px !important; }
+.col-joined { width: 160px !important; min-width: 160px !important; }
+.col-actions { width: 320px !important; min-width: 320px !important; }
+
+/* ================================================================
+   CELL INNER STYLING
+   ================================================================ */
+
+.cell-text {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  display: inline-block !important;
+}
+
+.row-num-badge {
+  background: #EAF6FF !important;
+  color: #0284C7 !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.table-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 2px solid #E2E8F0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.member-name-block {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  white-space: nowrap !important;
+}
+
+.member-fullname {
+  font-weight: 700 !important;
+  color: #0F172A !important;
+  font-size: 13.5px !important;
+  white-space: nowrap !important;
+}
+
+.member-email-text {
+  font-size: 11.5px !important;
+  color: #64748B !important;
+  white-space: nowrap !important;
+}
+
+.monospace-code-badge {
+  font-family: monospace !important;
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  border: 1px solid #E2E8F0 !important;
+  white-space: nowrap !important;
+  display: inline-block !important;
+}
+
+.monospace-code-badge.blue {
+  background: #EFF6FF !important;
+  color: #1D4ED8 !important;
+  border-color: #BFDBFE !important;
+}
+
+.text-placeholder {
+  color: #94A3B8 !important;
+}
+
+.receipt-cell-box {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  white-space: nowrap !important;
+}
+
+.btn-receipt-pill {
+  background: #ECFDF5 !important;
+  color: #047857 !important;
+  border: 1px solid #A7F3D0 !important;
+  border-radius: 20px !important;
+  padding: 5px 12px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: nowrap !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-receipt-pill:hover {
+  background: #D1FAE5 !important;
+  transform: scale(1.02) !important;
+}
+
+.no-receipt-label {
+  color: #94A3B8 !important;
+  font-size: 12px !important;
+  font-style: italic !important;
+}
+
+.utr-code-label {
+  font-size: 10.5px !important;
+  color: #64748B !important;
+  font-family: monospace !important;
+  white-space: nowrap !important;
+}
+
+/* Status Badges */
+.status-pill-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 12px !important;
+  border-radius: 20px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+.status-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+}
+
+.status-approved {
+  background: #DCFCE7 !important;
+  color: #15803D !important;
+  border: 1px solid #86EFAC !important;
+}
+.status-approved .status-dot { background: #22C55E !important; }
+
+.status-pending {
+  background: #FEF9C3 !important;
+  color: #A16207 !important;
+  border: 1px solid #FDE047 !important;
+}
+.status-pending .status-dot { background: #EAB308 !important; }
+
+.status-rejected {
+  background: #FEE2E2 !important;
+  color: #B91C1C !important;
+  border: 1px solid #FCA5A5 !important;
+}
+.status-rejected .status-dot { background: #EF4444 !important; }
+
+/* Action Buttons */
+.action-btn-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.action-ic-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  transition: all 0.15s ease !important;
+}
+
+.action-ic-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-view { background: #E0F2FE !important; color: #0369A1 !important; }
+.btn-edit { background: #FEF08A !important; color: #854D0E !important; }
+.btn-approve { background: #DCFCE7 !important; color: #15803D !important; }
+.btn-reject { background: #FEE2E2 !important; color: #B91C1C !important; }
+.btn-card-preview { background: #0B5ED7 !important; color: #FFFFFF !important; }
+.btn-card-gen { background: #F1F5F9 !important; color: #334155 !important; }
+.btn-card-email { background: #10B981 !important; color: #FFFFFF !important; }
+.btn-delete { background: #FEE2E2 !important; color: #DC2626 !important; }
+
+.custom-checkbox {
+  width: 16px !important;
+  height: 16px !important;
+  cursor: pointer !important;
+  accent-color: #0284C7 !important;
+}
+
+.table-loading-cell, .table-empty-cell {
+  text-align: center !important;
+  padding: 48px !important;
+}
+
+.table-loading-content, .table-empty-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  color: #64748B !important;
+}
+
+.table-loading-content i, .table-empty-content i {
+  font-size: 32px !important;
+  color: #0284C7 !important;
+}
+
+/* ================================================================
+   FIXED PAGINATION BAR AT BOTTOM
+   ================================================================ */
+
+.table-pagination-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px 24px !important;
+  background: #FFFFFF !important;
+  border-top: 1.5px solid #E2E8F0 !important;
+  border-radius: 0 0 16px 16px !important;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03) !important;
+}
+
+.pagination-info {
+  font-size: 13px !important;
+  color: #64748B !important;
+}
+
+.pagination-controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+.rows-select-box {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 12.5px !important;
+  color: #64748B !important;
+}
+
+.rows-select-box select {
+  padding: 5px 10px !important;
+  border-radius: 8px !important;
+  border: 1.5px solid #CBD5E1 !important;
+  font-size: 12.5px !important;
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  cursor: pointer !important;
+}
+
+.page-nav-btns {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.page-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  border: 1px solid #E2E8F0 !important;
+  background: #FFFFFF !important;
+  color: #334155 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #0284C7 !important;
+}
+
+.page-btn:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.page-indicator {
+  font-size: 12.5px !important;
+  color: #475569 !important;
+  padding: 0 6px !important;
+}

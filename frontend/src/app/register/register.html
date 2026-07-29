@@ -728,39 +728,50 @@
               </div>
 
               <!-- Payment Receipt Upload Zone -->
-              <div class="input-group full-col">
-                <label class="field-label">Payment Receipt Screenshot <span class="required">*</span></label>
+              <div class="doc-upload-item full-col">
+                <label class="doc-label">Payment Receipt Screenshot <span class="required">*</span></label>
+                <div class="upload-zone"
+                     [class.drag-over]="srv.dragOverField() === 'paymentReceipt'"
+                     [class.invalid-control]="hasError('paymentReceipt')"
+                     (dragover)="onDragOver($event, 'paymentReceipt')"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onDrop($event, 'paymentReceipt')"
+                     (click)="openFilePicker('upload-paymentReceipt')">
+                  <input id="upload-paymentReceipt" type="file" class="file-input-hidden"
+                         accept=".pdf,.jpg,.jpeg,.png"
+                         (change)="onFileSelected($event, 'paymentReceipt')"
+                         (click)="$event.stopPropagation()">
 
-                <div class="document-upload-card" [class.has-file]="!!registerForm.get('paymentReceipt')?.value" [class.p-invalid]="hasError('paymentReceipt')">
-                  <input id="upload-paymentReceipt" type="file" class="file-input-hidden" accept=".jpg,.jpeg,.png,.pdf"
-                         (change)="onFileSelected($event, 'paymentReceipt')">
-
-                  @if (registerForm.get('paymentReceipt')?.value) {
-                    <div class="file-uploaded-preview">
-                      <div class="file-info-col">
-                        <i class="pi pi-check-circle success-file-icon"></i>
-                        <span class="file-name-text">{{ getDisplayFileName('paymentReceipt') }}</span>
-                      </div>
-                      <div class="file-actions-col">
-                        <button type="button" class="action-icon-btn view" (click)="viewUploadedFile('paymentReceipt', 'Payment Receipt')" pTooltip="View Receipt" tooltipPosition="top">
-                          <i class="pi pi-eye"></i>
-                        </button>
-                        <button type="button" class="action-icon-btn delete" (click)="removeFile('paymentReceipt')" pTooltip="Remove File" tooltipPosition="top">
-                          <i class="pi pi-trash"></i>
-                        </button>
-                      </div>
+                  @if (!registerForm.get('paymentReceipt')?.value) {
+                    <div class="upload-zone-inner">
+                      <i class="pi pi-receipt upload-icon"></i>
+                      <p class="upload-title">Drag &amp; drop or <span class="browse-link">click to browse</span></p>
+                      <p class="upload-hint">PDF, JPG, PNG · Max 5 MB</p>
                     </div>
                   } @else {
-                    <div class="upload-dropzone" (click)="openFilePicker('upload-paymentReceipt')">
-                      <i class="pi pi-cloud-upload dropzone-icon"></i>
-                      <span class="dropzone-title">Upload Payment Receipt Screenshot</span>
-                      <span class="dropzone-sub">Supports JPG, PNG or PDF (Max 5MB)</span>
+                    <div class="upload-preview" (click)="$event.stopPropagation()">
+                      <i class="pi pi-file-pdf file-icon" *ngIf="!isImagePreview(registerForm.get('paymentReceipt')?.value)"></i>
+                      <img *ngIf="isImagePreview(registerForm.get('paymentReceipt')?.value)"
+                           [src]="registerForm.get('paymentReceipt')?.value" class="photo-preview-image" alt="Receipt preview">
+                      <div class="file-details">
+                        <span class="file-name">{{ upload.fileNames().paymentReceiptName || getDisplayFileName('paymentReceipt') }}</span>
+                        <span class="file-status"><i class="pi pi-check-circle" style="color:#16a34a"></i> Ready</span>
+                      </div>
+                      <button type="button" class="view-file-btn"
+                              pTooltip="View receipt" tooltipPosition="top"
+                              (click)="viewUploadedFile('paymentReceipt', 'Payment Receipt Screenshot')">
+                        <i class="pi pi-eye"></i>
+                      </button>
+                      <button type="button" class="remove-file-btn"
+                              pTooltip="Remove file" tooltipPosition="top"
+                              (click)="removeFile('paymentReceipt')">
+                        <i class="pi pi-trash"></i>
+                      </button>
                     </div>
                   }
                 </div>
-
                 @if (hasError('paymentReceipt', 'required')) {
-                  <small class="validation-error"><i class="pi pi-exclamation-circle"></i> Payment Receipt Screenshot is mandatory.</small>
+                  <small class="validation-error" style="margin-top:6px;display:block;"><i class="pi pi-exclamation-circle"></i> Payment Receipt Screenshot is mandatory.</small>
                 }
               </div>
 

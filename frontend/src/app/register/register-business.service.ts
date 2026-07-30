@@ -50,6 +50,7 @@ export class RegisterBusinessService {
     'Punjab National Bank (PNB)',
     'Baroda Rajasthan Kshetriya Gramin Bank (BRKGB)',
     'Rajasthan Marudhara Gramin Bank (RMGB)',
+    'Rajasthan Gramin Bank (RGB)',
     'Canara Bank',
     'Union Bank of India',
     'Bank of India (BOI)',
